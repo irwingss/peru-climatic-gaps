@@ -156,9 +156,9 @@ def _leyenda_mapa(ax, extra, loc=(1.0, .62), titulo='Mahalanobis distance d'):
               bbox_to_anchor=loc, frameon=False, alignment='left')
 
 
-CLASE_FIG = [('similar', 'Similar or closer (≤ 0.2)', '#a50f15'), ('moderado', 'Moderate (0.2–0.3)', '#fb6a4a'),
-             ('debil', 'Weak (0.3–0.5)', '#fcae91'), ('poco_similar', 'Low similarity (0.5–1)', '#f3d9cc'),
-             ('no_analogo', 'Not analogous (> 1)', '#ffffff')]
+CLASE_FIG = [('similar', 'Similar or closer (≤ 0.2)', ANALOGO[1]), ('moderado', 'Moderate (0.2–0.3)', VACIO[0]),
+             ('debil', 'Weak (0.3–0.5)', VACIO[1]), ('poco_similar', 'Low similarity (0.5–1)', VACIO[2]),
+             ('no_analogo', 'Not analogous (> 1)', VACIO[3])]
 
 
 def figS5_vacios():
@@ -216,7 +216,7 @@ def figS6_ejemplos():
         ax.set_title(f"{tit}\n{sub}\nd ≤ 0.2 outside the area: {en(areas[uid]['km2_d0.2'])} km²", loc='left',
                      fontsize=6.6, color='#1f1f1d')
     fig.subplots_adjust(wspace=.02, right=.80)
-    _leyenda_mapa(axs[-1], [Line2D([], [], color=CIAN, lw=.9, label='Protected area')], loc=(1.0, .78))
+    _leyenda_mapa(axs[-1], [Patch(facecolor=VERDE, edgecolor=VERDE_OSCURO, lw=.6, label='Protected area')], loc=(1.0, .78))
     fig.savefig(DST / 'FigS6_example_analogue_maps.png', bbox_inches='tight'); plt.close(fig)
 
 
@@ -329,8 +329,8 @@ def figS11_estaciones():
         ax.set_title(tit, loc='left', fontsize=8, weight='bold')
     d7o = np.array([float(p['d7_obs']) for p in pares]); d7c = np.array([float(p['d7_chelsa']) for p in pares])
     d11 = np.array([float(p['d11_chelsa']) for p in pares])
-    for lo, hi, col, s, lab in ((1, 99, '#bdbdb5', 5, '> 1 · not analogous'), (.5, 1, '#fb6a4a', 8, '0.5–1 · low similarity'),
-                                (-1, .5, '#a50f15', 16, '≤ 0.5 · weak or closer')):
+    for lo, hi, col, s, lab in ((1, 99, VACIO[3], 5, '> 1 · not analogous'), (.5, 1, VACIO[2], 8, '0.5–1 · low similarity'),
+                                (-1, .5, VACIO[1], 16, '≤ 0.5 · weak or closer')):
         m = (d11 > lo) & (d11 <= hi)
         axs[2].scatter(d7o[m], d7c[m], s=s, color=col, label=f'{lab} (n = {m.sum()})', zorder=3)
     axs[2].plot([0, d7o.max()], [0, d7o.max()], color=CIAN, lw=.8)

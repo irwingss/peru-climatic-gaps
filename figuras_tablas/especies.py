@@ -312,10 +312,10 @@ def fig_atlas_aves_mar(especies, archivo=f"Fig{ATLAS_FIG['SEABIRDS']}_seabirds",
     return paginas
 
 
-ESTRATOS = [('pct_protegido', 'Protected', '#0096c7'), ('pct_similar', 'Unprotected, ≤ 0.2', '#a50f15'),
-            ('pct_moderado', 'Unprotected, 0.2–0.3', '#fb6a4a'), ('pct_debil', 'Unprotected, 0.3–0.5', '#fcae91'),
-            ('pct_poco_similar', 'Unprotected, 0.5–1', '#f3d9cc'), ('pct_no_analogo', 'Unprotected, > 1', '#ffffff'),
-            ('pct_mas_alla_similar', 'Climatic gaps, > 0.2', '#d9480f')]
+ESTRATOS = [('pct_protegido', 'Protected', VERDE), ('pct_similar', 'Unprotected, ≤ 0.2', ANALOGO[1]),
+            ('pct_moderado', 'Unprotected, 0.2–0.3', VACIO[0]), ('pct_debil', 'Unprotected, 0.3–0.5', VACIO[1]),
+            ('pct_poco_similar', 'Unprotected, 0.5–1', VACIO[2]), ('pct_no_analogo', 'Unprotected, > 1', VACIO[3]),
+            ('pct_mas_alla_similar', 'Climatic gaps, > 0.2', VACIO[2])]
 
 
 def campo(pre, clave):

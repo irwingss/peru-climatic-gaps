@@ -46,13 +46,13 @@ for capa, k, cmap, key in (('superficie', 0, 'RdYlBu_r', 'mar1'), ('superficie',
 # protected areas and reporting strata thumbnails
 fig, ax = plt.subplots(figsize=(2.2, 2.6))
 contorno(ax, bt.outline, color='#52514e', lw=.5)
-colmod = {'NACIONAL': '#1b7837', 'REGIONAL': '#2a78d6', 'PRIVADA': '#d65a8a'}
+colmod = {'NACIONAL': VERDE, 'REGIONAL': '#5c9f80', 'PRIVADA': '#b5dcc4'}   # protected in greens, one shade per tier
 inv = {u['anp_id']: u for u in bt.inventory}
 for uid, g in bt.shapes.items():
     relleno(ax, g, facecolor=colmod[inv[uid]['modalidad']], edgecolor='none', alpha=.85)
 bm = lienzo(MAR / 'fondo')
 for uid, g in bm.shapes.items():
-    relleno(ax, g, facecolor='#1b7837', edgecolor='none', alpha=.85)
+    relleno(ax, g, facecolor=VERDE, edgecolor='none', alpha=.85)
 ax.set_xlim(-82.2, -68.4); ax.set_ylim(-18.6, .2); ax.set_aspect(1 / np.cos(np.deg2rad(-9.2))); ax.set_axis_off()
 out['areas'] = png64(fig)
 zt = np.load(TIERRA / 'preparados/ecorregiones_minam.npz')['ecorregion']
@@ -109,15 +109,15 @@ x0, y0, x1, y1 = g.bounds; pad = .06
 fig, ax = plt.subplots(figsize=(2.2, 2.2))
 r_lon = bt.aff.c + bt.aff.a * (bt.flat[refs] % bt.w); r_lat = bt.aff.f + bt.aff.e * (bt.flat[refs] // bt.w)
 for lo, la in zip(r_lon, r_lat):
-    ax.add_patch(matplotlib.patches.Rectangle((lo, la + bt.aff.e), bt.aff.a, -bt.aff.e, fc='#2a78d6', ec='white', lw=.25, alpha=.9))
-contorno(ax, g, color=CIAN, lw=1.4)
+    ax.add_patch(matplotlib.patches.Rectangle((lo, la + bt.aff.e), bt.aff.a, -bt.aff.e, fc=VERDE, ec='white', lw=.25, alpha=.9))
+contorno(ax, g, color=VERDE_OSCURO, lw=1.4)
 ax.set_xlim(x0 - pad, x1 + pad); ax.set_ylim(y0 - pad, y1 + pad); ax.set_aspect(1 / np.cos(np.deg2rad(-13))); ax.set_axis_off()
 out['zoom_area'] = png64(fig, 250)
 
 # Peru locator with the area and the two query pixels
 fig, ax = plt.subplots(figsize=(2.0, 2.4))
 relleno(ax, bt.outline, facecolor='#f1f0ec', edgecolor='#8a8986', lw=.5)
-relleno(ax, g.buffer(.12), facecolor=CIAN, edgecolor='none')
+relleno(ax, g.buffer(.12), facecolor=VERDE, edgecolor='none')
 ax.set_xlim(-81.5, -68.5); ax.set_ylim(-18.5, .2); ax.set_aspect(1 / np.cos(np.deg2rad(-9.2))); ax.set_axis_off()
 out['peru_loc'] = png64(fig)
 out['peru_loc_ext'] = [-81.5, -68.5, -18.5, .2]
@@ -132,6 +132,7 @@ a = next(x for x in CIFRAS['continental']['areas'] if x['anp_id'] == uid)
 out['sup_area'] = [a['km2_d0.1'], a['km2_d0.2']]
 out['n_pixeles'] = int(len(bt.flat))
 out['d_classes'] = [[c, al, t] for c, al, t in CLASES_D]
+out['d_mas_1'] = VACIO[3]   # d > 1
 out['cortes'] = CORTES_D
 
 # p-median of the real network and of the 999 N2c null networks (Peru; main design)

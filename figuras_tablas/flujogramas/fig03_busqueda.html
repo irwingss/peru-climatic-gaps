@@ -22,16 +22,16 @@ const L = DATA.peru_loc_ext, lw = 78, lh = lw * (L[3] - L[2]) * 1.013 / (L[1] - 
 const lx = A[0] + 150, ly = T0 + 150;
 imagen(DATA.peru_loc, lx, ly, lw, lh);
 const gx = lon => lx + (lon - L[0]) / (L[1] - L[0]) * lw, gy = lat => ly + (L[3] - lat) / (L[3] - L[2]) * lh;
-estrella(gx(E.c1_lonlat[0]), gy(E.c1_lonlat[1]), 5.5, '#1b7837');
+estrella(gx(E.c1_lonlat[0]), gy(E.c1_lonlat[1]), 5.5, '#2f5f93');
 estrella(gx(E.c2_lonlat[0]), gy(E.c2_lonlat[1]), 5.5, RED);
-txt(gx(E.c1_lonlat[0]) - 7, gy(E.c1_lonlat[1]) + 3, 'c_{1}', {size: 8, anchor: 'end', fill: '#1b7837', weight: 'bold'});
+txt(gx(E.c1_lonlat[0]) - 7, gy(E.c1_lonlat[1]) + 3, 'c_{1}', {size: 8, anchor: 'end', fill: '#2f5f93', weight: 'bold'});
 txt(gx(E.c2_lonlat[0]) - 7, gy(E.c2_lonlat[1]) + 3, 'c_{2}', {size: 8, anchor: 'end', fill: RED, weight: 'bold'});
 txt(A[0] + 14, T0 + 214, `E_{j} = the ${E.n_refs} pixels of the area`, {size: 8.5, fill: INK, weight: 'bold'});
 el('rect', {x: A[0] + 14, y: T0 + 224, width: 9, height: 9, fill: REF});
 txt(A[0] + 28, T0 + 232, 'reference pixels of the area', {size: 7.8, fill: SOFT});
 txt(A[0] + 14, T0 + 256, 'No centroid, average or prototype:\nrare climates of the area keep\ntheir weight as references.', {size: 7.8, fill: SOFT});
 txt(A[0] + 14, T0 + 322, 'Query pixels in the example', {size: 8, fill: INK, weight: 'bold'});
-estrella(A[0] + 19, T0 + 336, 4.5, '#1b7837'); txt(A[0] + 28, T0 + 339, `c_{1}: northern Andes, ≈ ${fmt(E.km_c1, 0)} km away`, {size: 7.6, fill: SOFT});
+estrella(A[0] + 19, T0 + 336, 4.5, '#2f5f93'); txt(A[0] + 28, T0 + 339, `c_{1}: northern Andes, ≈ ${fmt(E.km_c1, 0)} km away`, {size: 7.6, fill: SOFT});
 estrella(A[0] + 19, T0 + 352, 4.5, RED); txt(A[0] + 28, T0 + 355, 'c_{2}: southern Andes', {size: 7.6, fill: SOFT});
 
 // 2. climate space
@@ -42,13 +42,13 @@ const box = [B[0] + 34, T0 + 40, 270, 210];
 const S = espacio(box[0], box[1], box[2], box[3], E);
 ejes(box[0], box[1], box[2], box[3], {xlab: "climate axis 1 (principal component)", ylab: "climate axis 2 (principal component)", xoff: 12, yoff: 8});
 const lab = (p, s, col, dx, dy, anchor = 'start') => txt(S.sx(p[0]) + dx, S.sy(p[1]) + dy, s, {size: 8.2, fill: col, weight: 'bold', anchor});
-lab(E.c1, `c_{1}`, '#1b7837', 8, -6); lab(E.c2, `c_{2}`, RED, 8, -6);
+lab(E.c1, `c_{1}`, '#2f5f93', 8, -6); lab(E.c2, `c_{2}`, RED, 8, -6);
 lab(E.r1, 'r*', INK, -6, 12, 'end'); lab(E.r2, 'r*', INK, -6, 12, 'end');
 txt(B[0] + 16, T0 + 286, 'd_{j}(c) = min_{r ∈ Ej} d(c, r)', {size: 10, fill: INK});
 txt(B[0] + 16, T0 + 304, 'd: regularized Mahalanobis distance in the 11 climate variables;\nr*: the reference that attains the minimum (computed exactly).', {size: 7.8, fill: SOFT});
 el('circle', {cx: B[0] + 21, cy: T0 + 336, r: 2.2, fill: '#cfcec8'}); txt(B[0] + 28, T0 + 339, 'pixels of Peru (sample)', {size: 7.6, fill: SOFT});
 el('circle', {cx: B[0] + 21, cy: T0 + 351, r: 2.6, fill: REF}); txt(B[0] + 28, T0 + 354, 'references of the area', {size: 7.6, fill: SOFT});
-txt(B[0] + 200, T0 + 339, `d_{j}(c_{1}) = ${E.d1.toFixed(2)}`, {size: 8.2, fill: '#1b7837', weight: 'bold'});
+txt(B[0] + 200, T0 + 339, `d_{j}(c_{1}) = ${E.d1.toFixed(2)}`, {size: 8.2, fill: '#2f5f93', weight: 'bold'});
 txt(B[0] + 200, T0 + 353, `d_{j}(c_{2}) = ${E.d2.toFixed(2)}`, {size: 8.2, fill: RED, weight: 'bold'});
 txt(B[0] + 200, T0 + 367, 'axes: 2 of 11 dimensions', {size: 7.2, fill: MUTED, style: 'italic'});
 
@@ -60,7 +60,7 @@ const nombres = ['nearly identical', 'very similar', 'similar', 'moderate', 'wea
 const cortes = DATA.cortes.concat([1.4]);
 const bx = C[0] + 30, bw = 26, by0 = T0 + 44, bh = 240;
 const sy = escala(0, 1.4, by0 + bh, by0);
-const cls = DATA.d_classes.concat([['#ffffff', 1, '']]);
+const cls = DATA.d_classes.concat([[DATA.d_mas_1, 1, '']]);
 cls.forEach((c, i) => {
   el('rect', {x: bx, y: sy(cortes[i + 1]), width: bw, height: sy(cortes[i]) - sy(cortes[i + 1]), fill: c[0], 'fill-opacity': c[1], stroke: '#bdbdb5', 'stroke-width': .4});
   txt(bx + bw + 6, (sy(cortes[i]) + sy(cortes[i + 1])) / 2 + 3, nombres[i], {size: i < 3 ? 6.8 : 7.4, fill: SOFT});
@@ -72,7 +72,7 @@ const marca = (v, col, t) => {
   estrella(bx + bw + 128, sy(v), 6, col);
   txt(bx + bw + 138, sy(v) + 3, t, {size: 7.8, fill: col, weight: 'bold'});
 };
-marca(E.d1, '#1b7837', `c_{1}`); marca(E.d2, RED, `c_{2}`);
+marca(E.d1, '#2f5f93', `c_{1}`); marca(E.d2, RED, `c_{2}`);
 txt(C[0] + 14, T0 + 312, 'Fixed classes, common to every protected area;\nanchored to the median d between neighbouring\npixels (0.05), pixels ≈ 8 km apart (0.2) and\nrandom pairs of pixels (1.02).', {size: 7.6, fill: SOFT});
 txt(C[0] + 14, T0 + 370, `c_{1}: similar (d = ${E.d1.toFixed(2)})   c_{2}: low similarity (d = ${E.d2.toFixed(2)})`, {size: 7.6, fill: INK, weight: 'bold'});
 
@@ -86,10 +86,10 @@ el('line', {x1: D[0] + 136, y1: T0 + 152, x2: D[0] + 148, y2: T0 + 152, stroke: 
 txt(D[0] + 152, T0 + 155, 'protected area', {size: 6.4, fill: SOFT});
 txt(D[0] + 14, T0 + 214, 'Surface outside the area', {size: 8.6, fill: INK, weight: 'bold'});
 el('rect', {x: D[0] + 14, y: T0 + 224, width: 194, height: 44, rx: 5, fill: '#fff', stroke: '#e3c9c4'});
-txt(D[0] + 24, T0 + 242, `${fmt(DATA.sup_area[0])} km²`, {size: 14, fill: '#a50f15', weight: 'bold'});
+txt(D[0] + 24, T0 + 242, `${fmt(DATA.sup_area[0])} km²`, {size: 14, fill: '#2f5f93', weight: 'bold'});
 txt(D[0] + 24, T0 + 258, 'very similar or closer, d ≤ 0.1', {size: 7.6, fill: SOFT});
 el('rect', {x: D[0] + 14, y: T0 + 276, width: 194, height: 44, rx: 5, fill: '#fff', stroke: '#e3c9c4'});
-txt(D[0] + 24, T0 + 294, `${fmt(DATA.sup_area[1])} km²`, {size: 14, fill: '#de2d26', weight: 'bold'});
+txt(D[0] + 24, T0 + 294, `${fmt(DATA.sup_area[1])} km²`, {size: 14, fill: '#6b93c4', weight: 'bold'});
 txt(D[0] + 24, T0 + 310, 'similar or closer, d ≤ 0.2', {size: 7.6, fill: SOFT});
 txt(D[0] + 14, T0 + 338, 'The fraction of each pixel inside the area\nitself is excluded; surfaces are computed\nin the equal-area projection EPSG:6933.', {size: 7.4, fill: SOFT});
 

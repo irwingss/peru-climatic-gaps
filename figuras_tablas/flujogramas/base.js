@@ -1,7 +1,7 @@
 // Shared SVG helpers for the graphical workflow figures.
 const NS = 'http://www.w3.org/2000/svg';
-const INK = '#1f1f1d', SOFT = '#52514e', MUTED = '#8a8986', LINE = '#c9c8c2', CYAN = '#0096c7', RED = '#a50f15';
-const REF = '#2a78d6';  // references of the example protected area
+const INK = '#1f1f1d', SOFT = '#52514e', MUTED = '#8a8986', LINE = '#c9c8c2', CYAN = '#23745B', RED = '#a50f15';
+const REF = '#23745B';  // references of the example protected area
 let svg;
 
 function lienzo(w, h) {
@@ -107,7 +107,7 @@ function espacio(x, y, w, h, E, o = {}) {
   const sx = escala(xa - pad * (xb - xa), xb + pad * (xb - xa), x, x + w), sy = escala(ya - pad * (yb - ya), yb + pad * (yb - ya), y + h, y);
   for (const p of E.nube) el('circle', {cx: sx(p[0]), cy: sy(p[1]), r: o.rg || 1.3, fill: '#cfcec8', opacity: .75}, g);
   for (const p of E.refs) el('circle', {cx: sx(p[0]), cy: sy(p[1]), r: o.rr || 2.1, fill: REF, opacity: .85}, g);
-  const q = [['c1', 'r1', '#1b7837'], ...(o.dos === false ? [] : [['c2', 'r2', RED]])];
+  const q = [['c1', 'r1', '#2f5f93'], ...(o.dos === false ? [] : [['c2', 'r2', RED]])];
   for (const [c, r, col] of q) {
     el('line', {x1: sx(E[c][0]), y1: sy(E[c][1]), x2: sx(E[r][0]), y2: sy(E[r][1]), stroke: col, 'stroke-width': 1.4, 'stroke-dasharray': '3,2'});
     el('circle', {cx: sx(E[r][0]), cy: sy(E[r][1]), r: 3.6, fill: 'none', stroke: INK, 'stroke-width': 1.2});
@@ -127,7 +127,7 @@ function estrella(cx, cy, r, col) {
 
 function leyendaD(x, y, o = {}) {
   const lab = ['0–0.05 nearly identical', '0.05–0.1 very similar', '0.1–0.2 similar', '0.2–0.3 moderate', '0.3–0.5 weak', '0.5–1 low similarity', '> 1 not analogous'];
-  const cls = DATA.d_classes.concat([['#ffffff', 1, '']]);
+  const cls = DATA.d_classes.concat([[DATA.d_mas_1, 1, '']]);
   cls.forEach((c, i) => {
     el('rect', {x, y: y + i * (o.dy || 11), width: 12, height: 8, fill: c[0], 'fill-opacity': c[1], stroke: '#bdbdb5', 'stroke-width': .4});
     txt(x + 16, y + 7 + i * (o.dy || 11), lab[i], {size: o.size || 7, fill: SOFT});

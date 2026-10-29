@@ -27,8 +27,11 @@ ECO_ES = {'BTA': 'Bosque tropical amazónico', 'SPA': 'Sabana de palmeras', 'SAL
 ECO7 = ['BTA', 'SAL', 'PAR', 'PUN', 'SES', 'BSE', 'DCP']   # evaluable ecoregions (< 50 % protected)
 PEOR, MEJOR, ND = '#a50f15', '#2c7fb8', '#9a9993'
 W2 = 7.2                                                    # double-column width (in)
-# gap classes 0.2–0.3, 0.3–0.5, 0.5–1 and > 1 as they look on the d_min maps (Fig. 1a, atlas), so Fig. 1d matches Fig. 1a
-GAP_COL = ['#%02x%02x%02x' % tuple(round(255 * (a * v + 1 - a)) for v in to_rgb(c)) for c, a, _ in CLASES_D[3:]] + ['#ffffff']
+# One meaning per colour in the four figures (the authors' species-map palette): green = protected, blue = protected
+# analogue (d_min <= 0.2, darker = more similar), magenta = climatic gap (d_min > 0.2, darker = farther)
+# (VERDE, VERDE_CLARO, ANALOGO and VACIO are in figuras_comun.py)
+CLASES_ART = list(zip(ANALOGO + VACIO, ('nearly identical', 'very similar', 'similar', 'moderate', 'weak',
+                                        'low similarity', 'not analogous')))
 
 
 def _ejes(ax):
@@ -54,16 +57,31 @@ def _eco_es(e):  # names used in p_mediana.csv
 
 
 # ======================================================================== Fig. 1
+def _mapa_d(ax, base, d, gris_tierra=False):
+    """d_min in the article palette; protected pixels (footprint, d_min = 0) in green."""
+    if gris_tierra:
+        fondo_paises(ax)
+    ground = ListedColormap([SIN_DATO, '#ffffff']); ground.set_bad((0, 0, 0, 0))
+    ax.imshow(base.domain, cmap=ground, vmin=0, vmax=1, extent=base.extent, interpolation='nearest', zorder=2)
+    k = np.digitize(d, CORTES_D[1:], right=True).astype(np.float32); k[d == 0] = 7   # 0–6 classes, 7 protected
+    cmap = ListedColormap([*ANALOGO, *VACIO, VERDE]); cmap.set_bad((0, 0, 0, 0))
+    ax.imshow(base.raster(k), cmap=cmap, vmin=-.5, vmax=7.5, extent=base.extent, interpolation='nearest', zorder=3)
+    contorno(ax, base.outline, color='#6b6b66', lw=.4, zorder=4)
+    ax.set_aspect(1 / np.cos(np.deg2rad(-9.2))); ax.set_axis_off()
+
+
 def fig1():
     base = lienzo(TIERRA)
     d = base.leer(TIERRA / 'mapas_distancia/cond100/sistema_distancia_minima.tif')
-    union = shapely.union_all(list(base.shapes.values()))
     fig = plt.figure(figsize=(W2, 6.3))
     gs = GridSpec(2, 3, figure=fig, width_ratios=[1.45, .66, .66], height_ratios=[1, .78], wspace=.06, hspace=.16)
     a = fig.add_subplot(gs[:, 0])
-    panel_d(a, base, d, union, circulo=False)
-    a.legend(handles=leyenda_d([Line2D([], [], color=CIAN, lw=.9, label='Protected-area network')]),
-             title='Distance to the most similar\nprotected climate, $d_{\\mathrm{min}}$', title_fontsize=6.2, fontsize=5.9,
+    _mapa_d(a, base, d)
+    h = [Patch(facecolor=VERDE, label='Protected area')]
+    h += [Patch(facecolor=c, edgecolor='#bdbdb5', lw=.4, label=f'{corto(lo)}–{corto(hi)} · {t}') for (c, t), lo, hi
+          in zip(CLASES_ART, CORTES_D[:-1], CORTES_D[1:])]
+    h.append(Patch(facecolor=VACIO[-1], edgecolor='#bdbdb5', lw=.4, label='> 1 · not analogous'))
+    a.legend(handles=h, title='Distance to the most similar\nprotected climate, $d_{\\mathrm{min}}$', title_fontsize=6.2, fontsize=5.9,
              loc='lower left', bbox_to_anchor=(-.04, -.01), frameon=False, alignment='left', handlelength=1.5, labelspacing=.3)
     _titulo(a, '(a) Continental domain')
     a.text(.98, .985, f"Climatic gaps ($d_{{\\mathrm{{min}}}}$ > 0.2):\n{en(CIFRAS['implicaciones']['P1']['vacios_km2'])} km², "
@@ -73,7 +91,7 @@ def fig1():
         ax = fig.add_subplot(gs[0, 1 + k])
         bm = lienzo(MAR / capa)
         dm = bm.leer(MAR / capa / 'mapas_distancia/cond100/sistema_distancia_minima.tif')
-        panel_d(ax, bm, dm, shapely.union_all(list(bm.shapes.values())), gris_tierra=True, circulo=False)
+        _mapa_d(ax, bm, dm, gris_tierra=True)
         encuadre_mar(ax); ax.set_xlim(-85.2, -74.5)
         m = CIFRAS['maritimo'][capa]['todo']
         ax.text(.04, .02, f"$d_{{\\mathrm{{min}}}}$ ≤ 0.2:\n{m['pct_d0.2']:.1f}% of the\nunprotected sea", transform=ax.transAxes,
@@ -82,8 +100,8 @@ def fig1():
     # (d) unprotected surface of each ecoregion by class of dmin (100 % bars), gap area at the right
     ax = fig.add_subplot(gs[1, 1:])
     cl = C['clases']
-    clases = [('similar', '≤ 0.2', '#a50f15')] + list(zip(('moderado', 'debil', 'poco_similar', 'no_analogo'),
-                                                         ('0.2–0.3', '0.3–0.5', '0.5–1', '> 1'), GAP_COL))
+    clases = [('similar', '≤ 0.2', ANALOGO[1])] + list(zip(('moderado', 'debil', 'poco_similar', 'no_analogo'),
+                                                          ('0.2–0.3', '0.3–0.5', '0.5–1', '> 1'), VACIO))
     filas = ['peru'] + ECO7
     for i, g in enumerate(filas):
         tot = C['peru']['km2_no_protegido'] if g == 'peru' else C['ecorregiones'][g]['km2_no_protegido']
@@ -135,6 +153,7 @@ def fig2():
                                     ('fondo', '(c) Seafloor'))):
         _hist(fig.add_subplot(gs[0, k]), dom, tit)
     ax = fig.add_subplot(gs[1, :])
+    p = ax.get_position(); ax.set_position([p.x0, p.y0, p.width * .76, p.height])   # room for the two columns
     tc, ts, tf = _prueba('continental'), _prueba('superficie'), _prueba('fondo')
     filas = [('Peru, continental', tc.loc['Perú'], C['peru']['pct_protegido'], True)]
     filas += [(ECO_EN[e].replace('High jungle (Yungas)', 'Yungas'), tc.loc[_eco_es(e)], C['ecorregiones'][e]['pct_protegido'], False) for e in ECO7]
@@ -143,25 +162,37 @@ def fig2():
               ('Slope (200–1 000 m)', tf.iloc[2], None, False), ('Deep floor (> 1 000 m)', tf.iloc[3], None, False)]
     y = np.arange(len(filas))[::-1].astype(float)
     y[8:] -= .6; y[11:] -= .6   # gaps between domains
+    # magnitude (clima_local/magnitud_nulas.py): surface left without a protected analogue beyond the median null network,
+    # (F(0.2) of the median null - F(0.2) of the real network) x surface of the stratum, two significant figures
+    mg = json.loads((RES / '04_redes_nulas/magnitud_N2c.json').read_text(encoding='utf-8'))
+    claves = [('continental', 'Perú'), *[('continental', e) for e in ECO7], ('superficie', 'todo'), ('superficie', 'MFH'),
+              ('superficie', 'MTR'), ('fondo', 'todo'), ('fondo', 'PLATAFORMA'), ('fondo', 'TALUD'), ('fondo', 'PROFUNDO')]
+    extra = [mg[dm][k]['km2_extra_mas_alla_0.2'] for dm, k in claves]
+    x1, x2 = 1.03, 1.25   # columns right of the axes (axes fraction)
+    col_t = matplotlib.transforms.blended_transform_factory(ax.transAxes, ax.transData)
     ax.axvline(0, color='#52514e', lw=.6); ax.axvspan(-2, 2, color='#f1f0ec', lw=0, zorder=0)
-    for yi, (lab, r, prot, nac) in zip(y, filas):
+    for yi, (lab, r, prot, nac), ex in zip(y, filas, extra):
+        ax.text(x2, yi, en(float(f'{ex:.2g}')), transform=col_t, ha='right', va='center', fontsize=6,
+                color=PEOR if r.direccion == 'peor' else '#9a9993', weight='bold' if nac else 'normal')
         col = PEOR if r.direccion == 'peor' else MEJOR if r.direccion == 'mejor' else ND
         ax.plot([0, r.ses], [yi, yi], color=col, lw=.8, zorder=1)
         ax.scatter(r.ses, yi, s=46 if nac else 26, marker='D' if nac else 'o', zorder=3,
                    fc=col if r.direccion != 'no distinguible' else 'white', ec=col, lw=1.1)
         ax.text(-3.3, yi, lab, ha='right', va='center', fontsize=6.4, weight='bold' if nac else 'normal')
         if prot is not None:
-            ax.text(10.6, yi, f'{prot:.1f}%', ha='right', va='center', fontsize=6, color='#55554f')
+            ax.text(x1, yi, f'{prot:.1f}%', transform=col_t, ha='right', va='center', fontsize=6, color='#55554f')
         ax.text(r.ses + (.35 if r.ses >= 0 else -.35), yi + .02, ("p" if nac else "p$_{\\mathrm{Holm}}$") + f" = {r.p_holm:.3f}", fontsize=5.3,
                 ha='left' if r.ses >= 0 else 'right', va='center', color='#55554f')
-    ax.text(10.6, y[0] + 1.0, 'Protected', ha='right', fontsize=6, color='#55554f')
+    ax.text(x1, y[0] + 1.0, 'Protected', transform=col_t, ha='right', fontsize=6, color='#55554f')
+    ax.text(x2, y[0] + 1.0, 'Extra km² without a\nprotected analogue', transform=col_t, ha='right', fontsize=6,
+            color='#55554f', linespacing=1.05)
     ax.set_xlim(-3.2, 10.8); ax.set_ylim(y.min() - .8, y.max() + 1.4); ax.set_yticks([])
     ax.spines[['top', 'right', 'left']].set_visible(False); ax.tick_params(labelsize=6.4, length=2)
     ax.set_xlabel('Standardized effect size (SES) of $\\bar{D}$ against 999 null networks  ·  positive = worse than chance', fontsize=6.6)
     ax.legend(handles=[Line2D([], [], marker='o', ls='', mfc=PEOR, mec=PEOR, label='Worse than chance (p < 0.05; Holm for strata)'),
                        Line2D([], [], marker='o', ls='', mfc='white', mec=ND, label='Not distinguishable')],
-              fontsize=6, frameon=False, loc='lower right', bbox_to_anchor=(.86, 0))
-    _titulo(ax, '(d) Departure from null networks that keep each area\'s size, shape, natural setting and ecoregion mix')
+              fontsize=6, frameon=False, loc='lower right', bbox_to_anchor=(1, 0))
+    _titulo(ax, '(d) Departure from the null networks, by stratum')
     fig.savefig(DST / 'Fig2_null_networks.png', bbox_inches='tight', dpi=600); plt.close(fig)
 
 
@@ -172,21 +203,30 @@ def fig3():
     # (a) effort curve
     b = fig.add_subplot(gs[:, 0])
     cu = pd.read_csv(IMP / 'P1_curva_esfuerzo.csv')
-    b.plot(cu.agregado_km2 / 1e3, cu.F02 * 100, color='#08306b', lw=1.4)
     P = CIFRAS['implicaciones']['P1_curva']
-    # labels say "of Peru with a protected analogue" so 80% and 90% are not read as protected shares (30% target)
-    for k, lab in (('alcanza_mediana_nula', 'Null median'), ('alcanza_F02_80', '80% of Peru with a\nprotected analogue'),
-                   ('alcanza_F02_90', '90% of Peru with a\nprotected analogue')):
+    # the same greedy sequence read with other cut-offs x (P1_umbral_curva.csv, Table S24): F(x) and its 90% point
+    uc = pd.read_csv(IMP / 'P1_umbral_curva.csv')
+    um = {r['umbral']: r['km2_90'] for r in json.loads((IMP / 'P1_umbral_esfuerzo.json').read_text(encoding='utf-8'))['filas']}
+    # blue (share with a protected analogue), one lightness and dash per cut-off; 0.2, the cut-off of the paper, in black
+    for x_, col, lw, ls in ((.15, '#1d3f66', 1.1, (0, (5, 1.6))), (.2, '#1f1f1d', 1.5, '-'), (.25, '#3f7fc4', 1.1, (0, (5, 1.4, 1, 1.4))),
+                            (.3, '#86b0e0', 1.3, (0, (1.2, 1.2)))):
+        f = uc[f'F{x_}'] * 100
+        k90 = um[x_]
+        b.plot(uc.agregado_km2 / 1e3, f, color=col, lw=lw, ls=ls, label=f'x = {x_:g} · 90% at +{en(k90)} km²', zorder=2 + (x_ == .2))
+        b.plot(k90 / 1e3, 90, 'o', ms=3.6, mfc='white', mec=col, mew=1, zorder=4)
+    assert np.allclose(uc['F0.2'][:len(cu)], cu.F02)   # the same greedy sequence as P1_curva_esfuerzo.csv, continued
+    b.axhline(90, color='#bdbcb6', lw=.5, ls=':', zorder=1)
+    for k, lab in (('alcanza_mediana_nula', 'Null median $\\bar{D}$'), ('alcanza_F02_80', '80% of Peru with a\nprotected analogue')):
         x = P[k]['agregado_km2']; yv = np.interp(x, cu.agregado_km2, cu.F02) * 100
-        b.plot(x / 1e3, yv, 'o', ms=4, color='#a50f15', zorder=3)
-        if k == 'alcanza_F02_90':   # below the curve, joined to its point, so the text does not cross the line
-            b.annotate(f'{lab}\n+{en(x)} km²', (x / 1e3, yv), xytext=(43.5, 84.6), textcoords='data', fontsize=5.6,
-                       ha='right', va='top', arrowprops=dict(arrowstyle='-', color='#8a8986', lw=.4, shrinkA=0, shrinkB=3))
-        else:
-            b.annotate(f'{lab}\n+{en(x)} km²', (x / 1e3, yv), xytext=(5, -24 if k == 'alcanza_F02_80' else -16),
-                       textcoords='offset points', fontsize=5.6, ha='left')
-    b.set_xlim(0, 44); b.set_ylim(68, 92); _ejes(b)
-    b.set_xlabel('Natural surface added (thousand km²)', fontsize=6.4); b.set_ylabel('Territory at $d_{\\mathrm{min}}$ ≤ 0.2 (%)', fontsize=6.4)
+        b.plot(x / 1e3, yv, 'o', ms=3.6, color='#1f1f1d', zorder=4)
+        # labels in the empty lower right, joined to their points, so no text crosses the curves of the other cut-offs
+        b.annotate(f'{lab}\n+{en(x)} km²', (x / 1e3, yv), xytext=(58, 77 if k == 'alcanza_F02_80' else 72), textcoords='data',
+                   fontsize=5.6, ha='left', va='top', arrowprops=dict(arrowstyle='-', color='#8a8986', lw=.4, shrinkA=0, shrinkB=3))
+    b.legend(title='Cut-off x of a protected analogue', title_fontsize=5.6, fontsize=5.5, frameon=False, loc='lower right',
+             handlelength=2.6, labelspacing=.35, alignment='left')
+    b.set_xlim(0, 112); b.set_ylim(58, 93); _ejes(b)
+    b.set_xlabel('Natural surface added (thousand km²)', fontsize=6.4)
+    b.set_ylabel('Territory at $d_{\\mathrm{min}}$ ≤ x, with a protected analogue (%)', fontsize=6.4)
     tot, prot = P['continental_km2'], CIFRAS['implicaciones']['P1_umbral']['protegido_exacto_km2']  # exact area of the PAs, not their footprint
     top = b.secondary_xaxis('top', functions=(lambda x: (prot + x * 1e3) / tot * 100, lambda p: (p * tot / 100 - prot) / 1e3))
     top.set_xlabel('Protected share of the territory (%)', fontsize=6); top.tick_params(labelsize=6, length=2)
@@ -202,8 +242,8 @@ def fig3():
     for i, e in enumerate(eco):
         r = m.loc[ECO_ES[e]]
         anp = r.cubierta_solo_ANP_km2 / r.cubierta_red_km2 * 100
-        c.barh(i, anp, color='#6baed6', ec='#8a8986', lw=.3, height=.62, label='National (ANP)' if i == 0 else None)
-        c.barh(i, 100 - anp, left=anp, color='#fd8d3c', ec='#8a8986', lw=.3, height=.62,
+        c.barh(i, anp, color=VERDE, ec='#8a8986', lw=.3, height=.62, label='National (ANP)' if i == 0 else None)
+        c.barh(i, 100 - anp, left=anp, color=VERDE_CLARO, ec='#8a8986', lw=.3, height=.62,
                label='Only regional or private (ACR, ACP)' if i == 0 else None)
         c.text(101, i, f'{100 - anp:.0f}%', va='center', fontsize=5.8)
     c.set_yticks(range(len(eco))); c.set_yticklabels([ECO_EN[e].replace('High jungle (Yungas)', 'Yungas') for e in eco], fontsize=6)
@@ -216,13 +256,13 @@ def fig3():
     t = pd.read_csv(IMP / 'P3_dejando_una_fuera.csv')
     quien = [('(ninguna)', 'Full network'), ('NAC_RN16', 'without Nazca Ridge'), ('NAC_RN13', 'without Guano Islands'),
              ('NAC_RN03', 'without Paracas'), ('NAC_RN18', 'without Mar Tropical de Grau')]
-    for j, (capa, col) in enumerate((('superficie', '#4292c6'), ('fondo', '#084594'))):
+    for j, (capa, col) in enumerate((('superficie', ANALOGO[1]), ('fondo', ANALOGO[0]))):   # blue: share with an analogue
         vals = [t[(t.capa == capa) & (t.fuera == q)].F02_todo.iloc[0] * 100 for q, _ in quien]
         dd.barh(np.arange(len(quien)) + (j - .5) * .36, vals, height=.34, color=col, label={'superficie': 'Sea surface', 'fondo': 'Seafloor'}[capa])
         for i, vv in enumerate(vals):
             dd.text(vv + 1, i + (j - .5) * .36, f'{vv:.1f}', va='center', fontsize=5.4)
     dd.set_yticks(range(len(quien))); dd.set_yticklabels([l for _, l in quien], fontsize=6); dd.invert_yaxis()
-    dd.set_xlim(0, 92); dd.set_xticks(range(0, 81, 20)); _ejes(dd); dd.set_xlabel('Sea at $d_{\\mathrm{min}}$ ≤ 0.2 (%)', fontsize=6.4)
+    dd.set_xlim(0, 92); dd.set_xticks(range(0, 81, 20)); _ejes(dd); dd.set_xlabel('Whole sea at $d_{\\mathrm{min}}$ ≤ 0.2, protected surface included (%)', fontsize=6.4)
     dd.legend(fontsize=5.6, frameon=False, ncol=2, loc='upper left', bbox_to_anchor=(-.02, -.32), handlelength=1.2)   # as in (b)
     _titulo(dd, '(c) Maritime representation, leaving one area out')
     fig.savefig(DST / 'Fig3_how_much_and_who.png', bbox_inches='tight', dpi=600); plt.close(fig)
@@ -231,9 +271,13 @@ def fig3():
 # ======================================================================== Fig. 4 and its table
 N_AZAR = 999
 RND = f'Random natural microbasins (median of {N_AZAR})'
-ESC = {'B': ('Species only', '#7b3294'), 'C17': ('Species + climate', '#e66101'), 'D17': ('Climate only', '#2c7fb8')}
-META_COL = {'alcanza_mediana_nula': '#000000', 'alcanza_F02_80': '#3d3d3d', 'alcanza_F02_90': '#7a7a7a'}   # greedy units by first target
-GAP_NAT, GAP_TRANS, PROT = '#f6e3da', '#e6e4de', '#d9eef5'
+# plans: no green (protected), blue-grey or magenta (analogue, gaps) of the maps
+ESC = {'B': ('Species only', '#8c510a'), 'C17': ('Species + climate', '#e66101'), 'D17': ('Climate only', '#2c7fb8')}
+GAP_NAT, GAP_TRANS, PROT = '#efcfe1', '#d3d1ca', '#cfe6d8'
+ENGROSAR = 2   # chosen microbasins drawn with a margin of 2 pixels (≈2 km) so that small units stay visible in print
+VARIANTES = [('Species, gaps only (A)', 'D', True), ('Species only, flat 17% targets', 's', True),
+             ('Species only, flat 30% targets', '^', False)]
+SENS = PRI /('sensibilidad_metas.csv' if (PRI / 'sensibilidad_metas.csv').exists() else 'sensibilidad_M4.csv')  # sensibilidad_especies.py
 
 
 def _logro(via, elegidas):
@@ -278,6 +322,13 @@ def tabla_prioritizacion():
             filas.append({'budget_km2': b, 'set': {'A': 'Species, gaps only (A)', 'B': 'Species only (B)',
                                                    'C17': 'Species + climate (C)', 'D17': 'Climate only (D)'}[esc],
                           'D': r.D, 'F02': r.F02, 'share_closed': cierre(r.D), 'species_mean_target': lg, 'species_full_targets': mg})
+        # species only with flat targets (Table S12), scored on the range-size-scaled targets like every other set
+        s4 = pd.read_csv(SENS); s4 = s4[s4.presupuesto == k].set_index('escenario')
+        for esc, lab in (('B17f', 'Species only, flat 17% targets'), ('B30f', 'Species only, flat 30% targets')):
+            r = s4.loc[esc]
+            assert abs(cierre(r.D) - r.clima_D_pct_voraz) < .5, esc
+            filas.append({'budget_km2': b, 'set': lab, 'D': r.D, 'F02': r.F02, 'share_closed': cierre(r.D),
+                          'species_mean_target': r.especies_rodrigues_pct / 100})
     t = pd.DataFrame(filas)
     t.attrs['inicio'] = _logro('todo', [])[0]
     return t
@@ -307,6 +358,12 @@ def fig4():
             ax.scatter(r.species_mean_target * 100, r.share_closed, s=sz, marker=mk, color=col, zorder=3, label=lab)
             ax.annotate(f'{r.share_closed:.0f}%', (r.species_mean_target * 100, r.share_closed), xytext=(5, 2),
                         textcoords='offset points', fontsize=5.6, color=col)
+        for nombre, mk, izq in VARIANTES:   # the other species-only rules, open symbols; labels left or right of the symbol
+            r = sub.loc[nombre]
+            ax.scatter(r.species_mean_target * 100, r.share_closed, s=24, marker=mk, facecolor='white', edgecolor=ESC['B'][1],
+                       lw=.9, zorder=3)
+            ax.annotate(f'{r.share_closed:.0f}%', (r.species_mean_target * 100, r.share_closed), xytext=(-5 if izq else 5, 0),
+                        textcoords='offset points', fontsize=5.4, color=ESC['B'][1], ha='right' if izq else 'left', va='center')
         ax.axvline(ini * 100, color='#bdbcb6', lw=.7, ls=':')
         ax.text(ini * 100 + .6, 4, 'current\nnetwork', fontsize=5.4, color='#77766f')
         ax.set_xlim(14, 64); ax.set_ylim(0, 108); _ejes(ax)
@@ -316,6 +373,9 @@ def fig4():
         if k == 1:   # legend under (b), two columns: the plans in the order of the maps, then the random sets
             pt = lambda lab, col, mk, sz: Line2D([], [], ls='', marker=mk, color=col, markersize=sz ** .5 * .9, label=lab)  # noqa: E731
             h = [pt(*v) for v in est.values()]
+            h += [Line2D([], [], ls='', marker=mk, mfc='white', mec=ESC['B'][1], mew=.9, markersize=4.4,
+                         label={'D': 'Species only, within gaps', 's': 'Species only, flat 17% targets',
+                                '^': 'Species only, flat 30% targets'}[mk]) for _, mk, _ in VARIANTES]
             h.append(Patch(facecolor=to_rgba(GRIS, .45), edgecolor=GRIS, lw=.6, label='Random microbasins (95% interval)'))
             ax.legend(handles=h, ncol=2, fontsize=5.6, frameon=False, loc='upper center', bbox_to_anchor=(.5, -.17),
                       handletextpad=.4, columnspacing=1.6, labelspacing=.45, handlelength=1.1, borderaxespad=0)
@@ -327,39 +387,36 @@ def fig4():
     fondo = np.where((v >= 1) & (v <= 4), 0., np.where(v == 5, 1., np.nan))
     tabla = pd.read_csv(PRI / 'entrada/pu_todo.csv'); tabla = tabla[tabla.id > 0]
     cu = pd.read_csv(IMP / 'P1_curva_esfuerzo.csv').dropna(subset=['unidad'])
+    from scipy.ndimage import binary_dilation
     P = CIFRAS['implicaciones']['P1_curva']
-    greedy = np.full(pu.size, np.nan, np.float32)   # each greedy unit coloured by the first target it serves
-    for j, kk in enumerate(('alcanza_F02_90', 'alcanza_F02_80', 'alcanza_mediana_nula')):
-        hy = cu[cu.agregado_km2 <= P[kk]['agregado_km2'] * 1.0001].unidad.astype('int64')
-        greedy[cand & np.isin(pu, tabla[tabla.hybas_id.isin(hy)].id)] = 2 - j
-    sel = {}
+    hy = cu[cu.agregado_km2 <= P['alcanza_F02_90']['agregado_km2'] * 1.0001].unidad.astype('int64')
+    sel = {'greedy': cand & np.isin(pu, tabla[tabla.hybas_id.isin(hy)].id)}   # the 223 potential sites
     for esc in ('D17', 'C17', 'B'):
         s = pd.read_csv(PRI / f'solucion_{esc}_41k.csv'); sel[esc] = cand & np.isin(pu, s.loc[(s.solution_1 == 1) & (s.id > 0), 'id'])
     union = shapely.union_all(list(base.shapes.values()))
     km2 = base.area / 1e6
     ground = ListedColormap([SIN_DATO, '#ffffff']); ground.set_bad((0, 0, 0, 0))
     gapcm = ListedColormap([GAP_NAT, GAP_TRANS]); gapcm.set_bad((0, 0, 0, 0))
-    paneles = [('(c) Greedy benchmark (p-median)', greedy, ListedColormap(list(META_COL.values()))),
-               *[(f'({l}) {ESC[e][0]} ({n})', np.where(sel[e], 0., np.nan), ListedColormap([ESC[e][1]]))
-                 for l, e, n in (('d', 'D17', 'D'), ('e', 'C17', 'C'), ('f', 'B', 'B'))]]
-    for i, (tit, val, cm) in enumerate(paneles):
+    paneles = [('(c) Greedy benchmark (p-median)', 'greedy', '#1f1f1d'),
+               *[(f'({l}) {ESC[e][0]} ({n})', e, ESC[e][1]) for l, e, n in (('d', 'D17', 'D'), ('e', 'C17', 'C'), ('f', 'B', 'B'))]]
+    for i, (tit, e, col) in enumerate(paneles):
         ax = fig.add_subplot(gs[i // 2, 1 + i % 2])
-        cm.set_bad((0, 0, 0, 0))
         ax.imshow(base.domain, cmap=ground, vmin=0, vmax=1, extent=base.extent, interpolation='nearest', zorder=1)
         ax.imshow(fondo, cmap=gapcm, vmin=-.5, vmax=1.5, extent=base.extent, interpolation='nearest', zorder=2)
         relleno(ax, union, facecolor=PROT, edgecolor='none', zorder=3)
-        ax.imshow(base.raster(val), cmap=cm, vmin=-.5, vmax=cm.N - .5, extent=base.extent, interpolation='nearest', zorder=4)
+        img = binary_dilation(base.raster(sel[e].astype(np.float32), fill=0) > 0, iterations=ENGROSAR)
+        ax.imshow(np.where(img, 0., np.nan), cmap=ListedColormap([col]), vmin=-.5, vmax=.5, extent=base.extent,
+                  interpolation='nearest', zorder=4)
         contorno(ax, base.outline, color='#6b6b66', lw=.4, zorder=5)
         ax.set_aspect(1 / np.cos(np.deg2rad(-9.2))); ax.set_axis_off()
-        enVacio = np.isfinite(val) & cel['vacio']
-        ax.text(.02, .03, f'{km2[enVacio].sum() / km2[np.isfinite(val)].sum() * 100:.0f}% of its area\nin climatic gaps',
+        enVacio = sel[e] & cel['vacio']   # share measured on the units themselves, not on their drawn margin
+        ax.text(.02, .03, f'{km2[enVacio].sum() / km2[sel[e]].sum() * 100:.0f}% of its area\nin climatic gaps',
                 transform=ax.transAxes, ha='left', va='bottom', fontsize=5.6, color='#55554f')
         _titulo(ax, tit)
-    h = [Patch(fc=c, label='Greedy unit, first target: ' + l) for c, l in zip(META_COL.values(),
-         ('null-median $\\bar{D}$', '80% at $d_{\\mathrm{min}}$ ≤ 0.2', '90% at $d_{\\mathrm{min}}$ ≤ 0.2'))]
-    h += [Patch(fc=GAP_NAT, ec='#bdbdb5', lw=.4, label='Climatic gap on natural land'),
-          Patch(fc=GAP_TRANS, ec='#bdbdb5', lw=.4, label='Climatic gap on transformed land'),
-          Patch(fc=PROT, label='Protected-area network')]
+    h = [Patch(fc='#1f1f1d', label='Microbasins chosen by each plan'),
+         Patch(fc=GAP_NAT, ec='#bdbdb5', lw=.4, label='Climatic gap on natural land'),
+         Patch(fc=GAP_TRANS, ec='#bdbdb5', lw=.4, label='Climatic gap on transformed land'),
+         Patch(fc=PROT, ec='#bdbdb5', lw=.4, label='Protected-area network')]
     fig.legend(handles=h, ncol=2, fontsize=5.6, frameon=False, loc='upper center', bbox_to_anchor=(.68, .06),
                handlelength=1.2, columnspacing=1.6, labelspacing=.35)
     fig.savefig(DST / 'Fig4_where_to_expand.png', bbox_inches='tight', dpi=600); plt.close(fig)

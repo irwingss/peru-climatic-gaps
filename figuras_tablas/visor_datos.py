@@ -14,12 +14,11 @@ from figuras_comun import *  # noqa: F401,F403  (shared constants, canvases and 
 DST = REPO / 'docs' / 'capas'
 RES = RAIZ / 'resultados_v7'
 PRI = REPO / 'data' / 'prioritization'
-VERDE = '#23745B'   # protected, as in the graphical abstract and the species maps
 
 # palette index: 0 transparent, 1 no climate data, 2-7 d classes, 8 d > 1, 9 protected (d = 0)
-PAL_D = [('#000000', 0), (SIN_DATO, .8)] + [(c, a) for c, a, _ in CLASES_D] + [('#ffffff', .55), (VERDE, .9)]
+PAL_D = [('#000000', 0), (SIN_DATO, .8)] + [(c, a) for c, a, _ in CLASES_D] + [(VACIO[3], 1), (VERDE, .9)]   # colours of the figures (figuras_comun.py)
 # gap classes 1-4 on natural land, 5 on transformed land (background of the maps of Fig. 4)
-PAL_V = [('#000000', 0), ('#fb6a4a', 1), ('#fcae91', 1), ('#fde0d2', 1), ('#fff5f0', 1), ('#c9c8c2', .9)]
+PAL_V = [('#000000', 0)] + [(c, 1) for c in VACIO] + [('#d3d1ca', .9)]
 
 
 def png(idx, aff, pal, path):
@@ -180,6 +179,6 @@ if __name__ == '__main__':
     DST.mkdir(parents=True, exist_ok=True)
     indice = {'clases_d': [{'color': c, 'alfa': a, 'label': f'{corto(lo)}–{corto(hi)} · {t}'}
                            for (c, a, t), lo, hi in zip(CLASES_D, CORTES_D[:-1], CORTES_D[1:])],
-              'verde': VERDE, 'capas': figuras(), 'areas': atlas()}
+              'verde': VERDE, 'mas_1': VACIO[3], 'vacio': VACIO, 'capas': figuras(), 'areas': atlas()}
     (DST / 'indice.json').write_text(json.dumps(indice, ensure_ascii=False, separators=(',', ':')), encoding='utf-8')
     print('areas', len(indice['areas']))

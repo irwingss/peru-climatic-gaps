@@ -88,7 +88,7 @@ y = entrada(1, 'Maritime climate', `Bio-ORACLE v3.0, 2000–2019\n0.05° pixels 
 pila([DATA.mar1, DATA.mar2, DATA.mar3], x1 + 8, y + 20, 44, 54, 14, 8);
 y = entrada(2, 'Protected areas', `Official cadastre, SERNANP\n(October 2026), ${N.areas} areas,\n${N.modalidades_n[0]} ANP, ${N.modalidades_n[1]} ACR and ${N.modalidades_n[2]} ACP;\n${N.areas_tierra} with continental and\n${N.areas_mar} with maritime surface`);
 img(DATA.areas, x1 + 6, y + 6, 86, 102);
-[['ANP', '#1b7837'], ['ACR', '#2a78d6'], ['ACP', '#d65a8a']].forEach(([t, c], i) => {
+[['ANP', '#23745B'], ['ACR', '#5c9f80'], ['ACP', '#b5dcc4']].forEach(([t, c], i) => {
   el('rect', {x: tx + i * 40, y: y + 94, width: 8, height: 8, fill: c}); T(tx + 11 + i * 40, y + 101, t, 7);
 });
 y = entrada(3, 'Strata and boundaries', 'MINAM (2017) ecoregions, 9\ncontinental and 2 marine\nShelf, slope and deep floor\n(Bio-ORACLE bathymetry)\nDepartments (INEI); elevation\n(WorldClim 2.1) to describe\nthe gaps');
@@ -127,7 +127,7 @@ titulo(x2 + 12, 306, 'Analogue search and network statistics');
 T(x2 + 12, 322, 'd_{j}(c) = min_{r ∈ Ej} d(c, r), from pixel c to the most\nsimilar of all the pixels E_{j} of protected area j\n(exact nearest neighbour, k-d tree)\nd_{min}(c) = min_{j} d_{j}(c), to the most similar protected\nclimate, for every pixel of land, surface and seafloor');
 txt(x2 + 12, 382, '**Reading scale of d** (continental medians; Fig. S4)', {size: 7.4, fill: INK});
 const bx = escala(0, 1.1, x2 + 16, x2 + w2 - 16), by = 406, cortes = [0, .05, .1, .2, .3, .5, 1, 1.1];
-const cls = DATA.d_classes.concat([['#ffffff', 1, '']]);
+const cls = DATA.d_classes.concat([[DATA.d_mas_1, 1, '']]);
 cortes.slice(0, -1).forEach((c, i) => el('rect', {x: bx(c), y: by - 6, width: bx(cortes[i + 1]) - bx(c), height: 12, fill: cls[i][0], 'fill-opacity': cls[i][1]}));
 el('rect', {x: bx(0), y: by - 6, width: bx(1.1) - bx(0), height: 12, fill: 'none', stroke: '#c9c8c2', 'stroke-width': .6});
 [[.05, 'neighbouring pixels (0.05)', by - 12, 'start', -3], [1.02, 'random pairs (1.02)', by - 12, 'end', 3],
@@ -230,28 +230,28 @@ bloque(438, 538, 'Tiers and maritime areas',
   `d_{min} recomputed with **ANP, ACR or ACP** alone; surface at\nd_{min} ≤ 0.2 provided only by ACR or ACP, by ecoregion\nand department, and the modality that provides each\nprotected analogue. At sea, **D̄** and **F(0.2)** recomputed\nleaving out each maritime area in turn`,
   `ACR and ACP add ${n0(N.solo_ACR_ACP)} km² of analogues`,
   `F(0.2) of the territory ${n1(N.F02_ANP)}% with ANP alone and\n${n1(N.F02_red)}% with the whole network; without the Nazca\nRidge, ${n1(N.nazca[0])}% → ${n1(N.nazca[1])}% at the surface and ${n1(N.nazca[2])}% →\n${n1(N.nazca[3])}% on the seafloor`,
-  'Fig. 3c, d · Tables S15–S16');
+  'Fig. 3b, c · Tables S15–S16');
 {
   const eco = {BTA: 'Amazonian', SAL: 'Yungas', PUN: 'Puna', SES: 'Steppe', BSE: 'Dry forest', DCP: 'Desert'}, b0 = mx + 46, bw = 54;
   DATA.modalidades.forEach(([e, v], i) => {
     const yy = 459 + i * 10;
     T(b0 - 3, yy + 6.3, eco[e], 5.9, SOFT, {anchor: 'end'});
-    el('rect', {x: b0, y: yy, width: bw * (100 - v) / 100, height: 7.4, fill: '#6baed6'});
-    el('rect', {x: b0 + bw * (100 - v) / 100, y: yy, width: bw * v / 100, height: 7.4, fill: '#fd8d3c'});
+    el('rect', {x: b0, y: yy, width: bw * (100 - v) / 100, height: 7.4, fill: '#23745B'});
+    el('rect', {x: b0 + bw * (100 - v) / 100, y: yy, width: bw * v / 100, height: 7.4, fill: '#a9d4bd'});
     T(b0 + bw + 3, yy + 6.3, kpct(v), 5.8, SOFT);
   });
-  el('rect', {x: mx + 2, y: 522, width: 7, height: 6, fill: '#6baed6'}); T(mx + 12, 527.5, 'ANP', 5.8);
-  el('rect', {x: mx + 32, y: 522, width: 7, height: 6, fill: '#fd8d3c'}); T(mx + 42, 527.5, 'only ACR or ACP', 5.8);
+  el('rect', {x: mx + 2, y: 522, width: 7, height: 6, fill: '#23745B'}); T(mx + 12, 527.5, 'ANP', 5.8);
+  el('rect', {x: mx + 32, y: 522, width: 7, height: 6, fill: '#a9d4bd'}); T(mx + 42, 527.5, 'only ACR or ACP', 5.8);
 }
 bloque(538, 638, 'Expansion effort',
   `Lazy greedy p-median that adds, one at a time, the micro-\nbasin of **natural land** that most reduces **D̄** (${n0(N.candidatas)}\ncandidates), read at the null-median D̄ and at 80% and 90%\nof the territory at d_{min} ≤ 0.2; chosen microbasins merged\ninto potential sites; checked on all ${n0(N.pix_tierra)} pixels`,
   `${n0(N.metas[2][0])} km² bring 90% of Peru to d_{min} ≤ 0.2`,
   `${n0(N.metas[0][0])} km² (${N.metas[0][1]} microbasins) match the null median\nand ${n0(N.metas[1][0])} km² (${N.metas[1][1]}) reach 80%; ${N.metas[2][1]} microbasins\nform ${N.sitios} potential sites, ${kpct(100 * N.metas[2][0] / N.falta_30)} of the ${n0(N.falta_30)} km²\nstill needed to protect 30%`,
-  'Fig. 3a, b · Tables S14, S24 · potential sites (repository)');
+  'Figs. 3a, 4c · Tables S14, S24 · potential sites (repository)');
 {
   const E = DATA.esfuerzo, ex = mx + 22, ey = 557, ew = 98, eh = 52;
   const sx = escala(0, 44, ex, ex + ew), sy = escala(68, 92, ey + eh, ey);
-  el('path', {d: 'M' + E.map(([a, f]) => [sx(a), sy(f)].join(',')).join(' L'), fill: 'none', stroke: '#08306b', 'stroke-width': 1.4});
+  el('path', {d: 'M' + E.map(([a, f]) => [sx(a), sy(f)].join(',')).join(' L'), fill: 'none', stroke: '#1f1f1d', 'stroke-width': 1.4});
   N.metas.forEach(([a]) => {
     let k = E.findIndex(p => p[0] >= a / 1e3 - 1e-6); if (k < 0) k = E.length - 1;
     el('circle', {cx: sx(E[k][0]), cy: sy(E[k][1]), r: 2.3, fill: RED});
@@ -274,7 +274,7 @@ bloque(672, 777, 'Prioritization plans',
   'Fig. 4 · Tables S11–S13');
 {
   const b0 = mx + 58, bw = 48;
-  [['Species only', 'B', SPEC], ['Random', 'azar', '#9a9993'], ['Climate only', 'D', '#2c7fb8'], ['Species + climate', 'C', '#e66101']].forEach(([lab, k, col], i) => {
+  [['Species only', 'B', '#8c510a'], ['Random', 'azar', '#9a9993'], ['Climate only', 'D', '#2c7fb8'], ['Species + climate', 'C', '#e66101']].forEach(([lab, k, col], i) => {
     const yy = 692 + i * 11, v = N.clima_41k[k];
     T(b0 - 3, yy + 6.5, lab, 5.9, SOFT, {anchor: 'end'});
     el('rect', {x: b0, y: yy, width: bw * v / 100, height: 8, fill: col});

@@ -33,8 +33,8 @@ def mapa_atlas(ax, base, u, d, geometry, km_01, km_02, linea2, nota, aviso=None,
             transform=ax.transAxes, fontsize=7, color='#55554f', va='bottom', ha='left')
     if aviso:
         ax.text(.02, .03, aviso, transform=ax.transAxes, fontsize=7.5, color='#1f1f1d', va='bottom', ha='left',
-                bbox=dict(boxstyle='round,pad=.5', fc='white', ec=CIAN, lw=.8), zorder=8)
-    ax.legend(handles=leyenda_d([Line2D([], [], color=CIAN, lw=.9, label='Protected area')]),
+                bbox=dict(boxstyle='round,pad=.5', fc='white', ec=VERDE, lw=.8), zorder=8)
+    ax.legend(handles=leyenda_d([Patch(facecolor=VERDE, edgecolor=VERDE_OSCURO, lw=.6, label='Protected area')]),
               title='Mahalanobis distance d', title_fontsize=7.5, fontsize=7, loc='upper left',
               bbox_to_anchor=(1.0, .62), frameon=False, alignment='left')
     ax.text(0, -.005, nota, transform=ax.transAxes, fontsize=6, color='#55554f', va='top', ha='left')
@@ -130,8 +130,9 @@ def docx():
             'areas with a maritime component for the sea surface and for the seafloor (maps S2.259 to S2.270).')
     parrafo('Each map shows, for each pixel of the domain, the Mahalanobis distance d to the most similar climate within the '
             'protected area, with the seven fixed classes used in the manuscript (0–0.05, nearly identical; 0.05–0.1, very '
-            'similar; 0.1–0.2, similar; 0.2–0.3, moderate; 0.3–0.5, weak; 0.5–1, low similarity; > 1, not analogous). The cyan '
-            'outline marks the protected area (a cyan circle, the areas too small to be seen at the national scale). The subtitle '
+            'similar; 0.1–0.2, similar; 0.2–0.3, moderate; 0.3–0.5, weak; 0.5–1, low similarity; > 1, not analogous), in blue up '
+            'to 0.2 and in magenta beyond it. The protected area is shown in green with a dark green outline (a dark green '
+            'circle marks the areas too small to be seen at the national scale). The subtitle '
             'gives the modality, the area with data, the number of pixels, the surface outside the area at d ≤ 0.1 and at '
             'd ≤ 0.2 and the dominant ecoregion (Ministerio del Ambiente [MINAM], 2017) or, in the maritime domain, the layer and '
             'the sea-surface ecoregions or the seafloor depth strata of the protected area.')

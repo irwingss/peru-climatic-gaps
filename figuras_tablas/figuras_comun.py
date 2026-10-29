@@ -51,10 +51,15 @@ CAT_EN = {'Bosque de Protección': 'Protection Forest', 'Coto de Caza': 'Hunting
 CAT_ES = {'Reserva Paisajistica': 'Reserva Paisajística'}
 MOD_EN = {'NACIONAL': 'National administration (ANP)', 'REGIONAL': 'Regional administration (ACR)',
           'PRIVADA': 'Private (ACP)'}
-# d classes defined by the authors; d > 1 transparent (not analogous)
+# One meaning per colour in every figure, the atlas and the viewer (the authors' species-map palette): green = protected,
+# blue = protected analogue (d <= 0.2, darker = more similar), magenta = beyond 0.2 (darker = farther)
+VERDE, VERDE_CLARO, VERDE_OSCURO = '#23745B', '#a9d4bd', '#123d30'
+ANALOGO = ['#2f5f93', '#6b93c4', '#b3c9e4']                # d 0–0.05, 0.05–0.1, 0.1–0.2
+VACIO = ['#ecc9e0', '#d394be', '#A64E82', '#6a1d52']       # d 0.2–0.3, 0.3–0.5, 0.5–1, > 1
+# d classes defined by the authors; d > 1 is VACIO[3] ('not analogous')
 CORTES_D = [0, .05, .1, .2, .3, .5, 1.0]
-CLASES_D = [('#5a0010', 1.0, 'nearly identical'), ('#a50f15', 1.0, 'very similar'), ('#de2d26', 1.0, 'similar'),
-            ('#fb6a4a', .55, 'moderate'), ('#fcae91', .35, 'weak'), ('#fde0d2', .25, 'low similarity')]
+CLASES_D = [(ANALOGO[0], 1.0, 'nearly identical'), (ANALOGO[1], 1.0, 'very similar'), (ANALOGO[2], 1.0, 'similar'),
+            (VACIO[0], 1.0, 'moderate'), (VACIO[1], 1.0, 'weak'), (VACIO[2], 1.0, 'low similarity')]
 CIAN, TIERRA_GRIS, SIN_DATO = '#0096c7', '#e4e3df', '#d6d6d2'
 REAL, BANDA, MEDIANA = '#a50f15', '#d6d6d0', '#6f6e69'
 halo = [pe.withStroke(linewidth=2.2, foreground='white')]
@@ -88,15 +93,15 @@ def nombre_es(u):
 
 
 def escala_d():
-    cmap = ListedColormap([to_rgba(c, a) for c, a, _ in CLASES_D]); cmap.set_over((0, 0, 0, 0)); cmap.set_bad((0, 0, 0, 0))
+    cmap = ListedColormap([to_rgba(c, a) for c, a, _ in CLASES_D]); cmap.set_over(VACIO[3]); cmap.set_bad((0, 0, 0, 0))
     return cmap, BoundaryNorm(CORTES_D, len(CLASES_D))
 
 
 def leyenda_d(extra=(), titulo='Mahalanobis distance d'):
     h = [Patch(facecolor=to_rgba(c, a), edgecolor='#bdbdb5', lw=.4, label=f'{corto(lo)}–{corto(hi)} · {t}')
          for (c, a, t), lo, hi in zip(CLASES_D, CORTES_D[:-1], CORTES_D[1:])]
-    h.append(Patch(facecolor='white', edgecolor='#bdbdb5', lw=.4, label='> 1 · not analogous'))
-    return h + list(extra)
+    h.append(Patch(facecolor=VACIO[3], edgecolor='#bdbdb5', lw=.4, label='> 1 · not analogous'))
+    return list(extra) + h
 
 
 def contorno(ax, geometry, **style):
@@ -175,18 +180,20 @@ def fondo_paises(ax, gris=TIERRA_GRIS, borde='#b9b8b2'):
 
 
 def panel_d(ax, base, d, geometry=None, gris_tierra=False, circulo=True):
-    """Distance classes and outline of the protected areas."""
+    """Distance classes; the protected pixels (d = 0) in green, with a dark green outline and, for tiny areas, a circle."""
     cmap, norm = escala_d()
     if gris_tierra:
         fondo_paises(ax)
     ground = ListedColormap([SIN_DATO, '#ffffff']); ground.set_bad((0, 0, 0, 0))
     ax.imshow(base.domain, cmap=ground, vmin=0, vmax=1, extent=base.extent, interpolation='nearest', zorder=2)
     ax.imshow(base.raster(d), cmap=cmap, norm=norm, extent=base.extent, interpolation='nearest', zorder=3)
+    ax.imshow(base.raster(np.where(d == 0, 0., np.nan)), cmap=ListedColormap([VERDE]), vmin=-.5, vmax=.5, extent=base.extent,
+              interpolation='nearest', zorder=3.5)
     contorno(ax, base.outline, color='#6b6b66', lw=.4, zorder=4)
     if geometry is not None and not geometry.is_empty:
-        contorno(ax, geometry, color=CIAN, lw=.9, zorder=6)
+        contorno(ax, geometry, color=VERDE_OSCURO, lw=.6, zorder=6)
         if circulo and geometry.area < .01:
-            ax.plot(geometry.centroid.x, geometry.centroid.y, marker='o', ms=10, mfc='none', mec=CIAN, mew=1.3, zorder=6)
+            ax.plot(geometry.centroid.x, geometry.centroid.y, marker='o', ms=10, mfc='none', mec=VERDE_OSCURO, mew=1.3, zorder=6)
     ax.set_aspect(1 / np.cos(np.deg2rad(-9.2)))
     ax.set_axis_off()
 

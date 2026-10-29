@@ -75,13 +75,13 @@ const fmt = x => x.toLocaleString('en-US').replace(/,/g, ' ');
 const caja = (c, a = 1) => `<span style="background:${c};opacity:${a}"></span>`;
 let I, rasterAtlas, marca;
 
-const SITIOS = { 'N2c null median': '#000000', '80 % at d ≤ 0.2': '#3d3d3d', '90 % at d ≤ 0.2': '#7a7a7a' };   // greys of Fig. 4c
-const PLANES = { D17: ['Climate only (D)', '#2c7fb8', 'd'], C17: ['Species + climate (C)', '#e66101', 'e'], B: ['Species only (B)', '#7b3294', 'f'] };   // order and panels of Fig. 4
+const SITIOS = { 'N2c null median': '#000000', '80 % at d ≤ 0.2': '#3d3d3d', '90 % at d ≤ 0.2': '#7a7a7a' };   // first target of each site (Fig. 4c draws all sites in one colour)
+const PLANES = { D17: ['Climate only (D)', '#2c7fb8', 'd'], C17: ['Species + climate (C)', '#e66101', 'e'], B: ['Species only (B)', '#8c510a', 'f'] };   // order and panels of Fig. 4
 
 fetch('capas/indice.json').then(r => r.json()).then(indice => {
   I = indice;
   const dLeg = I.clases_d.map(c => `<div>${caja(c.color, c.alfa)}${c.label}</div>`).join('');
-  $('leyenda-d').innerHTML = `<div style="margin-top:6px">Mahalanobis distance d</div>${dLeg}<div>${caja(I.verde)}the protected area itself (d = 0)</div>`;
+  $('leyenda-d').innerHTML = `<div style="margin-top:6px">Mahalanobis distance d</div>${dLeg}<div>${caja(I.mas_1)}> 1 · not analogous</div><div>${caja(I.verde)}the protected area itself (d = 0)</div>`;
   I.areas.forEach(a => a.clave = (a.nombre + ' ' + a.id).normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase());
   I.areas.sort((a, b) => a.nombre.localeCompare(b.nombre, 'es', { sensitivity: 'base' }));
   filtrar();
@@ -146,9 +146,9 @@ function construirCapas(dLeg) {
     onEachFeature: (f, l) => l.bindPopup(`<b>Microbasin ${f.properties.pu}</b><br>${fmt(f.properties.km2)} km²<br>Chosen by: ` +
       Object.keys(PLANES).filter(k => f.properties[k]).map(k => PLANES[k][0]).join(', ')),
   });
-  const gapLeg = [['#fb6a4a', '0.2–0.3'], ['#fcae91', '0.3–0.5'], ['#fde0d2', '0.5–1'], ['#fff5f0', '> 1'], ['#c9c8c2', 'gap on transformed land']]
+  const gapLeg = [[I.vacio[0], '0.2–0.3'], [I.vacio[1], '0.3–0.5'], [I.vacio[2], '0.5–1'], [I.vacio[3], '> 1'], ['#d3d1ca', 'gap on transformed land']]
     .map(([c, t]) => `<div>${caja(c)}${t}</div>`).join('');
-  const sinDato = `<div>${caja('#ffffff')}> 1 · not analogous</div><div>${caja(I.verde)}protected-area network</div><div>${caja('#d6d6d2')}no climate data</div>`;
+  const sinDato = `<div>${caja(I.mas_1)}> 1 · not analogous</div><div>${caja(I.verde)}protected-area network</div><div>${caja('#d6d6d2')}no climate data</div>`;
   mapa.createPane('ap').style.zIndex = 450;   // above rasters and vectors, below markers and popups
   const ap = g => () => {   // tiles of one group; on/off is tracked for the click lookup
     const t = L.tileLayer(`capas/ap/${AP[g]}/{z}/{x}/{y}.png`, {
