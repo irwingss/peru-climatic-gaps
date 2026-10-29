@@ -91,6 +91,12 @@
   .sw .muestra { flex: none; width: 14px; height: 14px; border-radius: 4px; }
   .sw .t { flex: 1; }
   .sw .t small { display: block; color: var(--tenue); font-size: 11px; }
+  .sw { position: relative; }
+  .ayuda { flex: none; width: 20px; height: 20px; border-radius: 50%; border: 1px solid #cfd4ce; background: var(--carta); color: var(--gris); font-size: 11px; font-weight: 600; cursor: help; padding: 0; }
+  .ayuda:hover, .ayuda:focus-visible { border-color: var(--acento); color: var(--acento); outline: none; }
+  .tip { display: none; position: absolute; z-index: 900; left: 8px; right: 8px; top: calc(100% + 2px); background: var(--tinta); color: #f2f4f1; font-size: 11.5px; line-height: 1.5; padding: 9px 11px; border-radius: 8px; box-shadow: var(--sombra); pointer-events: none; }
+  .tip b { color: #fff; }
+  .ayuda:hover + .tip, .ayuda:focus + .tip { display: block; }
   .op { display: flex; align-items: center; gap: 10px; font-size: 12px; color: var(--gris); margin-top: 4px; }
   .op input { flex: 1; accent-color: var(--acento); }
   .op output { width: 34px; text-align: right; font-variant-numeric: tabular-nums; }
@@ -330,6 +336,23 @@ const apActivas = new Set();
 const interruptores = {};   // clave -> checkbox of each figure layer
 const capasFig = new Set();   // figure layers on the map, for the opacity slider
 const EXCLUYE = { f1a: ['gaps'], f1b: ['gaps'], f1c: ['gaps'], gaps: ['f1a', 'f1b', 'f1c'] };   // layers that hide each other
+const AP_TIP = 'Drawn from the SERNANP official cadastre (9 Oct 2026). Click an area on the map to see its data and its climate analogues.';
+const PLAN_TIP = 'Like every prioritizr plan: microbasins as units, cost = area, budget 41 347 km².';
+const ESPECIES = 'threatened species (CR, EN, VU) with more than 90 % of their world range in Peru, birds included; each target is a share of the range set by its size';
+const AYUDA = {   // text of the ? next to each switch
+  apANP: 'National protected areas (ANP), run by SERNANP: national parks, reserves, sanctuaries and others. ' + AP_TIP,
+  apACR: 'Regional conservation areas (ACR), created and run by regional governments. ' + AP_TIP,
+  apACP: 'Private conservation areas (ACP), recognized on private or communal land. ' + AP_TIP,
+  f1a: 'For every land pixel, d is the climatic distance to the most similar pixel already protected (regularized Mahalanobis, 11 CHELSA variables). Near 0: the network already holds that climate. Above 0.2: a climatic gap. Above 1: nothing protected resembles it.',
+  f1b: 'The same distance d for the sea surface, with Bio-ORACLE variables at 0.05°. Above 0.2: a climatic gap at the surface.',
+  f1c: 'The same distance d for the seafloor, with Bio-ORACLE seafloor variables, compared within each depth stratum. Above 0.2: a climatic gap on the bottom.',
+  gaps: 'Land with d above 0.2 that is still natural: the network lacks a similar climate there and protection is still possible. Grey: gaps on transformed land (farms, cities), which cannot be added.',
+  sitios: 'A benchmark, not a plan. Microbasins are added one at a time, always the one that most lowers the mean distance of Peru’s climate to the network, until each target is met. The 223 potential sites are those microbasins; the colour says which target each site first helps reach.',
+  planA: `<b>A · Species, gaps only:</b> of each microbasin only the natural, unprotected part that falls inside a climatic gap (d &gt; 0.2) counts. Outside the gaps nothing adds to the target or to the cost. The question: if species are protected, but only in the gaps, how much climate is covered? Species: ${ESPECIES}. ${PLAN_TIP}`,
+  planB: `<b>B · Species only:</b> the whole natural, unprotected part of each microbasin counts, inside a gap or not. The classic plan, species only, blind to climate. Species: ${ESPECIES}. ${PLAN_TIP}`,
+  planC17: `<b>C · Species + climate:</b> the same species targets as B plus a climatic target, 17 % of the area of each of 3 000 climate types (Aichi Target 11). Both must be met with the same area. ${PLAN_TIP}`,
+  planD17: `<b>D · Climate only:</b> only the climatic target, 17 % of each of the 3 000 climate types, no species. Shows how much climate a plan built for climate alone covers with the same area. ${PLAN_TIP}`,
+};
 const apagar = k => { const c = interruptores[k]; if (c?.checked) { c.checked = false; c.dispatchEvent(new Event('change')); } };
 function construirCapas() {
   const raster = k => () => L.imageOverlay('capas/' + I.capas[k].png, I.capas[k].bounds, { opacity: opac(), zIndex: 10 });
@@ -374,7 +397,9 @@ function construirCapas() {
     const div = Object.assign(document.createElement('div'), { className: 'capas-grupo', innerHTML: `<h4>${titulo}</h4>` });
     for (const [clave, nombre, sub, crear, color, ley] of capas) {
       const lab = Object.assign(document.createElement('label'), { className: 'sw',
-        innerHTML: `<input type="checkbox"><span class="muestra" style="background:${color}"></span><span class="t">${nombre}<small>${sub}</small></span>` });
+        innerHTML: `<input type="checkbox"><span class="muestra" style="background:${color}"></span><span class="t">${nombre}<small>${sub}</small></span>` +
+          `<button type="button" class="ayuda" aria-label="What is ${nombre}?">?</button><span class="tip" role="tooltip">${AYUDA[clave]}</span>` });
+      lab.querySelector('.ayuda').addEventListener('click', e => e.preventDefault());   // the ? never toggles the layer
       const chk = lab.querySelector('input');
       interruptores[clave] = chk;
       let capa;
