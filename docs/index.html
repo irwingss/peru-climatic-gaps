@@ -96,7 +96,8 @@
   .ayuda:hover, .ayuda:focus-visible { border-color: var(--acento); color: var(--acento); outline: none; }
   .tip { display: none; position: absolute; z-index: 900; left: 8px; right: 8px; top: calc(100% + 2px); background: var(--tinta); color: #f2f4f1; font-size: 11.5px; line-height: 1.5; padding: 9px 11px; border-radius: 8px; box-shadow: var(--sombra); pointer-events: none; }
   .tip b { color: #fff; }
-  .ayuda:hover + .tip, .ayuda:focus + .tip { display: block; }
+  .ayuda:focus-visible + .tip { display: block; }
+  @media (hover: hover) { .ayuda:hover + .tip { display: block; } }
   .op { display: flex; align-items: center; gap: 10px; font-size: 12px; color: var(--gris); margin-top: 4px; }
   .op input { flex: 1; accent-color: var(--acento); }
   .op output { width: 34px; text-align: right; font-variant-numeric: tabular-nums; }
@@ -128,11 +129,43 @@
   .leaflet-popup-content { margin: 12px 14px; font-size: 12px; line-height: 1.5; }
   .leaflet-control-layers, .leaflet-bar { border: 0 !important; box-shadow: var(--sombra) !important; border-radius: 8px !important; }
 
+  /* collapsible legend */
+  #leyenda .ley-cab { display: flex; width: 100%; align-items: center; justify-content: space-between; border: 0; background: none; padding: 0 0 6px; margin: 0; cursor: pointer; font-size: 10.5px; letter-spacing: .08em; text-transform: uppercase; font-weight: 600; color: var(--tenue); }
+  #leyenda .ley-cab::after { content: "▾"; font-size: 12px; transition: transform .15s; }
+  #leyenda.plegada { width: auto; padding: 6px 12px; }
+  #leyenda.plegada .ley-cab { padding: 0; gap: 8px; }
+  #leyenda.plegada .ley-cab::after { transform: rotate(180deg); }
+  #leyenda.plegada #ley-cuerpo { display: none; }
+  .sw.ver .tip { display: block; }
+
   @media (max-width: 800px) {
-    #app { grid-template-columns: 1fr; grid-template-rows: 55% 45%; }
-    #mapa { grid-row: 1; } #panel { grid-row: 2; border-right: 0; border-top: 1px solid var(--linea); }
-    header { padding: 14px 16px; } header p { display: none; } section { padding: 14px 16px; }
-    #leyenda { width: 200px; bottom: 20px; right: 8px; max-height: calc(100% - 80px); }
+    html, body { height: 100dvh; }
+    #app { grid-template-columns: 1fr; grid-template-rows: 52% 48%; height: 100dvh; }
+    #mapa { grid-row: 1; } #panel { grid-row: 2; border-right: 0; border-top: 1px solid var(--linea); overscroll-behavior: contain; }
+    /* while typing a search the panel takes the whole screen, so the list stays above the keyboard */
+    #app.buscando { grid-template-rows: 0 1fr; }
+    #app.buscando header { display: none; }
+    header { padding: 10px 16px; } header .kicker, header p { display: none; } header h1 { font-size: 16px; margin: 0; }
+    section { padding: 12px 16px; }
+    .combo input { font-size: 16px; padding-top: 10px; padding-bottom: 10px; }   /* 16px: iOS does not zoom on focus */
+    .combo .x { width: 36px; height: 36px; right: 2px; }
+    #lista { max-height: 45dvh; }
+    #lista li[role=option] { padding: 10px 8px; }
+    .chip { padding: 6px 11px; font-size: 13px; }
+    .btn { padding: 9px 12px; font-size: 13px; }
+    .sw { padding: 9px 8px; }
+    .ayuda { width: 28px; height: 28px; font-size: 13px; }
+    .op input { height: 28px; }
+    #leyenda { width: 210px; bottom: 22px; right: 8px; max-height: calc(100% - 90px); padding: 8px 10px; font-size: 11px; }
+    #etiqueta { top: 8px; max-width: calc(100% - 120px); font-size: 11.5px; padding: 6px 12px; }
+    .leaflet-control-attribution { max-width: 100vw; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-size: 9px; }
+    .leaflet-control-attribution.abierta { white-space: normal; }
+    .leaflet-bottom.leaflet-left { bottom: 14px; }   /* scale above the one-line attribution */
+  }
+  @media (max-height: 500px) and (min-width: 801px) {   /* phones in landscape */
+    #app { grid-template-columns: 320px 1fr; }
+    header { padding: 10px 16px; } header .kicker, header p { display: none; } header h1 { font-size: 16px; margin: 0; }
+    #leyenda.plegada, #leyenda { max-height: calc(100% - 60px); }
   }
 </style>
 </head>
@@ -173,7 +206,7 @@
   </aside>
   <main id="mapa">
     <div id="etiqueta" hidden></div>
-    <div id="leyenda" hidden></div>
+    <div id="leyenda" hidden><button type="button" class="ley-cab" id="ley-cab" aria-expanded="true">Legend</button><div id="ley-cuerpo"></div></div>
   </main>
 </div>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
@@ -198,6 +231,7 @@ const esc = s => s.replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&
 const codigo = id => id.replace(/_(superficie|fondo)$/, '');
 const item = (c, t, a = 1) => `<div class="item"><i style="background:${c};opacity:${a}"></i>${t}</div>`;
 const opac = () => +$('opacidad').value;
+const MOVIL = matchMedia('(max-width: 800px)');   // same breakpoint as the CSS
 
 let I, sel = null, rasterAtlas, marca;
 const GRUPOS = { ANP: 'National (ANP)', ACR: 'Regional (ACR)', ACP: 'Private (ACP)' };
@@ -231,9 +265,14 @@ const D_LEY = () => `<div class="rampa">${I.clases_d.map(c => `<i style="backgro
 const leyendas = new Map();   // key -> html, insertion order = display order
 function leyenda(clave, html) {
   html ? leyendas.set(clave, html) : leyendas.delete(clave);
-  $('leyenda').innerHTML = [...leyendas.values()].map(h => `<div class="bloque">${h}</div>`).join('');
+  $('ley-cuerpo').innerHTML = [...leyendas.values()].map(h => `<div class="bloque">${h}</div>`).join('');
   $('leyenda').hidden = !leyendas.size;
 }
+const plegar = si => { $('leyenda').classList.toggle('plegada', si); $('ley-cab').setAttribute('aria-expanded', !si); };
+$('ley-cab').addEventListener('click', () => plegar(!$('leyenda').classList.contains('plegada')));
+L.DomEvent.disableClickPropagation($('leyenda')); L.DomEvent.disableScrollPropagation($('leyenda'));
+if (MOVIL.matches) plegar(true);   // on a phone the legend starts folded so it does not cover the map
+document.querySelector('.leaflet-control-attribution').addEventListener('click', e => e.target.tagName !== 'A' && e.currentTarget.classList.toggle('abierta'));
 
 // ---------- filters as chips with live counts
 function chips() {
@@ -279,7 +318,12 @@ function marcar(i) {
   if (li) { li.setAttribute('aria-selected', 'true'); li.scrollIntoView({ block: 'nearest' }); $('buscar').setAttribute('aria-activedescendant', li.id); }
   else $('buscar').removeAttribute('aria-activedescendant');
 }
-const abrir = si => { $('combo').classList.toggle('abierto', si); $('buscar').setAttribute('aria-expanded', si); };
+const abrir = si => {
+  $('combo').classList.toggle('abierto', si); $('buscar').setAttribute('aria-expanded', si);
+  if ($('app').classList.contains('buscando') === (si && MOVIL.matches)) return;
+  $('app').classList.toggle('buscando', si && MOVIL.matches);   // phone: the panel covers the map while the list is open
+  if (si) $('panel').scrollTop = 0; else mapa.invalidateSize();
+};
 $('buscar').addEventListener('focus', () => { $('buscar').select(); pintarLista(); abrir(true); });
 $('buscar').addEventListener('input', () => { $('combo').classList.toggle('lleno', !!$('buscar').value); pintarLista(); abrir(true); });
 $('buscar').addEventListener('keydown', e => {
@@ -289,7 +333,10 @@ $('buscar').addEventListener('keydown', e => {
   else if (e.key === 'Escape') { abrir(false); sel && ($('buscar').value = sel.nombre); }
 });
 $('lista').addEventListener('mousedown', e => { const li = e.target.closest('[role=option]'); if (li) { e.preventDefault(); elegir(li.dataset.id); } });
-document.addEventListener('mousedown', e => { if (!$('combo').contains(e.target)) { abrir(false); if (sel) $('buscar').value = sel.nombre; } });
+document.addEventListener('mousedown', e => {
+  if (!$('combo').contains(e.target)) { abrir(false); if (sel) $('buscar').value = sel.nombre; }
+});
+document.addEventListener('pointerdown', e => e.target.closest('.ayuda') || document.querySelectorAll('.sw.ver').forEach(s => s.classList.remove('ver')), true);   // capture: Leaflet controls stop propagation
 $('limpiar').addEventListener('click', () => quitar());
 
 // ---------- choosing an area: its analogue map from the atlas goes straight onto the map
@@ -324,6 +371,7 @@ function elegir(id) {
     </div>`;
   $('ir-area').onclick = () => mapa.flyToBounds(a.caja, { padding: [60, 60], maxZoom: 13, duration: .6 });
   $('ir-atlas').onclick = () => elegir(a.id);   // also brings the analogue map back after Fig. 1 hid it
+  if (MOVIL.matches) $('ficha').scrollIntoView({ block: 'nearest' });
 }
 function quitar() {
   sel = null; rasterAtlas && rasterAtlas.remove(); marca && marca.remove(); rasterAtlas = marca = null;
@@ -405,7 +453,12 @@ function construirCapas() {
       const lab = Object.assign(document.createElement('label'), { className: 'sw',
         innerHTML: `<input type="checkbox"><span class="muestra" style="background:${color}"></span><span class="t">${nombre}<small>${sub}</small></span>` +
           `<button type="button" class="ayuda" aria-label="What is ${nombre}?">?</button><span class="tip" role="tooltip">${AYUDA[clave]}</span>` });
-      lab.querySelector('.ayuda').addEventListener('click', e => e.preventDefault());   // the ? never toggles the layer
+      lab.querySelector('.ayuda').addEventListener('click', e => {   // the ? never toggles the layer; a tap shows its text (touch has no hover)
+        e.preventDefault();
+        const ver = !lab.classList.contains('ver');
+        document.querySelectorAll('.sw.ver').forEach(s => s.classList.remove('ver'));
+        lab.classList.toggle('ver', ver);
+      });
       const chk = lab.querySelector('input');
       interruptores[clave] = chk;
       let capa;
