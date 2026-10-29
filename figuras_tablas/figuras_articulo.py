@@ -3,7 +3,8 @@
 Fig. 1  Climatic gaps on land and at sea (dmin maps and coverage by ecoregion).
 Fig. 2  The network against 999 N2c null networks (null D̄ histograms and SES by stratum).
 Fig. 3  How much land, and who sustains current representation: effort curve, role of ACR/ACP and of the Nazca Ridge.
-Fig. 4  Where to expand: climate and species outcomes at equal area, and one map per plan (greedy curve, prioritizr D17, C17, B).
+Fig. 4  Where to expand: climate and species outcomes at equal area, and one map per set of the scatter plots
+        (greedy curve, prioritizr A, B, C17, D17, flat 17% and 30% species targets, median random set).
 Graphical abstract (1328 × 531 px).
 
 python figuras_articulo.py [fig1 fig2 fig3 fig4 ga] [--dst carpeta]   (default: all of them into figures/main)
@@ -277,6 +278,7 @@ GAP_NAT, GAP_TRANS, PROT = '#efcfe1', '#d3d1ca', '#cfe6d8'
 ENGROSAR = 2   # chosen microbasins drawn with a margin of 2 pixels (≈2 km) so that small units stay visible in print
 VARIANTES = [('Species, gaps only (A)', 'D', True), ('Species only, flat 17% targets', 's', True),
              ('Species only, flat 30% targets', '^', False)]
+AZAR_SEED = 20261103   # seed of clima_local/azar_prioritizacion.py (prioritizacion.SEED + 2)
 SENS = PRI /('sensibilidad_metas.csv' if (PRI / 'sensibilidad_metas.csv').exists() else 'sensibilidad_M4.csv')  # sensibilidad_especies.py
 
 
@@ -287,6 +289,25 @@ def _logro(via, elegidas):
     lo = R[R.pu.isin([0, *elegidas])].groupby('species').amount.sum()
     meta = e.meta_especie * e.total_km2; x = e.id.map(lo).fillna(0)
     return float(np.minimum(x / meta, 1).mean()), int((x >= meta * .999).sum())
+
+
+def _azar_mediana(cel, km2):
+    """Replays the N_AZAR random draws of azar_prioritizacion.py (19k then 41k, same seed and pool) and returns the cells of the
+    41k set at the median climatic outcome; the replay is checked against the stored area of that set."""
+    ev = pd.read_csv(PRI / 'evaluacion.csv').set_index('escenario')
+    az = pd.read_csv(PRI / f'azar_{N_AZAR}.csv'); g = az[az.presupuesto == '41k'].set_index('conjunto')
+    pu, cand = cel['pu'], cel['candidato']
+    por = pd.Series(km2[cand]).groupby(pu[cand]).sum(); por = por[por.index > 0]
+    ids, sup_id = por.index.to_numpy(), por.to_numpy()
+    rng = np.random.default_rng(AZAR_SEED); sets = {}
+    for k in ('19k', '41k'):
+        sup = float(ev.loc[f'B_{k}', 'superficie_km2'])
+        for i in range(N_AZAR):
+            o = rng.permutation(len(ids)); sets[k, i] = ids[o[:np.searchsorted(sup_id[o].cumsum(), sup) + 1]]
+    i = int((g.clima_optimo_pct - g.clima_optimo_pct.median()).abs().idxmin())
+    m = cand & np.isin(pu, sets['41k', i])
+    assert abs(km2[m].sum() - g.loc[i, 'superficie_km2']) < 1e-6
+    return m
 
 
 def tabla_prioritizacion():
@@ -337,11 +358,12 @@ def tabla_prioritizacion():
 def fig4():
     t = tabla_prioritizacion(); t.to_csv(DST / 'Fig4_prioritization_table.csv', index=False, float_format='%.6f')
     ini = t.attrs['inicio']
-    fig = plt.figure(figsize=(W2, 7.4))
-    gs = GridSpec(2, 3, figure=fig, width_ratios=[1.12, 1, 1], wspace=.06, hspace=.3)
+    fig = plt.figure(figsize=(W2 * 5.12 / 3.12, 7.4))   # four map columns at the size panels had with two, widened to the right
+    gs = GridSpec(2, 5, figure=fig, width_ratios=[1.12, 1, 1, 1, 1], wspace=.06, hspace=.3)
     est = {'Greedy climate curve (p-median)': ('Greedy benchmark (p-median)', 'black', '*', 70),
-           'Climate only (D)': (*ESC['D17'], 'o', 46), 'Species + climate (C)': (*ESC['C17'], 'o', 46),
-           'Species only (B)': (*ESC['B'], 'o', 46)}
+           'Climate only (D)': ('Climate only (D)', ESC['D17'][1], 'o', 46),
+           'Species + climate (C)': ('Species + climate (C)', ESC['C17'][1], 'o', 46),
+           'Species only (B)': ('Species only (B)', ESC['B'][1], 'o', 46)}
     GRIS = '#9a9993'
     for k, (b, tit) in enumerate(((19000, '(a) 19 000 km² added'), (41347, '(b) 41 347 km² added'))):
         ax = fig.add_subplot(gs[k, 0])
@@ -374,12 +396,12 @@ def fig4():
             pt = lambda lab, col, mk, sz: Line2D([], [], ls='', marker=mk, color=col, markersize=sz ** .5 * .9, label=lab)  # noqa: E731
             h = [pt(*v) for v in est.values()]
             h += [Line2D([], [], ls='', marker=mk, mfc='white', mec=ESC['B'][1], mew=.9, markersize=4.4,
-                         label={'D': 'Species only, within gaps', 's': 'Species only, flat 17% targets',
+                         label={'D': 'Species, gaps only (A)', 's': 'Species only, flat 17% targets',
                                 '^': 'Species only, flat 30% targets'}[mk]) for _, mk, _ in VARIANTES]
             h.append(Patch(facecolor=to_rgba(GRIS, .45), edgecolor=GRIS, lw=.6, label='Random microbasins (95% interval)'))
             ax.legend(handles=h, ncol=2, fontsize=5.6, frameon=False, loc='upper center', bbox_to_anchor=(.5, -.17),
                       handletextpad=.4, columnspacing=1.6, labelspacing=.45, handlelength=1.1, borderaxespad=0)
-    # (c-f) where each plan puts the same 41 347 km², one map each, in the order of their climatic outcome
+    # (c-j) where each set of the scatter plots puts the same 41 347 km², one map each
     base = lienzo(TIERRA)
     cel = np.load(PRI / 'entrada/celdas.npz'); pu = cel['pu']; cand = cel['candidato']
     with rasterio.open(IMP / 'P1_vacios_expandibles.tif') as ds:   # gap classes 1-4 on natural land, 5 on transformed land
@@ -391,16 +413,20 @@ def fig4():
     P = CIFRAS['implicaciones']['P1_curva']
     hy = cu[cu.agregado_km2 <= P['alcanza_F02_90']['agregado_km2'] * 1.0001].unidad.astype('int64')
     sel = {'greedy': cand & np.isin(pu, tabla[tabla.hybas_id.isin(hy)].id)}   # the 223 potential sites
-    for esc in ('D17', 'C17', 'B'):
+    for esc in ('A', 'B', 'C17', 'D17', 'B17f', 'B30f'):
         s = pd.read_csv(PRI / f'solucion_{esc}_41k.csv'); sel[esc] = cand & np.isin(pu, s.loc[(s.solution_1 == 1) & (s.id > 0), 'id'])
-    union = shapely.union_all(list(base.shapes.values()))
+    sel['A'] &= cel['vacio']   # scenario A counts only the gap land of each microbasin
     km2 = base.area / 1e6
+    sel['random'] = _azar_mediana(cel, km2)
+    union = shapely.union_all(list(base.shapes.values()))
     ground = ListedColormap([SIN_DATO, '#ffffff']); ground.set_bad((0, 0, 0, 0))
     gapcm = ListedColormap([GAP_NAT, GAP_TRANS]); gapcm.set_bad((0, 0, 0, 0))
-    paneles = [('(c) Greedy benchmark (p-median)', 'greedy', '#1f1f1d'),
-               *[(f'({l}) {ESC[e][0]} ({n})', e, ESC[e][1]) for l, e, n in (('d', 'D17', 'D'), ('e', 'C17', 'C'), ('f', 'B', 'B'))]]
+    paneles = [('(c) Greedy benchmark (p-median)', 'greedy', '#1f1f1d'), ('(d) Species, gaps only (A)', 'A', ESC['B'][1]),
+               *[(f'({l}) {ESC[e][0]} ({n})', e, ESC[e][1]) for l, e, n in (('e', 'B', 'B'), ('f', 'C17', 'C'), ('g', 'D17', 'D'))],
+               ('(h) Species only, flat 17% targets', 'B17f', ESC['B'][1]), ('(i) Species only, flat 30% targets', 'B30f', ESC['B'][1]),
+               ('(j) Random microbasins (median set)', 'random', '#5f5e59')]
     for i, (tit, e, col) in enumerate(paneles):
-        ax = fig.add_subplot(gs[i // 2, 1 + i % 2])
+        ax = fig.add_subplot(gs[i // 4, 1 + i % 4])
         ax.imshow(base.domain, cmap=ground, vmin=0, vmax=1, extent=base.extent, interpolation='nearest', zorder=1)
         ax.imshow(fondo, cmap=gapcm, vmin=-.5, vmax=1.5, extent=base.extent, interpolation='nearest', zorder=2)
         relleno(ax, union, facecolor=PROT, edgecolor='none', zorder=3)
@@ -417,7 +443,7 @@ def fig4():
          Patch(fc=GAP_NAT, ec='#bdbdb5', lw=.4, label='Climatic gap on natural land'),
          Patch(fc=GAP_TRANS, ec='#bdbdb5', lw=.4, label='Climatic gap on transformed land'),
          Patch(fc=PROT, ec='#bdbdb5', lw=.4, label='Protected-area network')]
-    fig.legend(handles=h, ncol=2, fontsize=5.6, frameon=False, loc='upper center', bbox_to_anchor=(.68, .06),
+    fig.legend(handles=h, ncol=2, fontsize=5.6, frameon=False, loc='upper center', bbox_to_anchor=(.6, .06),
                handlelength=1.2, columnspacing=1.6, labelspacing=.35)
     fig.savefig(DST / 'Fig4_where_to_expand.png', bbox_inches='tight', dpi=600); plt.close(fig)
 

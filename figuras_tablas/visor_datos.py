@@ -1,5 +1,5 @@
 """Layers of the web atlas viewer (docs/, GitHub Pages): the analogue map of every protected area (File S2) and the map
-layers of Figs. 1, 3 and 4. Rasters become indexed PNG (one byte per pixel, d classes of the figures) reprojected to Web
+layers of Figs. 1 and 4. Rasters become indexed PNG (one byte per pixel, d classes of the figures) reprojected to Web
 Mercator by rows and cropped to their extent, so Leaflet shows them as image overlays; potential sites and the microbasins
 chosen by prioritizr become GeoJSON. Writes docs/capas/ and docs/capas/indice.json.
 Run: python visor_datos.py
@@ -105,10 +105,13 @@ def figuras():
               'geometry': shapely.geometry.mapping(g)} for i, g in enumerate(geoms)]
     (DST / 'fig3_sites.geojson').write_text(json.dumps({'type': 'FeatureCollection', 'features': feats}, ensure_ascii=False,
                                                        separators=(',', ':')), encoding='utf-8')
-    # Figs. 4d-f microbasins chosen with 41 347 km² by the prioritizr plans (A, shown only in the viewer, plus the three of Fig. 4), vectorized from the planning-unit grid
+    # Figs. 4d-j microbasins chosen with 41 347 km² by the prioritizr plans and the median random set, vectorized from the planning-unit grid
+    from figuras_articulo import _azar_mediana
     base = lienzo(TIERRA)
     cel = np.load(PRI / 'entrada/celdas.npz'); pu = np.where(cel['candidato'], cel['pu'], 0)
-    sel = {e: set(pd.read_csv(PRI / f'solucion_{e}_41k.csv').query('solution_1 == 1 and id > 0').id) for e in ('A', 'B', 'C17', 'D17')}
+    sel = {e: set(pd.read_csv(PRI / f'solucion_{e}_41k.csv').query('solution_1 == 1 and id > 0').id)
+           for e in ('A', 'B', 'C17', 'D17', 'B17f', 'B30f')}
+    sel['random'] = set(np.unique(pu[_azar_mediana(cel, base.area / 1e6)]).tolist()) - {0}
     todos = np.array(sorted(set().union(*sel.values())))
     grid = base.raster(np.where(np.isin(pu, todos), pu, 0).astype(np.float32), fill=0).astype(np.int32)
     partes = {}
