@@ -1,0 +1,47 @@
+MIP has 271 rows; 9234 cols; 23383 nonzeros; 8964 integer variables (8963 binary)
+Coefficient ranges:
+  Matrix  [3e-06, 3e+04]
+  Cost    [1e+00, 1e+00]
+  Bound   [1e+00, 1e+00]
+  RHS     [2e+00, 3e+04]
+Presolving model
+263 rows, 4674 cols, 18623 nonzeros 0s
+247 rows, 4658 cols, 18591 nonzeros 0s
+Presolve reductions: rows 247(-24); columns 4658(-4576); nonzeros 18591(-4792) 
+
+Solving MIP model with:
+   247 rows
+   4658 cols (4412 binary, 0 integer, 0 implied int., 246 continuous, 0 domain fixed)
+   18591 nonzeros
+
+Src: B => Branching; C => Central rounding; F => Feasibility pump; H => Heuristic;
+     I => Shifting; J => Feasibility jump; L => Sub-MIP; P => Empty MIP; R => Randomized rounding;
+     S => Solve LP; T => Evaluate node; U => Unbounded; X => User solution; Y => HiGHS solution;
+     Z => ZI Round; l => Trivial lower; p => Trivial point; u => Trivial upper; z => Trivial zero
+
+        Nodes      |    B&B Tree     |            Objective Bounds              |  Dynamic Constraints |       Work      
+Src  Proc. InQueue |  Leaves   Expl. | BestBound       BestSol              Gap |   Cuts   InLp Confl. | LpIters     Time
+
+ J       0       0         0   0.00%   -inf            243.2138431        Large        0      0      0         0     0.7s
+ R       0       0         0   0.00%   116.3307208     116.5314133        0.17%        0      0      0       285     0.8s
+         1       0         1 100.00%   116.3307208     116.5314133        0.17%        0      0      0       285     0.8s
+
+Solving report
+  Status            Optimal
+  Primal bound      116.53141329
+  Dual bound        116.330720762
+  Gap               0.172% (tolerance: 0.5%)
+  P-D integral      0.0563559179778
+  Solution status   feasible
+                    116.53141329 (objective)
+                    0 (bound viol.)
+                    0 (int. viol.)
+                    0 (row viol.)
+  Timing            0.82
+  Max sub-MIP depth 0
+  Nodes             1
+  Repair LPs        0
+  LP iterations     285
+                    0 (strong br.)
+                    0 (separation)
+                    0 (heuristics)

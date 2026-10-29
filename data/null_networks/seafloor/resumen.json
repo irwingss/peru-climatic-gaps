@@ -1,0 +1,20 @@
+{
+  "n_redes": 999,
+  "n_muestra": 12934,
+  "superficie_red_real_km2": 74447.23990491779,
+  "superficie_redes_azar_km2_mediana": 75318.4620529524,
+  "segundos": 83.32112590002362,
+  "diseno": "N2c",
+  "semilla": 20261053,
+  "umbral_natural": null,
+  "superposicion_real_km2": 59.820608074417116,
+  "superposicion_azar_km2_mediana": 302.1884876696472,
+  "huellas_fallidas_pct": 5.305305305305305,
+  "huellas_fallidas_pct_por_ecorregion_dominante": {
+    "Plataforma (0–200 m)": 6.366366366366366,
+    "Fondo profundo (> 1.000 m)": 0.0
+  },
+  "estratos_no_evaluables": [],
+  "memoria_pico_mib": 436.671875,
+  "criterios": "Ancla natural de la ecorregion dominante, 8 orientaciones; ademas TVD <= 0.2; 500 intentos."
+}

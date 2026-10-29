@@ -1,0 +1,92 @@
+{
+  "n_estaciones": 28,
+  "n_completas": 22,
+  "n_pares": 231,
+  "errores_chelsa_menos_estacion": {
+    "bio01": {
+      "sesgo": -0.9997697020596593,
+      "error_absoluto_mediano": 1.318759105468751,
+      "spearman": 0.9627329192546585,
+      "unidad": "°C",
+      "error_absoluto_mediano_corregido_altitud": 1.289509105468751
+    },
+    "bio02": {
+      "sesgo": -3.7450939326446995,
+      "error_absoluto_mediano": 4.016522368982953,
+      "spearman": 0.8088111025717587,
+      "unidad": "°C"
+    },
+    "bio04": {
+      "sesgo": -0.37790159032721776,
+      "error_absoluto_mediano": 0.36186176760212857,
+      "spearman": 0.8147939017504237,
+      "unidad": "°C"
+    },
+    "bio05": {
+      "sesgo": -2.882705307084517,
+      "error_absoluto_mediano": 2.573660896484377,
+      "spearman": 0.9353290404042124,
+      "unidad": "°C"
+    },
+    "bio06": {
+      "sesgo": 1.9068309437144888,
+      "error_absoluto_mediano": 1.9700152587890623,
+      "spearman": 0.9404123504064092,
+      "unidad": "°C"
+    },
+    "bio12": {
+      "sesgo": 0.5707201337769575,
+      "error_absoluto_mediano": 0.3320199775892978,
+      "spearman": 0.9164313946922643,
+      "unidad": "log(P+1)"
+    },
+    "bio15": {
+      "sesgo": 7.226896030115822,
+      "error_absoluto_mediano": 7.2602039905880815,
+      "spearman": 0.7395481406282038,
+      "unidad": "%"
+    }
+  },
+  "altitud_estacion_menos_celda_m": {
+    "mediana": -0.5,
+    "mediana_abs": 7.0
+  },
+  "excluidas": {
+    "Curahuasi": "sin temperatura",
+    "Incahuasi": "sin temperatura",
+    "Huacamarcanga": "sin temperatura",
+    "Pampa Blanca (Ica)": "sin temperatura",
+    "Cairini": "sin temperatura",
+    "Huayao": "coordenadas fuera del dominio (a > 2 celdas)"
+  },
+  "spearman_d7_obs_vs_d7_chelsa": 0.5567651239315408,
+  "mediana_d7_obs_sobre_d7_chelsa": 1.4386977296806855,
+  "spearman_dif_bio01_pares": 0.9372674081160361,
+  "spearman_dif_logP_pares": 0.7776127627223479,
+  "spearman_d7_obs_vs_d11_chelsa": 0.5831801631651707,
+  "acuerdo_0_2_d7_chelsa_vs_d7_obs": {
+    "pares_analogos_x": 0,
+    "pares_analogos_y": 0,
+    "ambos": 0,
+    "coinciden_pct": 100.0
+  },
+  "pares_por_clase_d11": {
+    "d<=0.5": {
+      "n": 2,
+      "mediana_dif_bio01_obs": 0.8580898958333325,
+      "mediana_dif_logP_obs": 0.43001836309942676
+    },
+    "0.5-1": {
+      "n": 34,
+      "mediana_dif_bio01_obs": 3.6017632499999985,
+      "mediana_dif_logP_obs": 0.5542223128897943
+    },
+    ">1": {
+      "n": 195,
+      "mediana_dif_bio01_obs": 7.434647708333333,
+      "mediana_dif_logP_obs": 2.3185919597111275
+    }
+  },
+  "fuente": "Normales climatologicas 1981-2010 del SENAMHI enviadas a la OMM (NOAA NCEI, normals-old/WMO/1981-2010/RA-III/Peru); sha256 f716608ff19f84f11457948550ef6bcfad8c682e022170ce282e006b7c50fe86",
+  "nota": "bio01 = media de (Tx+Tn)/2; d7 = Mahalanobis regularizada marginal en 7 variables, por dimension; pares por clase de lectura de la d de 11 variables entre sus celdas."
+}

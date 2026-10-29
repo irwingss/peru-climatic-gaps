@@ -1,0 +1,4 @@
+﻿Domain or layer,Areas,Areas with ≥ 30 valid positions (%),Protected surface with ≥ 30 valid positions (%),Areas > 1 000 km² with ≥ 10 valid positions,Real surface (km²),"Null surface, median (km²)",Real overlap (km²),"Null overlap, median (km²)",Failed footprints (%)
+Continental,258,98.4,99.6,43 of 43,244 868,246 571,3 151,672,2.1
+Sea surface,6,100.0,100.0,4 of 4,74 447,75 273,60,582,0.0
+Seafloor,6,100.0,100.0,4 of 4,74 447,75 318,60,302,5.3

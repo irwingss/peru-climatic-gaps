@@ -1,0 +1,37 @@
+cff-version: 1.2.0
+message: "If you use this code or data, please cite the article and this archive."
+title: "Climatic gaps in Peru's protected-area network: code, derived data and supplementary material"
+authors:
+  - family-names: "Saldaña"
+    given-names: "Irwing S."
+    affiliation: "Skyfall Bioscience, Peru"
+    orcid: "https://orcid.org/0000-0001-5761-2882"
+  - family-names: "Ugaz-Cherre"
+    given-names: "Armando"
+    affiliation: "Universidad Nacional de Piura, Peru"
+  - family-names: "Sevillano-Ríos"
+    given-names: "Cristian Steven"
+    affiliation: "Climate Corridors, USA"
+version: "1.0.0"
+date-released: "2026-10-22"
+license: MIT
+keywords:
+  - protected areas
+  - climatic representativeness
+  - Mahalanobis distance
+  - null models
+  - 30x30
+  - Peru
+preferred-citation:
+  type: article
+  title: "Protected-area networks can represent climate worse than chance, and threatened-species plans toward 30×30 need climatic targets to close the gaps: evidence from Peru"
+  authors:
+    - family-names: "Saldaña"
+      given-names: "Irwing S."
+      orcid: "https://orcid.org/0000-0001-5761-2882"
+    - family-names: "Ugaz-Cherre"
+      given-names: "Armando"
+    - family-names: "Sevillano-Ríos"
+      given-names: "Cristian Steven"
+  journal: "Perspectives in Ecology and Conservation"
+  year: 2026

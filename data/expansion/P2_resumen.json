@@ -1,0 +1,63 @@
+{
+  "control_max_abs_vs_sistema": 0.0,
+  "superficie_km2": 1286457.3504363315,
+  "F02_ANP": 0.6371546622816394,
+  "F02_ACR": 0.4236239542532592,
+  "F02_ACP": 0.38355539008968237,
+  "F02_red": 0.6989934757370406,
+  "solo_ACR_ACP_km2": 79552.99611196217,
+  "departamentos_con": {
+    "ACR": [
+      "AMAZONAS",
+      "APURIMAC",
+      "AREQUIPA",
+      "AYACUCHO",
+      "CAJAMARCA",
+      "CALLAO",
+      "CUSCO",
+      "HUANCAVELICA",
+      "HUANUCO",
+      "ICA",
+      "JUNIN",
+      "LA LIBERTAD",
+      "LAMBAYEQUE",
+      "LIMA",
+      "LORETO",
+      "MADRE DE DIOS",
+      "PASCO",
+      "PIURA",
+      "PUNO",
+      "SAN MARTIN",
+      "TACNA",
+      "TUMBES",
+      "UCAYALI"
+    ],
+    "ACP": [
+      "AMAZONAS",
+      "ANCASH",
+      "AREQUIPA",
+      "AYACUCHO",
+      "CAJAMARCA",
+      "CUSCO",
+      "HUANUCO",
+      "JUNIN",
+      "LA LIBERTAD",
+      "LAMBAYEQUE",
+      "LIMA",
+      "LORETO",
+      "MADRE DE DIOS",
+      "PASCO",
+      "PIURA",
+      "PUNO",
+      "SAN MARTIN",
+      "TUMBES",
+      "UCAYALI"
+    ]
+  },
+  "n_unidades": {
+    "ANP": 70,
+    "ACR": 39,
+    "ACP": 149
+  },
+  "segundos": 135.05098870000802
+}

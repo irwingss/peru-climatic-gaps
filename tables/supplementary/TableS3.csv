@@ -1,0 +1,18 @@
+﻿Domain,Stratum,D̄ real,"D̄ null, median [95%]",Nulls ≤ real,Nulls ≥ real,p two-sided,SES,p Holm,Direction
+Continental,Peru (continental),0.151,0.133 [0.128–0.139],999,0,0.002,+6.38,0.002,worse
+Continental,Amazonian tropical forest,0.058,0.044 [0.041–0.048],999,0,0.002,+7.76,0.014,worse
+Continental,Palm savanna,0.000,0.031 [0.003–0.070],5,994,–,–,–,not evaluable
+Continental,Yungas (high jungle),0.133,0.117 [0.110–0.125],999,0,0.002,+4.01,0.014,worse
+Continental,Páramo,0.093,0.095 [0.070–0.126],448,551,0.898,-0.17,1.000,not distinguishable
+Continental,Puna,0.208,0.192 [0.181–0.208],972,27,0.056,+2.11,0.224,not distinguishable
+Continental,Steppe mountains,0.385,0.345 [0.305–0.392],948,51,0.104,+1.72,0.312,not distinguishable
+Continental,Equatorial dry forest,0.277,0.217 [0.201–0.235],999,0,0.002,+6.42,0.014,worse
+Continental,Pacific tropical forest,0.030,0.104 [0.049–0.186],10,989,–,–,–,not evaluable
+Continental,Pacific coastal desert,0.382,0.373 [0.345–0.412],725,274,0.550,+0.50,1.000,not distinguishable
+Sea surface,All,0.580,0.444 [0.381–0.540],996,3,0.008,+3.19,0.008,worse
+Sea surface,Cold sea of the Humboldt Current,0.556,0.437 [0.363–0.552],979,20,0.042,+2.38,0.042,worse
+Sea surface,Tropical sea,0.759,0.476 [0.335–0.682],996,3,0.008,+3.03,0.016,worse
+Seafloor,All,0.160,0.122 [0.091–0.198],851,148,0.298,+1.14,0.298,not distinguishable
+Seafloor,Shelf (0–200 m),0.292,0.324 [0.255–0.408],190,809,0.382,-0.86,0.628,not distinguishable
+Seafloor,Slope (200–1 000 m),0.410,0.299 [0.216–0.424],962,37,0.076,+1.91,0.228,not distinguishable
+Seafloor,Deep floor (> 1 000 m),0.126,0.084 [0.052–0.169],843,156,0.314,+1.09,0.628,not distinguishable

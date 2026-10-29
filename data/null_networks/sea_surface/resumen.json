@@ -1,0 +1,20 @@
+{
+  "n_redes": 999,
+  "n_muestra": 11521,
+  "superficie_red_real_km2": 74447.23990491779,
+  "superficie_redes_azar_km2_mediana": 75273.04639186998,
+  "segundos": 51.0811494999798,
+  "diseno": "N2c",
+  "semilla": 20261053,
+  "umbral_natural": null,
+  "superposicion_real_km2": 59.820608074417116,
+  "superposicion_azar_km2_mediana": 581.5815386092835,
+  "huellas_fallidas_pct": 0.0,
+  "huellas_fallidas_pct_por_ecorregion_dominante": {
+    "Mar frío de la Corriente Peruana": 0.0,
+    "Mar tropical": 0.0
+  },
+  "estratos_no_evaluables": [],
+  "memoria_pico_mib": 350.02734375,
+  "criterios": "Ancla natural de la ecorregion dominante, 8 orientaciones; ademas TVD <= 0.2; 500 intentos."
+}

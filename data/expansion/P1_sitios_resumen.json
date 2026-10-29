@@ -1,0 +1,29 @@
+{
+  "n_sitios": 223,
+  "area_km2": 41347.26939411003,
+  "n_microcuencas": 228,
+  "por_meta": {
+    "N2c null median": {
+      "n_sitios": 13,
+      "area_km2": 2642.8297336305377
+    },
+    "80 % at d ≤ 0.2": {
+      "n_sitios": 50,
+      "area_km2": 10145.57864701922
+    },
+    "90 % at d ≤ 0.2": {
+      "n_sitios": 160,
+      "area_km2": 28558.861013460264
+    }
+  },
+  "por_ecorregion_km2": {
+    "Bosque tropical amazónico": 5823.219507330091,
+    "Selva alta (yungas)": 4891.924303964712,
+    "Puna": 10820.858695198109,
+    "Serranía esteparia": 8296.529837369902,
+    "Bosque seco ecuatorial": 3847.2374415075024,
+    "Desierto costero del Pacífico": 7667.49960873972
+  },
+  "pct_area_en_vacio": 76.9665318914519,
+  "criterio": "Microcuencas HydroBASINS nivel 12 de la curva de esfuerzo hasta la meta del 90 %; celdas naturales sin parte protegida; microcuencas que se tocan (8 vecinos) forman un sitio. Sin especies."
+}

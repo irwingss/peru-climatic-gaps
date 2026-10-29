@@ -1,0 +1,12 @@
+﻿Code,CHELSA layer (original name),Unit,Scale; offset,Range in the domain,Transformation,Transformed range,Standardized range (z)
+bio01,Mean Annual Near-Surface Air Temperature,°C,0.1; −273.15,−5.4 to 27.6,linear,−5.4 to 27.6,−3.00 to 1.12
+bio02,Mean Diurnal Near-Surface Air Temperature Range,°C,0.1; 0,1.0 to 15.8,linear,1.0 to 15.8,−3.63 to 4.17
+bio04,Temperature Seasonality (standard deviation),°C,0.1; 0 (÷ 100),0.05 to 3.65,linear,0.05 to 3.65,−1.51 to 6.42
+bio05,Mean Daily Maximum Near-Surface Air Temperature of the Warmest Month,°C,0.1; −273.15,0.4 to 33.4,linear,0.4 to 33.4,−3.20 to 1.30
+bio06,Mean Daily Minimum Near-Surface Air Temperature of the Coldest Month,°C,0.1; −273.15,−13.3 to 22.6,linear,−13.3 to 22.6,−2.87 to 1.03
+bio12,Annual Precipitation,mm yr−1,1; 0,5 to 8 079,log(1 + x),1.79 to 9.00,−5.05 to 1.65
+bio15,Precipitation Seasonality (coefficient of variation),%,0.1; 0,10.9 to 140.6,linear,10.9 to 140.6,−1.44 to 2.74
+hursmean,Mean Monthly Near-Surface Relative Humidity,%,0.01; 0,40.9 to 81.7,linear,40.9 to 81.7,−4.51 to 2.74
+vpdmean,Mean Monthly Vapor Pressure Deficit,kPa,0.1; 0 (Pa ÷ 1 000),0.17 to 1.78,log(1 + x),0.16 to 1.02,−2.41 to 2.88
+rsdsmean,Mean Monthly Surface Downwelling Shortwave Flux in Air,relative indexa,0.01; 0,1.23 to 2.72a,standardized only,1.23 to 2.72,−2.19 to 3.26
+petmean,Mean Monthly Potential Evapotranspiration (Penman–Monteith),mm yr−1,0.01; 0 (× 12),635 to 2 586,log(1 + x),6.46 to 7.86,−5.80 to 5.29

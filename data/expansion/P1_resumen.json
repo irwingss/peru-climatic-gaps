@@ -1,0 +1,20 @@
+{
+  "vacios_km2": 387232.055667376,
+  "vacios_naturales_km2": 325736.5158668386,
+  "vacios_por_clase_km2": {
+    "0.2-0.3": 180145.87345289107,
+    "0.3-0.5": 161282.98269593026,
+    "0.5-1.0": 45715.53426658122,
+    ">1 (no analogo)": 87.66525197335366
+  },
+  "vacios_naturales_por_clase_km2": {
+    "0.2-0.3": 147926.46827961315,
+    "0.3-0.5": 135244.51894855252,
+    "0.5-1.0": 42482.78797415584,
+    ">1 (no analogo)": 82.74066451705532
+  },
+  "celdas_sin_elevacion": 1558,
+  "vacios_naturales_en_departamentos_con_ACR_pct": 89.02427287090637,
+  "vacios_naturales_en_departamentos_con_ACP_pct": 79.63694634758392,
+  "vacios_naturales_en_departamentos_con_ACR_o_ACP_pct": 95.93246465186621
+}

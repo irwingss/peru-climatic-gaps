@@ -1,0 +1,52 @@
+{
+  "meta_mediana_nula_D": 0.1334162097752536,
+  "D_inicial": 0.1510980855335015,
+  "F02_inicial": 0.6992067486710235,
+  "protegido_km2_celdas": 244868.2865905701,
+  "continental_km2": 1286457.3504363315,
+  "meta3_30pct_km2": 385937.20513089944,
+  "alcanza_mediana_nula": {
+    "pasos": 13,
+    "agregado_km2": 2419.4774926405894,
+    "protegido_total_pct": 19.2223833926043
+  },
+  "alcanza_F02_80": {
+    "pasos": 64,
+    "agregado_km2": 12043.862334307489,
+    "protegido_total_pct": 19.970514283877343
+  },
+  "alcanza_F02_90": {
+    "pasos": 228,
+    "agregado_km2": 41347.26939411,
+    "protegido_total_pct": 22.24835171469956
+  },
+  "unidad": "microcuenca HydroBASINS nivel 12",
+  "n_unidades_candidatas": 8963,
+  "segundos": 957.762942399946,
+  "validacion_dominio_completo": {
+    "inicial": {
+      "pasos": 0,
+      "D_todo": 0.15084170501014493,
+      "F02_todo": 0.6989934757370406,
+      "agregado_km2": 0.0
+    },
+    "alcanza_mediana_nula": {
+      "pasos": 13,
+      "D_todo": 0.13261366632980295,
+      "F02_todo": 0.7266124233298158,
+      "agregado_km2": 2419.47749264059
+    },
+    "alcanza_F02_80": {
+      "pasos": 64,
+      "D_todo": 0.11125640407377754,
+      "F02_todo": 0.8008612486617706,
+      "agregado_km2": 12043.86233430749
+    },
+    "alcanza_F02_90": {
+      "pasos": 228,
+      "D_todo": 0.08625644793204974,
+      "F02_todo": 0.8978446405606257,
+      "agregado_km2": 41347.26939411003
+    }
+  }
+}

@@ -1,0 +1,7 @@
+﻿anp_id,nombre,modalidad,superficie_km2,n_celdas,ecorregion_dominante,fraccion_dominante,multi_ecorregion,pixeles_ancla,posiciones_validas,anclas_validas_distintas_10km,pct_dominio_ok,pct_natural_ok,pct_tvd_ok
+NAC_RN03,de Paracas,NACIONAL,2193.3457922213256,105,Plataforma (0–200 m),0.7237551901995681,1,3208,4206,38,50.55,50.55,36.2875
+NAC_RN13,"Sistema de Islas, Islotes y Puntas Guaneras",NACIONAL,1401.5516713583017,142,Plataforma (0–200 m),0.9961822197805156,0,3208,50,5,3.775,3.775,6.3375
+NAC_RN15,San Fernando,NACIONAL,427.33775790391417,29,Plataforma (0–200 m),1.0000000000000002,0,3208,10907,60,68.4775,68.4775,79.3025
+NAC_RN16,Dorsal de Nasca,NACIONAL,62331.46678663817,2216,Fondo profundo (> 1.000 m),1.0000000000000044,0,24237,15965,114,53.22,53.22,85.05
+NAC_RN18,Mar Tropical de Grau,NACIONAL,1157.461036043213,77,Plataforma (0–200 m),0.7739152126189476,1,3208,906,19,18.235,18.235,15.3375
+NAC_SN05,los Manglares de Tumbes,NACIONAL,0.7239776640391734,4,Plataforma (0–200 m),1.0,0,3208,16897,63,88.005,88.005,95.535

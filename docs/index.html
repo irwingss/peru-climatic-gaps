@@ -1,0 +1,211 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Climatic Gaps Atlas · Peru</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<style>
+  :root { --tinta: #1f1f1d; --gris: #55554f; --linea: #dddcd6; --fondo: #faf9f6; --acento: #23745B; }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; height: 100%; font: 13px/1.4 system-ui, -apple-system, "Segoe UI", Arial, sans-serif; color: var(--tinta); background: var(--fondo); }
+  #app { display: flex; height: 100%; }
+  #panel { width: 340px; flex: none; overflow-y: auto; padding: 14px 16px 24px; border-right: 1px solid var(--linea); background: var(--fondo); }
+  #mapa { flex: 1; }
+  h1 { font-size: 16px; margin: 0 0 2px; }
+  .sub { color: var(--gris); font-size: 11.5px; margin: 0 0 12px; }
+  h2 { font-size: 12px; text-transform: uppercase; letter-spacing: .05em; color: var(--gris); margin: 16px 0 6px; border-top: 1px solid var(--linea); padding-top: 12px; }
+  input[type=search], select { width: 100%; font: inherit; padding: 5px 6px; border: 1px solid #c9c8c2; border-radius: 4px; background: #fff; }
+  .fila { display: flex; gap: 6px; margin-bottom: 6px; }
+  optgroup { font-weight: bold; }
+  optgroup option { font-weight: normal; }
+  #ficha { margin-top: 8px; font-size: 12px; background: #fff; border: 1px solid var(--linea); border-radius: 4px; padding: 8px; display: none; }
+  #ficha b { font-size: 12.5px; }
+  label.capa { display: flex; align-items: center; gap: 6px; padding: 2px 0; cursor: pointer; }
+  .leyenda { margin: 2px 0 6px 22px; font-size: 11px; color: var(--gris); }
+  .leyenda span { display: inline-block; width: 12px; height: 10px; border: 1px solid #bdbdb5; vertical-align: -1px; margin-right: 4px; }
+  .leyenda div { margin: 1px 0; }
+  a { color: #2c6fb0; }
+  .nota { font-size: 11px; color: var(--gris); margin-top: 10px; }
+  #abrir { display: none; }
+  .leaflet-image-layer { image-rendering: pixelated; }
+  @media (max-width: 760px) {
+    #app { flex-direction: column-reverse; }
+    #panel { width: 100%; height: 45%; border-right: 0; border-top: 1px solid var(--linea); }
+  }
+</style>
+</head>
+<body>
+<div id="app">
+  <aside id="panel">
+    <h1>Climatic gaps in Peru's protected areas</h1>
+    <p class="sub">Interactive atlas of climate analogues (File S2) and map layers of Figs. 1, 3 and 4 of Saldaña, Ugaz-Cherre &amp; Sevillano-Ríos, <i>Perspectives in Ecology and Conservation</i> (submitted).</p>
+
+    <h2>Atlas of climate analogues</h2>
+    <div class="fila">
+      <select id="dominio" aria-label="Domain"><option value="">All domains</option><option>land</option><option>sea surface</option><option>seafloor</option></select>
+    </div>
+    <input id="buscar" type="search" placeholder="Search name or code (e.g. Manu, NAC_PN11)" aria-label="Search protected area">
+    <div class="fila" style="margin-top:6px"><select id="lista" aria-label="Protected areas"></select></div>
+    <div id="ficha"></div>
+    <div class="leyenda" id="leyenda-d" style="margin-left:0"></div>
+
+    <h2>Figure layers</h2>
+    <div id="capas"></div>
+    <label class="capa" style="margin-top:8px">Raster opacity <input id="opacidad" type="range" min="0.2" max="1" step="0.05" value="0.9" style="flex:1"></label>
+
+    <p class="nota">d is the regularized Mahalanobis distance to the most similar protected climate (CHELSA V2.1 on land at 30″; Bio-ORACLE v3.0 at sea at 0.05°). Rasters are shown at their native pixel size. Protected-area outlines: SERNANP, Catastro Oficial de Áreas Naturales Protegidas, shown as a derived map (the original vectors are not redistributed). Vector layers can be downloaded as GeoJSON: <a href="capas/fig3_sites.geojson" download>potential sites</a> · <a href="capas/fig4_microbasins.geojson" download>prioritized microbasins</a>.</p>
+  </aside>
+  <main id="mapa"></main>
+</div>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+const mapa = L.map('mapa', { preferCanvas: true, zoomSnap: 0.5 }).fitBounds([[-18.4, -81.4], [-0.03, -68.6]]);
+const bases = {
+  'Light': L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}', { maxZoom: 16, attribution: 'Esri, HERE, Garmin, © OpenStreetMap' }),
+  'Satellite': L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', { maxZoom: 18, attribution: 'Esri, Maxar, Earthstar Geographics' }),
+  'OpenStreetMap': L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19, attribution: '© OpenStreetMap' }),
+};
+bases.Light.addTo(mapa);
+L.control.layers(bases, null, { position: 'topright' }).addTo(mapa);
+L.control.scale({ imperial: false }).addTo(mapa);
+
+const $ = id => document.getElementById(id);
+const fmt = x => x.toLocaleString('en-US').replace(/,/g, ' ');
+const caja = (c, a = 1) => `<span style="background:${c};opacity:${a}"></span>`;
+let I, rasterAtlas, marca;
+
+const SITIOS = { 'N2c null median': '#08306b', '80 % at d ≤ 0.2': '#2171b5', '90 % at d ≤ 0.2': '#9ecae1' };
+const PLANES = { B: ['Species only (B)', '#7b3294'], C17: ['Species + climate (C)', '#e66101'], D17: ['Climate only (D)', '#2c7fb8'] };
+
+fetch('capas/indice.json').then(r => r.json()).then(indice => {
+  I = indice;
+  const dLeg = I.clases_d.map(c => `<div>${caja(c.color, c.alfa)}${c.label}</div>`).join('');
+  $('leyenda-d').innerHTML = `<div style="margin-top:6px">Mahalanobis distance d</div>${dLeg}<div>${caja(I.verde)}the protected area itself (d = 0)</div>`;
+  I.areas.forEach(a => a.clave = (a.nombre + ' ' + a.id).normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase());
+  I.areas.sort((a, b) => a.nombre.localeCompare(b.nombre, 'es', { sensitivity: 'base' }));
+  filtrar();
+  construirCapas(dLeg);
+  if (location.hash) elegir(location.hash.slice(1));
+});
+
+// ---------- atlas: dropdown grouped by ANP / ACR / ACP (alphabetical inside each group), one overlay at a time
+const GRUPOS = { ANP: 'ANP · National administration', ACR: 'ACR · Regional administration', ACP: 'ACP · Private' };
+function filtrar() {
+  const q = $('buscar').value.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().trim();
+  const dom = $('dominio').value, actual = $('lista').value;
+  const vis = I.areas.filter(a => (!dom || a.dominio === dom) && (!q || a.clave.includes(q)));
+  const frag = document.createDocumentFragment();
+  frag.append(new Option(`Choose a protected area (${vis.length})`, ''));
+  for (const [g, titulo] of Object.entries(GRUPOS)) {
+    const og = Object.assign(document.createElement('optgroup'), { label: titulo });
+    vis.filter(a => a.grupo === g).forEach(a => og.append(new Option(a.nombre, a.id)));
+    og.children.length && frag.append(og);
+  }
+  $('lista').replaceChildren(frag);
+  $('lista').value = vis.some(a => a.id === actual) ? actual : '';
+}
+['buscar', 'dominio'].forEach(id => $(id).addEventListener('input', filtrar));
+$('lista').addEventListener('change', e => elegir(e.target.value));
+window.addEventListener('hashchange', () => elegir(location.hash.slice(1)));
+
+function elegir(id) {
+  const a = I && I.areas.find(x => x.id === id);
+  if (!a) return;
+  if (location.hash.slice(1) !== id) history.replaceState(null, '', '#' + id);
+  rasterAtlas && rasterAtlas.remove(); marca && marca.remove();
+  rasterAtlas = L.imageOverlay('capas/' + a.png, a.bounds, { opacity: +$('opacidad').value, zIndex: 20 }).addTo(mapa);
+  marca = L.circleMarker(a.centro, { radius: 9, color: I.verde, weight: 2, fill: false }).addTo(mapa).bindTooltip(a.nombre);
+  $('lista').value = id;
+  mapa.flyToBounds(a.caja, { padding: [40, 40], maxZoom: 13, duration: .6 });   // the area itself, not its analogues
+  $('ficha').style.display = 'block';
+  $('ficha').innerHTML = `<b>${a.nombre}</b> (${a.id.replace(/_(superficie|fondo)$/, '')})<br>${a.modalidad}` +
+    (a.km2 !== undefined ? ` · ${fmt(a.km2)} km² with data<br>Dominant ecoregion: ${a.eco}` : '') +
+    `<br>Area outside the protected area with d ≤ 0.1: <b>${fmt(a.km2_01)} km²</b>; d ≤ 0.2: <b>${fmt(a.km2_02)} km²</b>` +
+    `<br><a href="#" id="quitar">Remove from map</a>`;
+  $('quitar').onclick = e => { e.preventDefault(); rasterAtlas.remove(); marca.remove(); $('ficha').style.display = 'none'; history.replaceState(null, '', location.pathname); };
+}
+
+// ---------- figure layers: created on first use
+function construirCapas(dLeg) {
+  const raster = k => () => L.imageOverlay('capas/' + I.capas[k].png, I.capas[k].bounds, { opacity: +$('opacidad').value, zIndex: 10 });
+  const tabla = p => '<table>' + Object.entries(p).filter(([, v]) => v !== null && v !== '').map(([k, v]) => `<tr><td style="color:#77766f;padding-right:6px">${k}</td><td>${v}</td></tr>`).join('') + '</table>';
+  const geo = (url, opts) => () => fetch(url).then(r => r.json()).then(g => L.geoJSON(g, { bubblingMouseEvents: false, ...opts }));
+  const plan = e => geo('capas/fig4_microbasins.geojson', {
+    filter: f => f.properties[e] === 1,
+    style: { color: PLANES[e][1], weight: .6, fillColor: PLANES[e][1], fillOpacity: .55 },
+    onEachFeature: (f, l) => l.bindPopup(`<b>Microbasin ${f.properties.pu}</b><br>${fmt(f.properties.km2)} km²<br>Chosen by: ` +
+      Object.keys(PLANES).filter(k => f.properties[k]).map(k => PLANES[k][0]).join(', ')),
+  });
+  const gapLeg = [['#fb6a4a', '0.2–0.3'], ['#fcae91', '0.3–0.5'], ['#fde0d2', '0.5–1'], ['#fff5f0', '> 1'], ['#c9c8c2', 'gap on transformed land']]
+    .map(([c, t]) => `<div>${caja(c)}${t}</div>`).join('');
+  const sinDato = `<div>${caja('#ffffff')}> 1 · not analogous</div><div>${caja(I.verde)}protected-area network</div><div>${caja('#d6d6d2')}no climate data</div>`;
+  mapa.createPane('ap').style.zIndex = 450;   // above rasters and vectors, below markers and popups
+  const ap = g => () => {   // tiles of one group; on/off is tracked for the click lookup
+    const t = L.tileLayer(`capas/ap/${AP[g]}/{z}/{x}/{y}.png`, {
+      pane: 'ap', minZoom: 4, minNativeZoom: 4, maxNativeZoom: 11, bounds: [[-20.5, -85], [0.1, -68.5]],
+      attribution: 'Protected areas: SERNANP, Catastro Oficial de Áreas Naturales Protegidas',
+    });
+    return t.on('add', () => apActivas.add(g)).on('remove', () => apActivas.delete(g));
+  };
+  const CAPAS = [
+    ...Object.keys(AP).map(g => [`Protected areas · ${GRUPOS[g]}`, ap(g),
+      `<div>${caja(I.verde)}SERNANP official cadastre (9 Oct 2026), drawn as a map; click an area for its data</div>`]),
+    ['Fig. 1a · d<sub>min</sub>, land', raster('fig1_land'), dLeg + sinDato],
+    ['Fig. 1b · d<sub>min</sub>, sea surface', raster('fig1_sea_surface'), 'Same classes as Fig. 1a'],
+    ['Fig. 1c · d<sub>min</sub>, seafloor', raster('fig1_seafloor'), 'Same classes as Fig. 1a'],
+    ['Fig. 3a · Climatic gaps on natural land', raster('fig3_gaps'), gapLeg, true],
+    ['Fig. 3a · 223 potential sites', geo('capas/fig3_sites.geojson', {
+      style: f => ({ color: '#08306b', weight: .8, fillColor: SITIOS[f.properties.meta] || '#2171b5', fillOpacity: .85 }),
+      onEachFeature: (f, l) => l.bindPopup(`<b>Potential site ${f.properties.id}</b>` + tabla(f.properties), { maxWidth: 320 }),
+    }), Object.entries(SITIOS).map(([t, c]) => `<div>${caja(c)}first target: ${t}</div>`).join(''), true],
+    ...Object.keys(PLANES).map(e => [`Fig. 4c · ${PLANES[e][0]}, 41 347 km²`, plan(e), `<div>${caja(PLANES[e][1], .55)}microbasins chosen</div>`, true]),
+  ];
+  for (const [nombre, crear, leyenda, activa] of CAPAS) {
+    const lab = document.createElement('label'); lab.className = 'capa';
+    const chk = document.createElement('input'); chk.type = 'checkbox';
+    lab.append(chk, Object.assign(document.createElement('span'), { innerHTML: nombre }));
+    const ley = Object.assign(document.createElement('div'), { className: 'leyenda', innerHTML: leyenda, hidden: true });
+    $('capas').append(lab, ley);
+    let capa;
+    chk.addEventListener('change', async () => {
+      ley.hidden = !chk.checked;
+      if (!chk.checked) return capa && capa.remove();
+      capa = capa || await crear();
+      if (chk.checked) capa.addTo(mapa);
+    });
+    if (activa) { chk.checked = true; chk.dispatchEvent(new Event('change')); }
+  }
+}
+
+// ---------- click on a protected area: the tiles are images, so read the tile pixel under the cursor and, if it is
+// painted, name the smallest area of that group whose extent holds the point (outlines are never sent as vectors)
+const AP = { ANP: 'NACIONAL', ACR: 'REGIONAL', ACP: 'PRIVADA' };
+const apActivas = new Set();
+async function pintado(g, latlng) {
+  const z = Math.min(11, Math.max(4, Math.round(mapa.getZoom())));
+  const p = mapa.project(latlng, z).floor();
+  const img = new Image(); img.src = `capas/ap/${AP[g]}/${z}/${Math.floor(p.x / 256)}/${Math.floor(p.y / 256)}.png`;
+  try { await img.decode(); } catch { return false; }   // no tile there
+  const ctx = Object.assign(document.createElement('canvas'), { width: 1, height: 1 }).getContext('2d', { willReadFrequently: true });
+  ctx.drawImage(img, -(p.x % 256), -(p.y % 256));
+  return ctx.getImageData(0, 0, 1, 1).data[3] > 0;
+}
+mapa.on('click', async e => {
+  const sup = c => (c[1][0] - c[0][0]) * (c[1][1] - c[0][1]);
+  for (const g of Object.keys(AP)) {
+    if (!apActivas.has(g) || !(await pintado(g, e.latlng))) continue;
+    const a = I.areas.filter(a => a.grupo === g && a.dominio !== 'seafloor' && L.latLngBounds(a.caja).contains(e.latlng))
+      .sort((p, q) => sup(p.caja) - sup(q.caja))[0];
+    if (!a) continue;
+    L.popup().setLatLng(e.latlng).setContent(`<b>${a.nombre.replace(/ · sea surface$/, '')}</b><br>${a.id.replace(/_(superficie|fondo)$/, '')} · ${GRUPOS[g]}` +
+      (a.km2 !== undefined ? `<br>${fmt(a.km2)} km² with climate data<br>Dominant ecoregion: ${a.eco}` : '<br>Marine protected area') +
+      `<br>Outside the area with d ≤ 0.2: ${fmt(a.km2_02)} km²<br><a href="#${a.id}">Show its climate analogues</a>`).openOn(mapa);
+    return;
+  }
+});
+
+$('opacidad').addEventListener('input', e => mapa.eachLayer(l => l instanceof L.ImageOverlay && l.setOpacity(+e.target.value)));
+</script>
+</body>
+</html>

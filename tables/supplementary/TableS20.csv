@@ -1,0 +1,8 @@
+﻿Layer,Stratum,Area (km²),Protected (%),Unprotected at d ≤ 0.1 (%),Unprotected at d ≤ 0.2 (%),Median dmin
+Sea surface,All,854 669,7.9,3.2,7.8,0.66
+Sea surface,Cold sea of the Humboldt Current,751 104,8.8,3.4,8.3,0.64
+Sea surface,Tropical sea,103 565,1.1,1.9,4.6,0.78
+Seafloor,All,854 669,7.9,39.3,74.9,0.14
+Seafloor,Shelf (0–200 m),87 794,4.9,9.9,29.7,0.27
+Seafloor,Slope (200–1 000 m),51 189,1.7,4.8,16.5,0.37
+Seafloor,Deep floor (> 1 000 m),715 686,8.7,45.8,85.2,0.12

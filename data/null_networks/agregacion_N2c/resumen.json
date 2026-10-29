@@ -1,0 +1,219 @@
+{
+  "n_redes": 999,
+  "n_areas": 258,
+  "celdas_max_por_area": 200,
+  "contigua_km": 1.5,
+  "segundos": 7601.442554000001,
+  "nota": "SES < 0: la red real esta mas agregada (vecino) o es mas redundante que el azar.",
+  "pruebas": {
+    "vecino_km_media": {
+      "real": 9.030772300251463,
+      "nulo_mediana": 14.437678562538506,
+      "nulo_p2_5": 12.740452196837547,
+      "nulo_p97_5": 16.057403622485996,
+      "redes_azar_con_D_menor_o_igual": 0,
+      "redes_mayor_o_igual": 999,
+      "n_redes": 999,
+      "p_bilateral": 0.002,
+      "ses": -6.5466597392011625
+    },
+    "vecino_km_mediana": {
+      "real": 1.845821238703138,
+      "nulo_mediana": 9.547246639819488,
+      "nulo_p2_5": 7.640915561428088,
+      "nulo_p97_5": 11.757224294300402,
+      "redes_azar_con_D_menor_o_igual": 0,
+      "redes_mayor_o_igual": 999,
+      "n_redes": 999,
+      "p_bilateral": 0.002,
+      "ses": -7.386236974155764
+    },
+    "contiguas_pct": {
+      "real": 48.837209302325576,
+      "nulo_mediana": 16.666666666666664,
+      "nulo_p2_5": 12.015503875968992,
+      "nulo_p97_5": 21.31782945736434,
+      "redes_azar_con_D_menor_o_igual": 999,
+      "redes_mayor_o_igual": 0,
+      "n_redes": 999,
+      "p_bilateral": 0.002,
+      "ses": 13.173782020834103
+    },
+    "redundancia_media": {
+      "real": 0.15270998715395942,
+      "nulo_mediana": 0.16381946015430932,
+      "nulo_p2_5": 0.15551306245161495,
+      "nulo_p97_5": 0.17364773946688314,
+      "redes_azar_con_D_menor_o_igual": 6,
+      "redes_mayor_o_igual": 993,
+      "n_redes": 999,
+      "p_bilateral": 0.014,
+      "ses": -2.4412509034743106
+    },
+    "redundancia_ponderada": {
+      "real": 0.11864866013746292,
+      "nulo_mediana": 0.1308914174257533,
+      "nulo_p2_5": 0.12185789199888146,
+      "nulo_p97_5": 0.14225769762421456,
+      "redes_azar_con_D_menor_o_igual": 10,
+      "redes_mayor_o_igual": 989,
+      "n_redes": 999,
+      "p_bilateral": 0.022,
+      "ses": -2.4291231244944753
+    },
+    "vecino_km_media|Bosque tropical amazónico": {
+      "real": 4.017678934309723,
+      "nulo_mediana": 17.026130613784467,
+      "nulo_p2_5": 13.925815500246513,
+      "nulo_p97_5": 20.383364357362346,
+      "redes_azar_con_D_menor_o_igual": 0,
+      "redes_mayor_o_igual": 999,
+      "n_redes": 999,
+      "p_bilateral": 0.002,
+      "ses": -7.886729517707178
+    },
+    "redundancia_media|Bosque tropical amazónico": {
+      "real": 0.04479959672459874,
+      "nulo_mediana": 0.06269189857234259,
+      "nulo_p2_5": 0.05487359161360488,
+      "nulo_p97_5": 0.07223444091980814,
+      "redes_azar_con_D_menor_o_igual": 0,
+      "redes_mayor_o_igual": 999,
+      "n_redes": 999,
+      "p_bilateral": 0.002,
+      "ses": -4.04359754582884
+    },
+    "vecino_km_media|Selva alta (yungas)": {
+      "real": 5.914064374695586,
+      "nulo_mediana": 9.466291456879057,
+      "nulo_p2_5": 7.406695111725079,
+      "nulo_p97_5": 11.634734512611507,
+      "redes_azar_con_D_menor_o_igual": 0,
+      "redes_mayor_o_igual": 999,
+      "n_redes": 999,
+      "p_bilateral": 0.002,
+      "ses": -3.345811623764706
+    },
+    "redundancia_media|Selva alta (yungas)": {
+      "real": 0.14441910557740154,
+      "nulo_mediana": 0.16127915303966447,
+      "nulo_p2_5": 0.14832219364959487,
+      "nulo_p97_5": 0.1762128892137773,
+      "redes_azar_con_D_menor_o_igual": 5,
+      "redes_mayor_o_igual": 994,
+      "n_redes": 999,
+      "p_bilateral": 0.012,
+      "ses": -2.468568384290696
+    },
+    "vecino_km_media|Páramo": {
+      "real": 0.3112607179660776,
+      "nulo_mediana": 2.4662997699778244,
+      "nulo_p2_5": 0.5162770661327732,
+      "nulo_p97_5": 5.865679045032488,
+      "redes_azar_con_D_menor_o_igual": 5,
+      "redes_mayor_o_igual": 994,
+      "n_redes": 999,
+      "p_bilateral": 0.012,
+      "ses": -1.6537603547152708
+    },
+    "redundancia_media|Páramo": {
+      "real": 0.10338450720088162,
+      "nulo_mediana": 0.13257646603666676,
+      "nulo_p2_5": 0.09962394168381457,
+      "nulo_p97_5": 0.16664770632163312,
+      "redes_azar_con_D_menor_o_igual": 50,
+      "redes_mayor_o_igual": 949,
+      "n_redes": 999,
+      "p_bilateral": 0.102,
+      "ses": -1.6040879446980723
+    },
+    "vecino_km_media|Puna": {
+      "real": 16.503346094578053,
+      "nulo_mediana": 17.925700322826486,
+      "nulo_p2_5": 13.200418560696228,
+      "nulo_p97_5": 23.06766982157224,
+      "redes_azar_con_D_menor_o_igual": 290,
+      "redes_mayor_o_igual": 709,
+      "n_redes": 999,
+      "p_bilateral": 0.582,
+      "ses": -0.5843240019122626
+    },
+    "redundancia_media|Puna": {
+      "real": 0.20198787355953,
+      "nulo_mediana": 0.20856059567739038,
+      "nulo_p2_5": 0.1837823191483939,
+      "nulo_p97_5": 0.23542247497670082,
+      "redes_azar_con_D_menor_o_igual": 292,
+      "redes_mayor_o_igual": 707,
+      "n_redes": 999,
+      "p_bilateral": 0.586,
+      "ses": -0.5186386741179677
+    },
+    "vecino_km_media|Serranía esteparia": {
+      "real": 24.84186269730091,
+      "nulo_mediana": 26.546442664539466,
+      "nulo_p2_5": 7.691466589365763,
+      "nulo_p97_5": 51.40717285841273,
+      "redes_azar_con_D_menor_o_igual": 436,
+      "redes_mayor_o_igual": 563,
+      "n_redes": 999,
+      "p_bilateral": 0.874,
+      "ses": -0.19859859948789993
+    },
+    "redundancia_media|Serranía esteparia": {
+      "real": 0.3589074184100969,
+      "nulo_mediana": 0.3469586081556786,
+      "nulo_p2_5": 0.2342124537640645,
+      "nulo_p97_5": 0.504121242772073,
+      "redes_azar_con_D_menor_o_igual": 575,
+      "redes_mayor_o_igual": 424,
+      "n_redes": 999,
+      "p_bilateral": 0.85,
+      "ses": 0.08845111402380385
+    },
+    "vecino_km_media|Bosque seco ecuatorial": {
+      "real": 8.454294510871488,
+      "nulo_mediana": 11.344557200953124,
+      "nulo_p2_5": 7.877199038012447,
+      "nulo_p97_5": 15.050013718573467,
+      "redes_azar_con_D_menor_o_igual": 44,
+      "redes_mayor_o_igual": 955,
+      "n_redes": 999,
+      "p_bilateral": 0.09,
+      "ses": -1.6137492875813562
+    },
+    "redundancia_media|Bosque seco ecuatorial": {
+      "real": 0.22823417234203058,
+      "nulo_mediana": 0.25822502853863416,
+      "nulo_p2_5": 0.2157736392627815,
+      "nulo_p97_5": 0.30374964819863004,
+      "redes_azar_con_D_menor_o_igual": 87,
+      "redes_mayor_o_igual": 912,
+      "n_redes": 999,
+      "p_bilateral": 0.176,
+      "ses": -1.3634033070711225
+    },
+    "vecino_km_media|Desierto costero del Pacífico": {
+      "real": 33.7466090934474,
+      "nulo_mediana": 22.43741130173321,
+      "nulo_p2_5": 13.811149314724231,
+      "nulo_p97_5": 31.947205657120993,
+      "redes_azar_con_D_menor_o_igual": 991,
+      "redes_mayor_o_igual": 8,
+      "n_redes": 999,
+      "p_bilateral": 0.018,
+      "ses": 2.390794143856867
+    },
+    "redundancia_media|Desierto costero del Pacífico": {
+      "real": 0.4991554348091394,
+      "nulo_mediana": 0.4089444175505923,
+      "nulo_p2_5": 0.3434643372845797,
+      "nulo_p97_5": 0.4874476162171945,
+      "redes_azar_con_D_menor_o_igual": 987,
+      "redes_mayor_o_igual": 12,
+      "n_redes": 999,
+      "p_bilateral": 0.026,
+      "ses": 2.3472155846961273
+    }
+  }
+}

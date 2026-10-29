@@ -1,0 +1,7 @@
+﻿anp_id,nombre,modalidad,superficie_km2,n_celdas,ecorregion_dominante,fraccion_dominante,multi_ecorregion,pixeles_ancla,posiciones_validas,anclas_validas_distintas_10km,pct_dominio_ok,pct_natural_ok,pct_tvd_ok
+NAC_RN03,de Paracas,NACIONAL,2193.3457922213256,105,Mar frío de la Corriente Peruana,1.0,0,25650,31141,201,86.13,86.13,99.23
+NAC_RN13,"Sistema de Islas, Islotes y Puntas Guaneras",NACIONAL,1401.5516713583017,142,Mar frío de la Corriente Peruana,1.0,0,25650,2432,83,6.9575,6.9575,92.2325
+NAC_RN15,San Fernando,NACIONAL,427.33775790391417,29,Mar frío de la Corriente Peruana,1.0000000000000002,0,25650,33053,211,91.52,91.52,99.4575
+NAC_RN16,Dorsal de Nasca,NACIONAL,62331.46678663817,2216,Mar frío de la Corriente Peruana,1.0000000000000044,0,25650,17096,115,49.15,49.15,96.895
+NAC_RN18,Mar Tropical de Grau,NACIONAL,1157.461036043213,77,Mar tropical,1.0,0,3521,7146,28,50.4525,50.4525,79.475
+NAC_SN05,los Manglares de Tumbes,NACIONAL,0.7239776640391734,4,Mar tropical,1.0,0,3521,20217,33,95.4425,95.4425,99.35

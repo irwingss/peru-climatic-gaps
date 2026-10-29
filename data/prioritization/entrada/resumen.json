@@ -1,0 +1,19 @@
+{
+  "k_clima": 3000,
+  "d_mediana_centroide": 0.11789092204026023,
+  "d_p90_centroide": 0.2748808887706906,
+  "n_especies": 271,
+  "por_grupo": {
+    "AMPHIBIANS": 114,
+    "PLANTS": 107,
+    "BIRDS": 20,
+    "REPTILES": 17,
+    "MAMMALS": 13
+  },
+  "metas_clima": [
+    0.1,
+    0.17,
+    0.3
+  ],
+  "segundos": 133.49026140000024
+}

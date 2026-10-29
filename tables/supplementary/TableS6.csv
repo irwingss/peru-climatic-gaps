@@ -1,0 +1,11 @@
+﻿Stratum,"Main (κ ≤ 100, 258 areas)",κ ≤ 50,Without the 63 areas < 1 km²
+Peru (continental),0.151 · 0.133 · 0.002 · worse (+6.4),0.139 · 0.122 · 0.002 · worse (+6.4),0.152 · 0.135 · 0.002 · worse (+6.2)
+Amazonian tropical forest,0.058 · 0.044 · 0.014 · worse (+7.8),0.052 · 0.040 · 0.014 · worse (+7.5),0.058 · 0.046 · 0.014 · worse (+7.0)
+Palm savanna,–,–,–
+Yungas (high jungle),0.133 · 0.117 · 0.014 · worse (+4.0),0.122 · 0.107 · 0.014 · worse (+4.1),0.133 · 0.118 · 0.014 · worse (+4.2)
+Páramo,0.093 · 0.095 · 1.000 · not distinguishable (-0.2),0.085 · 0.086 · 1.000 · not distinguishable (-0.1),0.093 · 0.095 · 1.000 · not distinguishable (-0.1)
+Puna,0.208 · 0.192 · 0.224 · not distinguishable (+2.1),0.190 · 0.175 · 0.192 · not distinguishable (+2.2),0.208 · 0.193 · 0.232 · not distinguishable (+2.0)
+Steppe mountains,0.385 · 0.345 · 0.312 · not distinguishable (+1.7),0.360 · 0.319 · 0.216 · not distinguishable (+1.9),0.385 · 0.345 · 0.330 · not distinguishable (+1.7)
+Equatorial dry forest,0.277 · 0.217 · 0.014 · worse (+6.4),0.255 · 0.198 · 0.014 · worse (+6.6),0.277 · 0.217 · 0.014 · worse (+6.5)
+Pacific tropical forest,–,–,–
+Pacific coastal desert,0.382 · 0.373 · 1.000 · not distinguishable (+0.5),0.353 · 0.344 · 1.000 · not distinguishable (+0.5),0.389 · 0.377 · 1.000 · not distinguishable (+0.6)

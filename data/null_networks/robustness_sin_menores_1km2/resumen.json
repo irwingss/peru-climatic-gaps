@@ -1,0 +1,33 @@
+{
+  "n_redes": 999,
+  "n_muestra": 53509,
+  "superficie_red_real_km2": 244722.95479801428,
+  "superficie_redes_azar_km2_mediana": 246564.78301414993,
+  "segundos": 2751.567111500015,
+  "diseno": "N2c",
+  "semilla": 20261053,
+  "superposicion_limitada": true,
+  "n_areas": 195,
+  "sin_areas_menores_km2": 1.0,
+  "umbral_natural": "por area (F3: min(0.9, fraccion natural real))",
+  "superposicion_real_km2": 3126.707339641327,
+  "superposicion_azar_km2_mediana": 648.3444366479187,
+  "huellas_fallidas_pct": 2.8577295243961913,
+  "huellas_fallidas_pct_por_ecorregion_dominante": {
+    "Bosque tropical amazónico": 1.390520955738347,
+    "Sabana de palmeras": 0.40040040040040037,
+    "Selva alta (yungas)": 5.512178845512179,
+    "Páramo": 2.5358692025358693,
+    "Puna": 2.335669002335669,
+    "Serranía esteparia": 0.0,
+    "Bosque seco ecuatorial": 0.04819634449264079,
+    "Bosque tropical del Pacífico": 0.0,
+    "Desierto costero del Pacífico": 4.1041041041041035
+  },
+  "estratos_no_evaluables": [
+    "Bosque tropical del Pacífico",
+    "Sabana de palmeras"
+  ],
+  "memoria_pico_mib": 1335.0,
+  "criterios": "Ancla natural de la ecorregion dominante, 8 orientaciones; ademas TVD <= 0.2; 500 intentos."
+}

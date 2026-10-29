@@ -1,0 +1,912 @@
+{
+ "RECURSOS_GENERALES": {
+  "automatic": {
+   "CHELSA/V2.1/1981-2010/peru_nativo/CHELSA_bio01_1981-2010_V.2.1_PERU.tif": {
+    "sha256": "d03836c64392259f316d337a4580edb92aa2a64f2b7b5021675505d7b66973ba",
+    "bytes": 1473382
+   },
+   "CHELSA/V2.1/1981-2010/peru_nativo/CHELSA_bio02_1981-2010_V.2.1_PERU.tif": {
+    "sha256": "d7c713e69372cb36256306858bfdea8b339c86e0ad52ed3bbeacdedce2df0f07",
+    "bytes": 512569
+   },
+   "CHELSA/V2.1/1981-2010/peru_nativo/CHELSA_bio04_1981-2010_V.2.1_PERU.tif": {
+    "sha256": "2e898f863e2143e53442b0db5011c1f689278d4e2861d47a2303c367551e3507",
+    "bytes": 3061070
+   },
+   "CHELSA/V2.1/1981-2010/peru_nativo/CHELSA_bio05_1981-2010_V.2.1_PERU.tif": {
+    "sha256": "32cf9eb02660907355c32a154930326eef6ffa24a865cd7b4e8734494f40894c",
+    "bytes": 1515808
+   },
+   "CHELSA/V2.1/1981-2010/peru_nativo/CHELSA_bio06_1981-2010_V.2.1_PERU.tif": {
+    "sha256": "cd1073f4be99152e7770dc16a3ffae750d00ee08272e3c05a8906bf3f22e17a3",
+    "bytes": 1488138
+   },
+   "CHELSA/V2.1/1981-2010/peru_nativo/CHELSA_bio12_1981-2010_V.2.1_PERU.tif": {
+    "sha256": "253cab9b5fedbac4d114ed4887209d608181b7aafc917d1ec917e4c0c61a714f",
+    "bytes": 3468315
+   },
+   "CHELSA/V2.1/1981-2010/peru_nativo/CHELSA_bio15_1981-2010_V.2.1_PERU.tif": {
+    "sha256": "b04832dcb48d0d9a03aa2687ec88f8c779ea2d4b3340a700de9d4d737f803481",
+    "bytes": 1828486
+   },
+   "CHELSA/V2.1/1981-2010/peru_nativo/CHELSA_hursmean_1981-2010_V.2.1_PERU.tif": {
+    "sha256": "55300f5204df5e81f902924019dbe9e817066720cf82609d8555bc3eaa1b0f69",
+    "bytes": 3839741
+   },
+   "CHELSA/V2.1/1981-2010/peru_nativo/CHELSA_petmean_1981-2010_V.2.1_PERU.tif": {
+    "sha256": "a870bb0947fde9d1bb6ca5d7ba3d35a0361fdc88feff88bc46a7f6158ff8afff",
+    "bytes": 3822796
+   },
+   "CHELSA/V2.1/1981-2010/peru_nativo/CHELSA_rsdsmean_1981-2010_V.2.1_PERU.tif": {
+    "sha256": "9db427b5918868345a12483430c8142cbff28d275a5af42d77df9a020856ada2",
+    "bytes": 911991
+   },
+   "CHELSA/V2.1/1981-2010/peru_nativo/CHELSA_vpdmean_1981-2010_V.2.1_PERU.tif": {
+    "sha256": "8f5249dfacb36ec671fe9a436414ab422b22092c12dbb2ccf9f025351a3c56f7",
+    "bytes": 4870881
+   },
+   "CHELSA/V2.1/1981-2010/pr_mensual/CHELSA_pr_01_1981-2010_V.2.1_PERU.tif": {
+    "sha256": "b247f6d4e4ca547f3b774e2dfe9df99f4dd2b5149d5a75f90c72d2fb0d67cecf",
+    "bytes": 3597193
+   },
+   "CHELSA/V2.1/1981-2010/pr_mensual/CHELSA_pr_02_1981-2010_V.2.1_PERU.tif": {
+    "sha256": "311a0bad8d7df01a25dd599d446a0442468c7a19752bc5fab704d36dea6e0321",
+    "bytes": 3609663
+   },
+   "CHELSA/V2.1/1981-2010/pr_mensual/CHELSA_pr_03_1981-2010_V.2.1_PERU.tif": {
+    "sha256": "36534df857fee5cacc88e41439717547f2568645d3c26c11629c936886c4e860",
+    "bytes": 3606232
+   },
+   "CHELSA/V2.1/1981-2010/pr_mensual/CHELSA_pr_04_1981-2010_V.2.1_PERU.tif": {
+    "sha256": "ba517f278812cfc6656c8dd0ecd51fc69272f29b8b75b9aa02afd258d98bb29a",
+    "bytes": 3435706
+   },
+   "CHELSA/V2.1/1981-2010/pr_mensual/CHELSA_pr_05_1981-2010_V.2.1_PERU.tif": {
+    "sha256": "3f8aa4490089cde4c1da89c985f724e5e32f5d15b6e67d8150b062eda0c43c07",
+    "bytes": 3067760
+   },
+   "CHELSA/V2.1/1981-2010/pr_mensual/CHELSA_pr_06_1981-2010_V.2.1_PERU.tif": {
+    "sha256": "9dcc131e17a914d970546f96137fb76339033e6b0c6749affe6d28cb996262d0",
+    "bytes": 2784385
+   },
+   "CHELSA/V2.1/1981-2010/pr_mensual/CHELSA_pr_07_1981-2010_V.2.1_PERU.tif": {
+    "sha256": "37934d0bea120be52c61c40de053996ed07fd00e6410f73b87aa683777a7bf8b",
+    "bytes": 2591128
+   },
+   "CHELSA/V2.1/1981-2010/pr_mensual/CHELSA_pr_08_1981-2010_V.2.1_PERU.tif": {
+    "sha256": "b6366322bda7406654a1d7fa238e0e83d76893a593afade92105148e94944cc5",
+    "bytes": 2686812
+   },
+   "CHELSA/V2.1/1981-2010/pr_mensual/CHELSA_pr_09_1981-2010_V.2.1_PERU.tif": {
+    "sha256": "4b271386d5705eea96c75dfe17bd03b9b563fac478a7925462d5ab35d13f3286",
+    "bytes": 2973974
+   },
+   "CHELSA/V2.1/1981-2010/pr_mensual/CHELSA_pr_10_1981-2010_V.2.1_PERU.tif": {
+    "sha256": "73892e032817c944ab93502c9e3a15376624e559fcfbad1806f03e31df0eff8c",
+    "bytes": 3180154
+   },
+   "CHELSA/V2.1/1981-2010/pr_mensual/CHELSA_pr_11_1981-2010_V.2.1_PERU.tif": {
+    "sha256": "c095d35cc96eed2a6ff6020cb9db8669e5125ff672bf27ff1dd277c0a8c40e40",
+    "bytes": 3277552
+   },
+   "CHELSA/V2.1/1981-2010/pr_mensual/CHELSA_pr_12_1981-2010_V.2.1_PERU.tif": {
+    "sha256": "19c46f1f300be176a7ebe5bfeddc9ef97f5398a917ce48a529f23d3b04440de2",
+    "bytes": 3479543
+   },
+   "Bio-ORACLE/v3/peru/chl_baseline_2000_2018_depthsurf.nc": {
+    "sha256": "526d698648e16ca7760c424fc2f0797aac8e490b539075af5166fac6f56a761a",
+    "bytes": 1595144
+   },
+   "Bio-ORACLE/v3/peru/no3_baseline_2000_2018_depthmean.nc": {
+    "sha256": "4623802f2870b31772c34751e59eee62c3b92b29a4a4955eaa2a9446f7dd922e",
+    "bytes": 1595144
+   },
+   "Bio-ORACLE/v3/peru/no3_baseline_2000_2018_depthsurf.nc": {
+    "sha256": "1e8bf2d2b165f0a1b44199dd2d531038fec38ffdf3900a6f42931cf50712e961",
+    "bytes": 1595144
+   },
+   "Bio-ORACLE/v3/peru/o2_baseline_2000_2018_depthmean.nc": {
+    "sha256": "e4efcd0694c1886fcf67421e8c05e789e7accdad420e71ef91a3fea1bdaddcfd",
+    "bytes": 1594800
+   },
+   "Bio-ORACLE/v3/peru/o2_baseline_2000_2018_depthsurf.nc": {
+    "sha256": "247ef7a560b83d0aa5ecbb98dd4f23ff93aa73551d1ab0df5f9886b09d607f64",
+    "bytes": 1594800
+   },
+   "Bio-ORACLE/v3/peru/so_baseline_2000_2019_depthmean.nc": {
+    "sha256": "163a3a6813520046c9dc2f5d4aa3ed1e82e1dcd2d9cbd6340e4abef565662fda",
+    "bytes": 1595000
+   },
+   "Bio-ORACLE/v3/peru/so_baseline_2000_2019_depthsurf.nc": {
+    "sha256": "95a5a8e31f710564f14c96115821aca725d7fdff9a4fd9631f91b549082523fd",
+    "bytes": 1595000
+   },
+   "Bio-ORACLE/v3/peru/sws_baseline_2000_2019_depthmean.nc": {
+    "sha256": "9b5491e75b70de31892ebbe82d55044114ea1ec1e5ec63c8e95ab616455004f2",
+    "bytes": 1594952
+   },
+   "Bio-ORACLE/v3/peru/sws_baseline_2000_2019_depthsurf.nc": {
+    "sha256": "fab3f3707a3a843d3ea182960d3a12e0bf14623be2935b568622fe63f472fb83",
+    "bytes": 1594952
+   },
+   "Bio-ORACLE/v3/peru/terrain_characteristics.nc": {
+    "sha256": "741855832447476bdcc50b0fd2b9ba5450c7ca3b792959defe8c114d4c61ca3a",
+    "bytes": 801284
+   },
+   "Bio-ORACLE/v3/peru/thetao_baseline_2000_2019_depthmean.nc": {
+    "sha256": "4c370c241d9bce35eb78447b2b33c8641ece8f52a5804b2468d1afa89868d059",
+    "bytes": 4770960
+   },
+   "Bio-ORACLE/v3/peru/thetao_baseline_2000_2019_depthsurf.nc": {
+    "sha256": "5bf47ba27e15f9579db65c678d149daa025ef689c4e81bd906072d52cae9fbb7",
+    "bytes": 4770960
+   },
+   "Bio-ORACLE/v3/zee_peru_mrgid8432.geojson": {
+    "sha256": "13f369752e9820e1315d5cc0f5141843acbc29da6ce64dadb75fc34515123c8e",
+    "bytes": 241666
+   },
+   "MapBiomas_Peru/mapbiomas_peru_c3_2020_fraccion_natural_30s.tif": {
+    "sha256": "97fca4d1554605a3b626b68c1006bff3dbd11d4b33781fa078e2869b1a02f2ce",
+    "bytes": 3487531
+   },
+   "elevation/wc2.1_30s_elev.tif": {
+    "sha256": "1d57ce9fd3584cea6a227396bc75ef88522fd5346e8487c17370885c0499716e",
+    "bytes": 342195708
+   },
+   "GHSL_SMOD_E2020_R2023A/GHS_SMOD_E2020_GLOBE_R2023A_4326_30ss_V2_0.tif": {
+    "sha256": "129104bfdbf15026c692a0de78b0c8f91db0bf0039aa795c1dbdd0366d687b7a",
+    "bytes": 23858415
+   },
+   "PISCO_SENAMIH/PISCOp_m.nc": {
+    "sha256": "98b3cb4c629f0f7f1134711887146f19901dfda7e065b06ddfda6254b5ae359b",
+    "bytes": 56601000
+   },
+   "SENAMHI_normales_OMM_1981-2010/WMO_Normals_Excel_Template-PERU.xls": {
+    "sha256": "f716608ff19f84f11457948550ef6bcfad8c682e022170ce282e006b7c50fe86",
+    "bytes": 573952
+   }
+  },
+  "manual": {
+   "CHELSA/V2.1/1981-2010/cartografia/ANP_nacionales.geojson": {
+    "sha256": "16c2d79ef29ebfa2903d8f8cf2544542dace405551e5977dcf8db9cb40cacc4f",
+    "bytes": 8132566
+   },
+   "CHELSA/V2.1/1981-2010/cartografia/ANP_privadas.geojson": {
+    "sha256": "7a64c00ccc511237c071e03c91ff6b3960dfd5bf5f36f6a00c22d7697b3441d9",
+    "bytes": 1483748
+   },
+   "CHELSA/V2.1/1981-2010/cartografia/ANP_regionales.geojson": {
+    "sha256": "579fc86ef4ec14805c14c623e7a233ebfcf0ebbd61c76086ed523c9732298ff1",
+    "bytes": 2384095
+   },
+   "CHELSA/V2.1/1981-2010/cartografia/cartografia_ANP_Peru.gpkg": {
+    "sha256": "0d04e9af8af2911b977de624f348877c30de819eaaca8de04a004d230b24f351",
+    "bytes": 28872704
+   },
+   "CHELSA/V2.1/1981-2010/cartografia/Peru_limite_departamental.geojson": {
+    "sha256": "379635dd1ea8307aff7cf05d6f30bc778d16b9749864bebf3d3d3589601f4db0",
+    "bytes": 3571088
+   },
+   "capas_sig/Peru/Departamentos_Peru.cpg": {
+    "sha256": "3ad3031f5503a4404af825262ee8232cc04d4ea6683d42c5dd0a2f2a27ac9824",
+    "bytes": 5
+   },
+   "capas_sig/Peru/Departamentos_Peru.dbf": {
+    "sha256": "98cfb845d250686e1bc94926f91c0abb5a73d1ef8167418ce5169631c01377bc",
+    "bytes": 44512
+   },
+   "capas_sig/Peru/Departamentos_Peru.prj": {
+    "sha256": "a02a27b1d1982c8516d83398e85a3c8b1aef1713c13ef4d84d7bde17430c07c4",
+    "bytes": 145
+   },
+   "capas_sig/Peru/Departamentos_Peru.sbn": {
+    "sha256": "c0eddf35fe6e50b73b6c037708b1a8e70d29e05003a63d0b7a595042f795aefe",
+    "bytes": 404
+   },
+   "capas_sig/Peru/Departamentos_Peru.sbx": {
+    "sha256": "5eff476e5ca05908a836ce3d962779c4b7f4fbe4ef4cca7cbacb1f09f864fa97",
+    "bytes": 148
+   },
+   "capas_sig/Peru/Departamentos_Peru.shp": {
+    "sha256": "524aebd775a9e84d7589e7cbbc0642a09d8d3fafb2cc3edf184b36e02fff2a24",
+    "bytes": 4919712
+   },
+   "capas_sig/Peru/Departamentos_Peru.shx": {
+    "sha256": "dd82fc47953ddb67504e5be6b065e07e3ca94f69f86ef85b3e96197d0922d528",
+    "bytes": 300
+   }
+  },
+  "licensed": {
+   "IUCN/AMPHIBIANS/AMPHIBIANS_PART1.cpg": {
+    "sha256": "3ad3031f5503a4404af825262ee8232cc04d4ea6683d42c5dd0a2f2a27ac9824",
+    "bytes": 5
+   },
+   "IUCN/AMPHIBIANS/AMPHIBIANS_PART1.dbf": {
+    "sha256": "086defc30a520ec3f56f9899e1ee3aa888baee3bfbcdc516e278bd2364c6990c",
+    "bytes": 11617953
+   },
+   "IUCN/AMPHIBIANS/AMPHIBIANS_PART1.id_no.atx": {
+    "sha256": "c6ad85c4478e84755e18fb7094672a1bcf799eca2d6de5bd4b6e659b0cd66573",
+    "bytes": 67584
+   },
+   "IUCN/AMPHIBIANS/AMPHIBIANS_PART1.prj": {
+    "sha256": "3259f0e55290a82b1350646f604e8a7ee1e2136c0320a40fad838ab40819fff8",
+    "bytes": 147
+   },
+   "IUCN/AMPHIBIANS/AMPHIBIANS_PART1.sbn": {
+    "sha256": "410c205c94be3aa9b7416ef44f2188fddc167c6f8e32e357525da383f37df4de",
+    "bytes": 52356
+   },
+   "IUCN/AMPHIBIANS/AMPHIBIANS_PART1.sbx": {
+    "sha256": "63a1129dfb2ab4661fd2a302442169955bc1f6b2d894e9f9a869cfafc65a21e9",
+    "bytes": 2156
+   },
+   "IUCN/AMPHIBIANS/AMPHIBIANS_PART1.shp": {
+    "sha256": "f5107e43934dd98bc08819def89aa8af1a068b04074525b555c8771ed7d9b4cf",
+    "bytes": 1244307344
+   },
+   "IUCN/AMPHIBIANS/AMPHIBIANS_PART1.shp.xml": {
+    "sha256": "f4a3c5133c102284eeca6e1edfee07224bff821d0ad4a55a84a14e8b9e6e948e",
+    "bytes": 12951
+   },
+   "IUCN/AMPHIBIANS/AMPHIBIANS_PART1.shx": {
+    "sha256": "52c4295d740167f2dec433f4e03d74d3657c4d5283a793913e6ae7477488f17b",
+    "bytes": 42556
+   },
+   "IUCN/AMPHIBIANS/AMPHIBIANS_PART2.cpg": {
+    "sha256": "3ad3031f5503a4404af825262ee8232cc04d4ea6683d42c5dd0a2f2a27ac9824",
+    "bytes": 5
+   },
+   "IUCN/AMPHIBIANS/AMPHIBIANS_PART2.dbf": {
+    "sha256": "5a56598ef3bd47cb26b30d47324ef01770507b7090d5ed3f09da6c596220fad5",
+    "bytes": 11617953
+   },
+   "IUCN/AMPHIBIANS/AMPHIBIANS_PART2.id_no.atx": {
+    "sha256": "1a49139a5061c602648bd5d4859bae1fb11149140210df1efe089699bfcc506f",
+    "bytes": 67584
+   },
+   "IUCN/AMPHIBIANS/AMPHIBIANS_PART2.prj": {
+    "sha256": "3259f0e55290a82b1350646f604e8a7ee1e2136c0320a40fad838ab40819fff8",
+    "bytes": 147
+   },
+   "IUCN/AMPHIBIANS/AMPHIBIANS_PART2.sbn": {
+    "sha256": "9b51eb7555e2f1810b845785d74dd7598244f25d3e592ee83e82990faa95b3f3",
+    "bytes": 52268
+   },
+   "IUCN/AMPHIBIANS/AMPHIBIANS_PART2.sbx": {
+    "sha256": "75e3f02a4556ede5f3746be41f893be1ed2eaf8f8a0fa8b74eeae03843a437b3",
+    "bytes": 2164
+   },
+   "IUCN/AMPHIBIANS/AMPHIBIANS_PART2.shp": {
+    "sha256": "df6ddcbd43cb62959a518d1a732ecaec7f70f4ed3774ac5b0254e3e0f298057a",
+    "bytes": 1286327616
+   },
+   "IUCN/AMPHIBIANS/AMPHIBIANS_PART2.shp.xml": {
+    "sha256": "301e334586746f49518fcc595f778fbf6fe22476f0da8094466fe98f714b8bf7",
+    "bytes": 12951
+   },
+   "IUCN/AMPHIBIANS/AMPHIBIANS_PART2.shx": {
+    "sha256": "2df9e0d7c3c3335c5558d5a3f9f8fea8b9ade24076449ec85cdb9b27990c9808",
+    "bytes": 42556
+   },
+   "IUCN/MAMMALS/MAMMALS_PART1.cpg": {
+    "sha256": "3ad3031f5503a4404af825262ee8232cc04d4ea6683d42c5dd0a2f2a27ac9824",
+    "bytes": 5
+   },
+   "IUCN/MAMMALS/MAMMALS_PART1.dbf": {
+    "sha256": "365eea189f4fb86cb106f0775ffb35eff5c5d7c318f66da8ce7b133c9d6ab12e",
+    "bytes": 14675986
+   },
+   "IUCN/MAMMALS/MAMMALS_PART1.id_no.atx": {
+    "sha256": "9eeb335a1270b26cc0352adc1579cb839007d0cff44539a64615c5b30051926e",
+    "bytes": 86016
+   },
+   "IUCN/MAMMALS/MAMMALS_PART1.prj": {
+    "sha256": "3259f0e55290a82b1350646f604e8a7ee1e2136c0320a40fad838ab40819fff8",
+    "bytes": 147
+   },
+   "IUCN/MAMMALS/MAMMALS_PART1.sbn": {
+    "sha256": "244148643e669c10282741945b1e3210c59e09435faf3da725dd080e043f0088",
+    "bytes": 64236
+   },
+   "IUCN/MAMMALS/MAMMALS_PART1.sbx": {
+    "sha256": "8d15764af61e633fd584c230cbbc06daba22a7e231250fa2ce7e459d235c184d",
+    "bytes": 2692
+   },
+   "IUCN/MAMMALS/MAMMALS_PART1.shp": {
+    "sha256": "344810ea025b734ac940c9edf29f408355c7e41f13d302942f826a060485c538",
+    "bytes": 740349700
+   },
+   "IUCN/MAMMALS/MAMMALS_PART1.shp.xml": {
+    "sha256": "cdd5f57ea424c27b1f9481eb8c1ec5dac670c4f03d134448fb6cbf5b02bfc079",
+    "bytes": 12906
+   },
+   "IUCN/MAMMALS/MAMMALS_PART1.shx": {
+    "sha256": "000a0ae3db6d888dbf78bb32df8129628d2479eaa0e21befa6f7f77d5cd0ca10",
+    "bytes": 53732
+   },
+   "IUCN/MAMMALS/MAMMALS_PART2.cpg": {
+    "sha256": "3ad3031f5503a4404af825262ee8232cc04d4ea6683d42c5dd0a2f2a27ac9824",
+    "bytes": 5
+   },
+   "IUCN/MAMMALS/MAMMALS_PART2.dbf": {
+    "sha256": "6070f487e89d9e3c4bf2f89775a220284d81d0e6f520777583f42e327bcc6bc2",
+    "bytes": 14645340
+   },
+   "IUCN/MAMMALS/MAMMALS_PART2.id_no.atx": {
+    "sha256": "719540971e0d3a27c5c4f5e16aa9f51419572822f5e890ef3aa491fe3e815498",
+    "bytes": 86016
+   },
+   "IUCN/MAMMALS/MAMMALS_PART2.prj": {
+    "sha256": "3259f0e55290a82b1350646f604e8a7ee1e2136c0320a40fad838ab40819fff8",
+    "bytes": 147
+   },
+   "IUCN/MAMMALS/MAMMALS_PART2.sbn": {
+    "sha256": "5223658adab988d9ac7d8e52957edc5ee850357c32df49c1c50b83e78bb9467e",
+    "bytes": 63788
+   },
+   "IUCN/MAMMALS/MAMMALS_PART2.sbx": {
+    "sha256": "39ed133fd15e9e790d4f8a1dfa35d5322aadccb6483bb2fde9688abefd01a4d3",
+    "bytes": 2404
+   },
+   "IUCN/MAMMALS/MAMMALS_PART2.shp": {
+    "sha256": "e3abb005d80619327409c260a4c70c60e841cb6fd35bf9935145f7fa7de964f4",
+    "bytes": 1206461196
+   },
+   "IUCN/MAMMALS/MAMMALS_PART2.shp.xml": {
+    "sha256": "abe7bb3302f58764e905696f116836ec280faefe962dda14e3a6e64b074eaec7",
+    "bytes": 12906
+   },
+   "IUCN/MAMMALS/MAMMALS_PART2.shx": {
+    "sha256": "ebb323da39526ff72c7bead81c2a8ef9492701690f02892fd6464e42febfe8e9",
+    "bytes": 53620
+   },
+   "IUCN/REPTILES/REPTILES_PART1.cpg": {
+    "sha256": "3ad3031f5503a4404af825262ee8232cc04d4ea6683d42c5dd0a2f2a27ac9824",
+    "bytes": 5
+   },
+   "IUCN/REPTILES/REPTILES_PART1.dbf": {
+    "sha256": "70c15cc4c2aaecfb8e93025263e38145b02f9da18518acbb3a22ecb503f6ffd9",
+    "bytes": 15409301
+   },
+   "IUCN/REPTILES/REPTILES_PART1.id_no.atx": {
+    "sha256": "25d91e0ab270529a67c2531985fb42388846be6a6097f500580f8be5819de7b4",
+    "bytes": 90112
+   },
+   "IUCN/REPTILES/REPTILES_PART1.prj": {
+    "sha256": "3259f0e55290a82b1350646f604e8a7ee1e2136c0320a40fad838ab40819fff8",
+    "bytes": 147
+   },
+   "IUCN/REPTILES/REPTILES_PART1.sbn": {
+    "sha256": "9d419761c050a65729155f4431545d42f423a403d543ee165e5de55df02fb27d",
+    "bytes": 66788
+   },
+   "IUCN/REPTILES/REPTILES_PART1.sbx": {
+    "sha256": "3d1586169e86df28d084c22d8aa9d7edd0ab1045ddeba4114dc3c5fcc2f7e75d",
+    "bytes": 2812
+   },
+   "IUCN/REPTILES/REPTILES_PART1.shp": {
+    "sha256": "76bb53c868795005a1a94fb3e725aabcf7375e9b764c8f61007b79457b313e13",
+    "bytes": 1501363632
+   },
+   "IUCN/REPTILES/REPTILES_PART1.shp.xml": {
+    "sha256": "1fa9297939f2388640f64cc987ea2bff28861a70ac01ac03f45d5ea9835b050d",
+    "bytes": 12921
+   },
+   "IUCN/REPTILES/REPTILES_PART1.shx": {
+    "sha256": "c013e2849bb92fe1c13f853455d98ea724a70382bf593a2e0f24f785b0545d33",
+    "bytes": 56412
+   },
+   "IUCN/REPTILES/REPTILES_PART2.cpg": {
+    "sha256": "3ad3031f5503a4404af825262ee8232cc04d4ea6683d42c5dd0a2f2a27ac9824",
+    "bytes": 5
+   },
+   "IUCN/REPTILES/REPTILES_PART2.dbf": {
+    "sha256": "8199c80db63f39a268ac07e33655261051f32b13628ac0ccc2ae9d64fdc04cd9",
+    "bytes": 15409301
+   },
+   "IUCN/REPTILES/REPTILES_PART2.id_no.atx": {
+    "sha256": "3df28098c34f099a99d24d8dfcf03ba98ec4d70fd9c8930b8b9e1214ca316dba",
+    "bytes": 90112
+   },
+   "IUCN/REPTILES/REPTILES_PART2.prj": {
+    "sha256": "3259f0e55290a82b1350646f604e8a7ee1e2136c0320a40fad838ab40819fff8",
+    "bytes": 147
+   },
+   "IUCN/REPTILES/REPTILES_PART2.sbn": {
+    "sha256": "7898558e1365449f0b0196a5d4474adcf2b26184168ee2cead86268c7b89b3ae",
+    "bytes": 66732
+   },
+   "IUCN/REPTILES/REPTILES_PART2.sbx": {
+    "sha256": "2def34ccf90367e8c304434d37ed8766a28bda541c3926d81e4957b0adaf7b3c",
+    "bytes": 2724
+   },
+   "IUCN/REPTILES/REPTILES_PART2.shp": {
+    "sha256": "f7a6d0b832249c7632af66dcf02e92e40e0a282266c6b2aa8edc80b22a29f54d",
+    "bytes": 1038137564
+   },
+   "IUCN/REPTILES/REPTILES_PART2.shp.xml": {
+    "sha256": "e7a3f99385d02e4a5a06effe58e549ad2b9d07d2172a133d4c7fd20c94b958a2",
+    "bytes": 12921
+   },
+   "IUCN/REPTILES/REPTILES_PART2.shx": {
+    "sha256": "fb9f968b6be6103c15c30bcbe0eb2e63428d5496e39f3db731cece6720f41916",
+    "bytes": 56412
+   },
+   "IUCN/PLANTS/PLANTS_PART1.CPG": {
+    "sha256": "3ad3031f5503a4404af825262ee8232cc04d4ea6683d42c5dd0a2f2a27ac9824",
+    "bytes": 5
+   },
+   "IUCN/PLANTS/PLANTS_PART1.dbf": {
+    "sha256": "2f32522692f59db74405d2604bd789b1783a2e55d1fb0f1b9837044040c25a25",
+    "bytes": 11587307
+   },
+   "IUCN/PLANTS/PLANTS_PART1.id_no.atx": {
+    "sha256": "2638c4e75bf1cc82e5510ba9a1f3e78c98d1be56abd1ce1e8fa130fe30af3ac0",
+    "bytes": 67584
+   },
+   "IUCN/PLANTS/PLANTS_PART1.prj": {
+    "sha256": "3259f0e55290a82b1350646f604e8a7ee1e2136c0320a40fad838ab40819fff8",
+    "bytes": 147
+   },
+   "IUCN/PLANTS/PLANTS_PART1.sbn": {
+    "sha256": "6e34334636d673b3fceaa7068467ed24369e2859f6333db86eb2868e57badbc1",
+    "bytes": 52596
+   },
+   "IUCN/PLANTS/PLANTS_PART1.sbx": {
+    "sha256": "143be1c46983eb0660aadd4286db659468177ac71ed8d79aaf71bb7738d883ad",
+    "bytes": 2084
+   },
+   "IUCN/PLANTS/PLANTS_PART1.shp": {
+    "sha256": "0378631f0b2d32a77aa2c5c18f8308239f4369ae33da8671e741afd498db6d55",
+    "bytes": 1860109596
+   },
+   "IUCN/PLANTS/PLANTS_PART1.shp.xml": {
+    "sha256": "bcbb5243b8c6a7ed783afa0357b81fdb040ba4d60b82812ad206b3def1fa217e",
+    "bytes": 14031
+   },
+   "IUCN/PLANTS/PLANTS_PART1.shx": {
+    "sha256": "665d0a7587161e601f4f438c47ade49ab6a6a411b988de33907337d7e1f0d287",
+    "bytes": 42444
+   },
+   "IUCN/PLANTS/PLANTS_PART2.CPG": {
+    "sha256": "3ad3031f5503a4404af825262ee8232cc04d4ea6683d42c5dd0a2f2a27ac9824",
+    "bytes": 5
+   },
+   "IUCN/PLANTS/PLANTS_PART2.dbf": {
+    "sha256": "b088d9692e45a1cbc8f26f99506acad330ecf99bf550b2c7be85c0a1b88a8067",
+    "bytes": 11585118
+   },
+   "IUCN/PLANTS/PLANTS_PART2.id_no.atx": {
+    "sha256": "6b72d15a0bc3b0d8df02df6c0f1fd2ee45ef12c7226dd94b335b60fa8c68f9fe",
+    "bytes": 67584
+   },
+   "IUCN/PLANTS/PLANTS_PART2.prj": {
+    "sha256": "3259f0e55290a82b1350646f604e8a7ee1e2136c0320a40fad838ab40819fff8",
+    "bytes": 147
+   },
+   "IUCN/PLANTS/PLANTS_PART2.sbn": {
+    "sha256": "7ed5d831cc62c13e39a00a8acafcfc99e5f063e0366a61cdef959f1135a77103",
+    "bytes": 52412
+   },
+   "IUCN/PLANTS/PLANTS_PART2.sbx": {
+    "sha256": "4e3bed43af6bd7a66eaf9f34b074b6082423d238f4009c9d5c422002f6f8ff60",
+    "bytes": 2004
+   },
+   "IUCN/PLANTS/PLANTS_PART2.shp": {
+    "sha256": "a0fdc20a338efea25d6938bda22f32b94fe9b6728e0257332ffcd3f6493bc1ab",
+    "bytes": 1823946544
+   },
+   "IUCN/PLANTS/PLANTS_PART2.shp.xml": {
+    "sha256": "0795e59357665f52dfb06fe7d944fddf4b01fad9f379041e7b8f6f83ce2f6ab2",
+    "bytes": 14031
+   },
+   "IUCN/PLANTS/PLANTS_PART2.shx": {
+    "sha256": "5069c4d627209f9eb97f077f06d9477f532784699cf220ae14323103c24bfece",
+    "bytes": 42436
+   },
+   "IUCN/PLANTS/PLANTS_PART3.CPG": {
+    "sha256": "3ad3031f5503a4404af825262ee8232cc04d4ea6683d42c5dd0a2f2a27ac9824",
+    "bytes": 5
+   },
+   "IUCN/PLANTS/PLANTS_PART3.dbf": {
+    "sha256": "c8e35d90864436b9be0b1dcdfb244319c894c25c0a7382da967ff645a363745a",
+    "bytes": 11589496
+   },
+   "IUCN/PLANTS/PLANTS_PART3.id_no.atx": {
+    "sha256": "d418856f1137bf7b7a2375daf8f17551c2e0ad929d8e7a2a0620030fa7370e12",
+    "bytes": 67584
+   },
+   "IUCN/PLANTS/PLANTS_PART3.prj": {
+    "sha256": "3259f0e55290a82b1350646f604e8a7ee1e2136c0320a40fad838ab40819fff8",
+    "bytes": 147
+   },
+   "IUCN/PLANTS/PLANTS_PART3.sbn": {
+    "sha256": "14f0ec7b2da65d4d4f7e550c0157080c04910bb8ec6df06ebe1df9e8d9f36e81",
+    "bytes": 52572
+   },
+   "IUCN/PLANTS/PLANTS_PART3.sbx": {
+    "sha256": "73f789dd788d03f7f25f025863e367a9709a070b8ee13027604acb4886072a80",
+    "bytes": 2052
+   },
+   "IUCN/PLANTS/PLANTS_PART3.shp": {
+    "sha256": "d74ba5f8804e65da51f8ef695258f0d3c4246c6f4462f83af1bd2970d413f9b4",
+    "bytes": 1900527604
+   },
+   "IUCN/PLANTS/PLANTS_PART3.shp.xml": {
+    "sha256": "1f917a7f6d2b3a7237a8f929e258394d0a439a2a3815235f9626c2b2f98b3bea",
+    "bytes": 13795
+   },
+   "IUCN/PLANTS/PLANTS_PART3.shx": {
+    "sha256": "15aead672b673ff171401d298b3e842d293569ea97c8051aceb770a0177f901f",
+    "bytes": 42452
+   },
+   "IUCN/MARINEFISH/MARINEFISH_PART1.cpg": {
+    "sha256": "3ad3031f5503a4404af825262ee8232cc04d4ea6683d42c5dd0a2f2a27ac9824",
+    "bytes": 5
+   },
+   "IUCN/MARINEFISH/MARINEFISH_PART1.dbf": {
+    "sha256": "4d32ebe49d5d5892d6b82381c2398d40146dacb9c4de3d7c7eea92c5dfddf45f",
+    "bytes": 3781333
+   },
+   "IUCN/MARINEFISH/MARINEFISH_PART1.id_no.atx": {
+    "sha256": "5290579ba7f2e74797cfa41a28d827e3bceadca05771739a2264d72507046810",
+    "bytes": 24576
+   },
+   "IUCN/MARINEFISH/MARINEFISH_PART1.prj": {
+    "sha256": "3259f0e55290a82b1350646f604e8a7ee1e2136c0320a40fad838ab40819fff8",
+    "bytes": 147
+   },
+   "IUCN/MARINEFISH/MARINEFISH_PART1.sbn": {
+    "sha256": "ebfef85928fe926a5eb3194d532c430a0dc0b2ba26a4b209e86754e3cf9eaa85",
+    "bytes": 16636
+   },
+   "IUCN/MARINEFISH/MARINEFISH_PART1.sbx": {
+    "sha256": "15007ef29efe1cf34a44608b7130e5b3a370d5f5a448f15a54e8c573f6523ca6",
+    "bytes": 860
+   },
+   "IUCN/MARINEFISH/MARINEFISH_PART1.shp": {
+    "sha256": "ccdaab99efa582bbc9d89071f086a726d6fd23732a5a36f5754b519ba5a8a903",
+    "bytes": 1773210004
+   },
+   "IUCN/MARINEFISH/MARINEFISH_PART1.shp.xml": {
+    "sha256": "c441a2a7001a43f8d31e91265e8dbcc0e5744f744dfa916084c074faca9a298b",
+    "bytes": 13278
+   },
+   "IUCN/MARINEFISH/MARINEFISH_PART1.shx": {
+    "sha256": "7d13aff2056025cc5477c85527234d5b552adb0f1c15ffeac7eb2fe41b497c92",
+    "bytes": 13916
+   },
+   "IUCN/MARINEFISH/MARINEFISH_PART2.cpg": {
+    "sha256": "3ad3031f5503a4404af825262ee8232cc04d4ea6683d42c5dd0a2f2a27ac9824",
+    "bytes": 5
+   },
+   "IUCN/MARINEFISH/MARINEFISH_PART2.dbf": {
+    "sha256": "44163ca421c930d68d67f3429074049c9e3389d63489085621a5e879c64b6a3a",
+    "bytes": 3781333
+   },
+   "IUCN/MARINEFISH/MARINEFISH_PART2.id_no.atx": {
+    "sha256": "3548d3a9ef5b209f2955a44cbc39d432c60252a6208f9d1f3aff831be2cd6d70",
+    "bytes": 24576
+   },
+   "IUCN/MARINEFISH/MARINEFISH_PART2.prj": {
+    "sha256": "3259f0e55290a82b1350646f604e8a7ee1e2136c0320a40fad838ab40819fff8",
+    "bytes": 147
+   },
+   "IUCN/MARINEFISH/MARINEFISH_PART2.sbn": {
+    "sha256": "b3018b61b1512a956ac6ff5c22bddf851becbf0af05534446b64842028e1f827",
+    "bytes": 16676
+   },
+   "IUCN/MARINEFISH/MARINEFISH_PART2.sbx": {
+    "sha256": "b2f6c0bcdeaea87de035b4130be2c082a99444217a4a1ddf018e617f7f31198d",
+    "bytes": 900
+   },
+   "IUCN/MARINEFISH/MARINEFISH_PART2.shp": {
+    "sha256": "cd161ea1ef8fb72d584efeeb9e78e664ba8d93b80a8651f799cd3496b8fc8da2",
+    "bytes": 1728370484
+   },
+   "IUCN/MARINEFISH/MARINEFISH_PART2.shp.xml": {
+    "sha256": "8dab6e71a6478d14f264da2aed5e3b80decb91ca362917f4fe26c0b70af1ab08",
+    "bytes": 13278
+   },
+   "IUCN/MARINEFISH/MARINEFISH_PART2.shx": {
+    "sha256": "53e212ba16ed5c6f854b1fe95bdfd68a72f750a9b6c715954aa26dd8a0c7ffc2",
+    "bytes": 13916
+   },
+   "IUCN/MARINEFISH/MARINEFISH_PART3.cpg": {
+    "sha256": "3ad3031f5503a4404af825262ee8232cc04d4ea6683d42c5dd0a2f2a27ac9824",
+    "bytes": 5
+   },
+   "IUCN/MARINEFISH/MARINEFISH_PART3.dbf": {
+    "sha256": "12a2b6b35b1b9ae03880c05f57fd55fc4e594c4d84f8cab94878b6c8414cf4a8",
+    "bytes": 3781333
+   },
+   "IUCN/MARINEFISH/MARINEFISH_PART3.id_no.atx": {
+    "sha256": "418ae62a3e1e4af75508ea5d395d0926bbb388634c46181f969600ee4bc82fd3",
+    "bytes": 24576
+   },
+   "IUCN/MARINEFISH/MARINEFISH_PART3.prj": {
+    "sha256": "3259f0e55290a82b1350646f604e8a7ee1e2136c0320a40fad838ab40819fff8",
+    "bytes": 147
+   },
+   "IUCN/MARINEFISH/MARINEFISH_PART3.sbn": {
+    "sha256": "8265c2b555c597995c56751e93cc0668297ea743ce0c9a26d08c315191569156",
+    "bytes": 16652
+   },
+   "IUCN/MARINEFISH/MARINEFISH_PART3.sbx": {
+    "sha256": "41edf4a581299af63746ddf6435f5566590832670cc34d0efc777be212964ceb",
+    "bytes": 876
+   },
+   "IUCN/MARINEFISH/MARINEFISH_PART3.shp": {
+    "sha256": "907413b65a817199d83f055f92e2df4764668e21919c93ec0bfe380dff9749ae",
+    "bytes": 1775702376
+   },
+   "IUCN/MARINEFISH/MARINEFISH_PART3.shp.xml": {
+    "sha256": "b0954330226f420ac5ea3e4a218d7e72422fb5670e924ade7e3dc4b515e1df18",
+    "bytes": 13278
+   },
+   "IUCN/MARINEFISH/MARINEFISH_PART3.shx": {
+    "sha256": "6199f908f2020cd46b71fc58b3f9eb2ad321c5631e4cd9fd9839dfc9cf22443c",
+    "bytes": 13916
+   },
+   "IUCN/MARINEFISH/MARINEFISH_PART4.cpg": {
+    "sha256": "3ad3031f5503a4404af825262ee8232cc04d4ea6683d42c5dd0a2f2a27ac9824",
+    "bytes": 5
+   },
+   "IUCN/MARINEFISH/MARINEFISH_PART4.dbf": {
+    "sha256": "f36dd1e06391f45f676ac67106010deedd7e49e932e0353e6dd3a63e9f8087da",
+    "bytes": 3781333
+   },
+   "IUCN/MARINEFISH/MARINEFISH_PART4.prj": {
+    "sha256": "3259f0e55290a82b1350646f604e8a7ee1e2136c0320a40fad838ab40819fff8",
+    "bytes": 147
+   },
+   "IUCN/MARINEFISH/MARINEFISH_PART4.sbn": {
+    "sha256": "2f30f28616ef6bebc41164cc866da120d91fccab221812e4493df5cb33cbc7b5",
+    "bytes": 16636
+   },
+   "IUCN/MARINEFISH/MARINEFISH_PART4.sbx": {
+    "sha256": "366dc800c8241e0b7ba45933c8c6a22e963e3e2d36a587a67c5640cef1df8b4e",
+    "bytes": 844
+   },
+   "IUCN/MARINEFISH/MARINEFISH_PART4.shp": {
+    "sha256": "2e3ea9147d10b331747c8517fd4f89fc6d5d68434b08a68325eb43d4fc0a8ec3",
+    "bytes": 1832855756
+   },
+   "IUCN/MARINEFISH/MARINEFISH_PART4.shp.xml": {
+    "sha256": "f244b972d4aadb19a710d3378140f0216f8c0413d76ec313b601fae86a444edc",
+    "bytes": 13179
+   },
+   "IUCN/MARINEFISH/MARINEFISH_PART4.shx": {
+    "sha256": "1f2be036cdc84050f4b2498fd713f627e8b7915fba27af5e038f0544f860d062",
+    "bytes": 13916
+   },
+   "IUCN/MARINEFISH/MARINEFISH_PART5.cpg": {
+    "sha256": "3ad3031f5503a4404af825262ee8232cc04d4ea6683d42c5dd0a2f2a27ac9824",
+    "bytes": 5
+   },
+   "IUCN/MARINEFISH/MARINEFISH_PART5.dbf": {
+    "sha256": "def4b70ba08bd022347c83891d47e9cc94565426e4d3d28d883252e2f05dcf65",
+    "bytes": 3781333
+   },
+   "IUCN/MARINEFISH/MARINEFISH_PART5.id_no.atx": {
+    "sha256": "2ec713e927ee7178439e4d2712b93a43416ee3592e7ab78f3bc545256b7ff8e5",
+    "bytes": 24576
+   },
+   "IUCN/MARINEFISH/MARINEFISH_PART5.prj": {
+    "sha256": "3259f0e55290a82b1350646f604e8a7ee1e2136c0320a40fad838ab40819fff8",
+    "bytes": 147
+   },
+   "IUCN/MARINEFISH/MARINEFISH_PART5.sbn": {
+    "sha256": "c56bb53812bae9e48eaf8a44933fd8b796f99b8d15da215b802dd23ff8b7f762",
+    "bytes": 16660
+   },
+   "IUCN/MARINEFISH/MARINEFISH_PART5.sbx": {
+    "sha256": "a3f2a8ebb656e894963305b0a1987eb8ef5ed599194bcc2fe026a750af663731",
+    "bytes": 884
+   },
+   "IUCN/MARINEFISH/MARINEFISH_PART5.shp": {
+    "sha256": "9900bfc7262e4ab97464a342d90ffabf9b32763b5eb23cf6beb010442e128ba5",
+    "bytes": 1731315200
+   },
+   "IUCN/MARINEFISH/MARINEFISH_PART5.shp.xml": {
+    "sha256": "652d1930394f4c299850eaa4390729fce6abefa42bb5f3aea31b64b0330ea766",
+    "bytes": 13278
+   },
+   "IUCN/MARINEFISH/MARINEFISH_PART5.shx": {
+    "sha256": "7fb1d79152c384bba5731c258403b20cc324f19161ed13da20a228592a1ffae9",
+    "bytes": 13916
+   },
+   "IUCN/MARINEFISH/MARINEFISH_PART6.cpg": {
+    "sha256": "3ad3031f5503a4404af825262ee8232cc04d4ea6683d42c5dd0a2f2a27ac9824",
+    "bytes": 5
+   },
+   "IUCN/MARINEFISH/MARINEFISH_PART6.dbf": {
+    "sha256": "182779c25cb884cdb0c45b07bd0d6e210a0882fb7f1cc2cdebe66595ae5e36fb",
+    "bytes": 3781333
+   },
+   "IUCN/MARINEFISH/MARINEFISH_PART6.id_no.atx": {
+    "sha256": "8026c55076d4d73bc0ba6ef8d3a6ab731af3240b55c305a734b6c6d30f8adb4e",
+    "bytes": 24576
+   },
+   "IUCN/MARINEFISH/MARINEFISH_PART6.prj": {
+    "sha256": "3259f0e55290a82b1350646f604e8a7ee1e2136c0320a40fad838ab40819fff8",
+    "bytes": 147
+   },
+   "IUCN/MARINEFISH/MARINEFISH_PART6.sbn": {
+    "sha256": "d6078e3ca503ee1e8c87304ef948ca19fc99855f848dbb08f5d63d86adc8f2ea",
+    "bytes": 16540
+   },
+   "IUCN/MARINEFISH/MARINEFISH_PART6.sbx": {
+    "sha256": "5c41773af9e6b1ca1d3c4fee53efc1ebb0ae7c43ff5c6cc5d9e19b6c8955016e",
+    "bytes": 876
+   },
+   "IUCN/MARINEFISH/MARINEFISH_PART6.shp": {
+    "sha256": "ef5da8f5fe48032ff8de3de44479a98b4f33300f7f7bbc2252e3f95998108f5d",
+    "bytes": 1678760648
+   },
+   "IUCN/MARINEFISH/MARINEFISH_PART6.shp.xml": {
+    "sha256": "e9d2b35552f086013f2f819f84cdb964d0fe14c3fe11fc50baf41b1acffedfee",
+    "bytes": 13278
+   },
+   "IUCN/MARINEFISH/MARINEFISH_PART6.shx": {
+    "sha256": "522a01bf90efbab235dbcad8ef41929a02824baaba0f1a4b92bb7b26c6d6bc13",
+    "bytes": 13916
+   },
+   "IUCN/MARINEFISH/MARINEFISH_PART7.cpg": {
+    "sha256": "3ad3031f5503a4404af825262ee8232cc04d4ea6683d42c5dd0a2f2a27ac9824",
+    "bytes": 5
+   },
+   "IUCN/MARINEFISH/MARINEFISH_PART7.dbf": {
+    "sha256": "20da5454c9fb2c664b0d8b125b1d4d3ac403f98536e5addd4a9e4971cca9c332",
+    "bytes": 3779144
+   },
+   "IUCN/MARINEFISH/MARINEFISH_PART7.id_no.atx": {
+    "sha256": "4ec01ff860f29836020e85019bdf9926511028c69a55f28e7d175813234cfb87",
+    "bytes": 24576
+   },
+   "IUCN/MARINEFISH/MARINEFISH_PART7.prj": {
+    "sha256": "3259f0e55290a82b1350646f604e8a7ee1e2136c0320a40fad838ab40819fff8",
+    "bytes": 147
+   },
+   "IUCN/MARINEFISH/MARINEFISH_PART7.sbn": {
+    "sha256": "20a25e5a91f2ccbeed0c9f72151dd6fe50b99a0b41d3d215618f0c4ac7bafb2d",
+    "bytes": 16676
+   },
+   "IUCN/MARINEFISH/MARINEFISH_PART7.sbx": {
+    "sha256": "d27bc42f627ab6d7e888bf462057053064e870e7921f73a5529db4e44b741d4a",
+    "bytes": 908
+   },
+   "IUCN/MARINEFISH/MARINEFISH_PART7.shp": {
+    "sha256": "36a94a2cdaeee631e74f5ac2327dadc8d871fe9999fd40660b2a3a7a64fe7d07",
+    "bytes": 1763863708
+   },
+   "IUCN/MARINEFISH/MARINEFISH_PART7.shp.xml": {
+    "sha256": "132b2ccfec6ed0b0bee0c7ad58f9548f5ff563d50e6706d2fe7ff3aa6165d6b8",
+    "bytes": 13278
+   },
+   "IUCN/MARINEFISH/MARINEFISH_PART7.shx": {
+    "sha256": "9762371a8c3ff71b0e41697b4a0d1cbe644cad88ee625203f9e8393b36b21eea",
+    "bytes": 13908
+   },
+   "IUCN/MARINEFISH/MARINEFISH_PART8.cpg": {
+    "sha256": "3ad3031f5503a4404af825262ee8232cc04d4ea6683d42c5dd0a2f2a27ac9824",
+    "bytes": 5
+   },
+   "IUCN/MARINEFISH/MARINEFISH_PART8.dbf": {
+    "sha256": "d970cb92523753ef48772d0d2a114de05cce25ff6427b425c46e58e612bb0a97",
+    "bytes": 3779144
+   },
+   "IUCN/MARINEFISH/MARINEFISH_PART8.id_no.atx": {
+    "sha256": "9ef79d5d9579a3439e44f7b1d02186b75f16ea5d5c396ce21e0165a8ae90b81d",
+    "bytes": 24576
+   },
+   "IUCN/MARINEFISH/MARINEFISH_PART8.prj": {
+    "sha256": "3259f0e55290a82b1350646f604e8a7ee1e2136c0320a40fad838ab40819fff8",
+    "bytes": 147
+   },
+   "IUCN/MARINEFISH/MARINEFISH_PART8.sbn": {
+    "sha256": "6d1876d9af89f106bfca4419ad28a41dafd313d8336a79d6fce8b6c2a920f235",
+    "bytes": 16684
+   },
+   "IUCN/MARINEFISH/MARINEFISH_PART8.sbx": {
+    "sha256": "1b9ccf98a42de0ee4fa5435fc41e6ddd0bd03081e11d9e4fd2d6437511ce26fb",
+    "bytes": 916
+   },
+   "IUCN/MARINEFISH/MARINEFISH_PART8.shp": {
+    "sha256": "dbd6bb0f077a76be153b98796b84ec2d922affa9e7257443203f5f6e3154915c",
+    "bytes": 1812783780
+   },
+   "IUCN/MARINEFISH/MARINEFISH_PART8.shp.xml": {
+    "sha256": "a8656cb860c6b6b54a99a3ac1be3e2b6015ee28be2f01db1e00cc19efd6b0feb",
+    "bytes": 13278
+   },
+   "IUCN/MARINEFISH/MARINEFISH_PART8.shx": {
+    "sha256": "deeb3286d60a024a1714d790a353b9b01bed13d176bd1382da31c01cffa3e9dc",
+    "bytes": 13908
+   },
+   "IUCN/MARINEFISH/MARINEFISH_PART9.cpg": {
+    "sha256": "3ad3031f5503a4404af825262ee8232cc04d4ea6683d42c5dd0a2f2a27ac9824",
+    "bytes": 5
+   },
+   "IUCN/MARINEFISH/MARINEFISH_PART9.dbf": {
+    "sha256": "fd94e5073c1e83ab3f97aebb78c9eb846b241007034027bb11807921582c4ad8",
+    "bytes": 3779144
+   },
+   "IUCN/MARINEFISH/MARINEFISH_PART9.id_no.atx": {
+    "sha256": "a06dba43c2755b745e927381ebdf92ee175ee80dd5c2568a70499132501480f2",
+    "bytes": 24576
+   },
+   "IUCN/MARINEFISH/MARINEFISH_PART9.prj": {
+    "sha256": "3259f0e55290a82b1350646f604e8a7ee1e2136c0320a40fad838ab40819fff8",
+    "bytes": 147
+   },
+   "IUCN/MARINEFISH/MARINEFISH_PART9.sbn": {
+    "sha256": "9adcf9f17b1a4dff7a2f756de9affd76da7ae1fc6af5d372e525b718be91445f",
+    "bytes": 16692
+   },
+   "IUCN/MARINEFISH/MARINEFISH_PART9.sbx": {
+    "sha256": "27f1658fee2024a25130e0d639b434770bcc584685c0cb46ac15c4efeb798774",
+    "bytes": 924
+   },
+   "IUCN/MARINEFISH/MARINEFISH_PART9.shp": {
+    "sha256": "fdd4c8bb3b12b25ac9540a2be290c1d9d973b09ce13c533fd86548bba44e19e9",
+    "bytes": 1712745928
+   },
+   "IUCN/MARINEFISH/MARINEFISH_PART9.shp.xml": {
+    "sha256": "4c1f76369a9946eaee77f4b0a6119113da34c671dbf59f56293cd21ea0a10444",
+    "bytes": 13278
+   },
+   "IUCN/MARINEFISH/MARINEFISH_PART9.shx": {
+    "sha256": "689a2c88b764bce6bcb4fbc737234b0c3fb312fc46c26dbef16dc048a452c90e",
+    "bytes": 13908
+   },
+   "IUCN/BIRDLIFE_DATAZONE/BOTW_2025.gpkg": {
+    "sha256": "08256b4b286a68a019b0125868e12b3381c68bd201d0b4ec7a4b2a205d17eead",
+    "bytes": 9314967552
+   },
+   "IUCN/BIRDLIFE_DATAZONE/Handbook of the Birds of the World and BirdLife International Digital Checklist of the Birds of the World_Version_10.xlsx": {
+    "sha256": "2e07230875c76b1570ff1332a250a776350150fa9c6ab14292e1854c360a2445",
+    "bytes": 3372335
+   }
+  }
+ },
+ "SIG_DIR": {
+  "automatic": {
+   "Basin SouthAmerica/hybas_sa_lev01-12_v1c.zip": {
+    "sha256": "fb012e48419bda0a7f4d0ebc56efcd906ad0e3bde324b9c70fac9693e2d21a72",
+    "bytes": 334160720
+   }
+  },
+  "manual": {
+   "N53_ECORREGIONES/TEM_BIOLO_ECORREGIONES_FINAL.dbf": {
+    "sha256": "214e7c5f919da612aef6d5a4857f1d26a18acdb130314ba61689fe197d3b99e5",
+    "bytes": 5866
+   },
+   "N53_ECORREGIONES/TEM_BIOLO_ECORREGIONES_FINAL.prj": {
+    "sha256": "5fe2418b950fed3d596d4092ed07b817045dfebd3c990a94cb555ebede91cd47",
+    "bytes": 409
+   },
+   "N53_ECORREGIONES/TEM_BIOLO_ECORREGIONES_FINAL.sbn": {
+    "sha256": "83410fdb7381764988bd29eb38365ae34ddc29058556be33a414bc12c1694846",
+    "bytes": 292
+   },
+   "N53_ECORREGIONES/TEM_BIOLO_ECORREGIONES_FINAL.sbx": {
+    "sha256": "98caf88d5218f73afbda820a121ee102dcae466edc4719d5ae4b1559e20951e8",
+    "bytes": 132
+   },
+   "N53_ECORREGIONES/TEM_BIOLO_ECORREGIONES_FINAL.shp": {
+    "sha256": "643f16f7bb8a53ccf4f4241fb5c0aef4e0d4bb121a17389c3a43df84c7c23ce7",
+    "bytes": 2910544
+   },
+   "N53_ECORREGIONES/TEM_BIOLO_ECORREGIONES_FINAL.shp.xml": {
+    "sha256": "1f40b2471b6203fa48799f67f3a86caeb5fa5d9d9c20c0ad8185e7c070355460",
+    "bytes": 14333
+   },
+   "N53_ECORREGIONES/TEM_BIOLO_ECORREGIONES_FINAL.shx": {
+    "sha256": "c7e705248738dbf9719fb27ddd8cde49dd7fc7cb339de1000867a1d4a329cd6a",
+    "bytes": 236
+   }
+  }
+ }
+}

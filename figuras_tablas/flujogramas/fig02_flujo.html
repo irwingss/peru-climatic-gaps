@@ -1,0 +1,330 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>Analytical workflow</title>
+<style>@page{size:1200px 1032px;margin:0}html,body{margin:0;padding:0;background:#fff}svg{display:block}</style></head>
+<body>
+<script src="datos.js"></script>
+<script src="base.js"></script>
+<script>
+// Fig. S2: the whole study, from the inputs to the results and where they are reported. Every number comes from DATA (flujogramas_datos.py,
+// which checks it against the text of the manuscript and the supplement).
+const W = 1200, H = 1032;
+lienzo(W, H);
+const N = DATA.N, P = DATA.paginas;
+const CONT = '#1b7837', MARC = '#2a78d6', LAND = '#9c6b1f', SPEC = '#7b3294', PRODF = '#fdf8f7', PRODB = '#ead7d3';
+const n0 = v => fmt(v), n1 = v => v.toFixed(1);
+for (const [id, col] of [['flechaTierra', LAND], ['flechaSp', SPEC]]) {
+  const m = el('marker', {id, viewBox: '0 0 10 10', refX: 9, refY: 5, markerWidth: 6, markerHeight: 6, orient: 'auto-start-reverse'}, svg.querySelector('defs'));
+  el('path', {d: 'M0,0 L10,5 L0,10 z', fill: col}, m);
+}
+const L = {dash: '4,3', w: 1.1}, LT = {...L, color: LAND, marker: 'flechaTierra'}, LS = {...L, color: SPEC, marker: 'flechaSp'};
+const T = (x, y, s, size = 7.2, fill = SOFT, o = {}) => txt(x, y, s, {size, fill, lh: size * 1.36, ...o});  // room for subscripts
+const titulo = (x, y, s, fill = INK, size = 9) => txt(x, y, s, {size, fill, weight: 'bold'});
+const img = (href, x, y, w, h) => href && imagen(href, x, y, w, h);
+const linea = (pts, col, o = {}) => el('path', {d: 'M' + pts.map(p => p.join(',')).join(' L'), fill: 'none', stroke: col,
+                                                 'stroke-width': o.w || 1.1, 'stroke-dasharray': o.dash || '4,3'});
+function pila(imgs, x, y, w, h, dx = 10, dy = 6) {
+  imgs.filter(Boolean).forEach((src, k) => {
+    const g = el('g', {transform: `translate(${x + k * dx},${y + k * dy}) skewY(-8)`});
+    el('rect', {x: -1.5, y: -1.5, width: w + 3, height: h + 3, fill: '#fff', stroke: '#d9d8d2', 'stroke-width': .7, rx: 1.5}, g);
+    el('image', {href: src, x: 0, y: 0, width: w, height: h, preserveAspectRatio: 'xMidYMid slice'}, g);
+  });
+}
+function pildora(x, y, t) {
+  const w = 10 + t.length * 6.2;
+  el('rect', {x, y, width: w, height: 16, rx: 8, fill: INK});
+  txt(x + w / 2, y + 11.5, t, {size: 8.4, weight: 'bold', fill: '#fff', anchor: 'middle'});
+  return w;
+}
+// step icons in a 40-px box
+function icono(k, x, y) {
+  el('rect', {x, y, width: 40, height: 40, rx: 5, fill: '#fff', stroke: '#e1e0db'});
+  const g = el('g', {transform: `translate(${x + 20},${y + 20}) scale(.66)`}), E = (tag, a) => el(tag, a, g);
+  const curva = f => 'M' + f.map(p => p.join(',')).join(' L');
+  if (k === 'log') {
+    const p = []; for (let v = 0; v <= 1.0001; v += .05) p.push([-24 + 48 * v, 22 - 44 * Math.log1p(9 * v) / Math.log(10)]);
+    E('path', {d: curva(p), fill: 'none', stroke: INK, 'stroke-width': 2});
+    E('line', {x1: -24, y1: 22, x2: 24, y2: -22, stroke: MUTED, 'stroke-width': 1, 'stroke-dasharray': '3,3'});
+  } else if (k === 'z') {
+    const p = []; for (let v = -3; v <= 3.0001; v += .15) p.push([v * 8, 18 - 38 * Math.exp(-v * v / 2)]);
+    E('path', {d: curva(p), fill: '#e8e7e2', stroke: INK, 'stroke-width': 1.8});
+    E('line', {x1: 0, y1: -22, x2: 0, y2: 20, stroke: MUTED, 'stroke-width': 1});
+  } else if (k === 'r') {
+    E('ellipse', {cx: -12, cy: 0, rx: 15, ry: 5, transform: 'rotate(-40 -12 0)', fill: 'none', stroke: MUTED, 'stroke-width': 1.8});
+    E('path', {d: 'M-1,0 L6,0', stroke: SOFT, 'stroke-width': 1.4, 'marker-end': 'url(#flecha)'});
+    E('circle', {cx: 17, cy: 0, r: 9, fill: 'none', stroke: INK, 'stroke-width': 1.8});
+  } else if (k === 'd') {
+    E('circle', {cx: -16, cy: 10, r: 4, fill: CONT}); E('circle', {cx: 16, cy: -12, r: 4, fill: INK});
+    E('line', {x1: -16, y1: 10, x2: 16, y2: -12, stroke: RED, 'stroke-width': 1.8, 'stroke-dasharray': '4,3'});
+    txt(2, 17, 'd', {size: 15, fill: RED, weight: 'bold', style: 'italic', parent: g});
+  } else if (k === 'filtro') {
+    E('path', {d: 'M-22,-18 L22,-18 L6,2 L6,18 L-6,23 L-6,2 z', fill: '#e8dfc8', stroke: INK, 'stroke-width': 1.6});
+  } else if (k === 'cuenca') {
+    E('path', {d: 'M0,24 C-26,8 -24,-20 -5,-23 C16,-26 26,-5 0,24 z', fill: '#ece4d2', stroke: '#a9a08a', 'stroke-width': 1.2});
+    E('path', {d: 'M0,23 L0,3 L-11,-14 M0,3 L11,-12 M-5,-6 L-14,-2', fill: 'none', stroke: '#4f8fc0', 'stroke-width': 1.8});
+  } else if (k === 'huella') {
+    E('path', {d: 'M-24,-4 L-10,-14 L-3,-3 L-13,10 L-22,8 z', fill: '#bfe6f2', stroke: INK, 'stroke-width': 1.3});
+    E('path', {d: 'M8,4 L16,-11 L25,-3 L18,15 L9,15 z', fill: 'none', stroke: INK, 'stroke-width': 1.3, 'stroke-dasharray': '3,2'});
+    E('path', {d: 'M-4,-12 C2,-20 8,-18 10,-12', fill: 'none', stroke: SOFT, 'stroke-width': 1.3, 'marker-end': 'url(#flecha)'});
+  }
+}
+
+// ---------------------------------------------------------------- headers
+[[10, 'Inputs'], [266, 'Shared processing'], [556, 'Analyses by question'], [948, 'Results and where they are reported']].forEach(([x, t], i) => {
+  paso(x + 10, 20, i + 1); txt(x + 25, 24, t, {size: 10.5, weight: 'bold', fill: INK});
+});
+
+// ---------------------------------------------------------------- 1. inputs (one card per 124 px, so that arrows run straight)
+const x1 = 10, w1 = 232, hIn = 114, yIn = k => 40 + 124 * k, tx = x1 + 98;
+function entrada(k, tit, cuerpo, o = {}) {
+  const y = yIn(k);
+  tarjeta(x1, y, w1, hIn, o.stroke ? {stroke: o.stroke} : {});
+  titulo(tx, y + 18, tit, o.col || INK);
+  T(tx, y + 32, cuerpo);
+  return y;
+}
+let y = entrada(0, 'Continental climate', `CHELSA V2.1, 1981–2010\n30″ pixels (≈ 0.9 km)\n${n0(N.pix_tierra)} pixels, ${n0(N.km2_tierra)} km²\n11 variables: 5 of temperature,\n2 of precipitation, humidity,\nVPD, radiation and PET`, {col: CONT, stroke: '#cfe3c8'});
+pila(DATA.capas_tierra, x1 + 8, y + 20, 44, 54, 14, 8);
+y = entrada(1, 'Maritime climate', `Bio-ORACLE v3.0, 2000–2019\n0.05° pixels (≈ 5.5 km)\n200 nautical miles, ${n0(N.pix_mar)}\npixels, ${n0(N.km2_mar)} km²\n8 sea-surface and 7\nseafloor variables`, {col: MARC, stroke: '#cbdcf2'});
+pila([DATA.mar1, DATA.mar2, DATA.mar3], x1 + 8, y + 20, 44, 54, 14, 8);
+y = entrada(2, 'Protected areas', `Official cadastre, SERNANP\n(October 2026), ${N.areas} areas,\n${N.modalidades_n[0]} ANP, ${N.modalidades_n[1]} ACR and ${N.modalidades_n[2]} ACP;\n${N.areas_tierra} with continental and\n${N.areas_mar} with maritime surface`);
+img(DATA.areas, x1 + 6, y + 6, 86, 102);
+[['ANP', '#1b7837'], ['ACR', '#2a78d6'], ['ACP', '#d65a8a']].forEach(([t, c], i) => {
+  el('rect', {x: tx + i * 40, y: y + 94, width: 8, height: 8, fill: c}); T(tx + 11 + i * 40, y + 101, t, 7);
+});
+y = entrada(3, 'Strata and boundaries', 'MINAM (2017) ecoregions, 9\ncontinental and 2 marine\nShelf, slope and deep floor\n(Bio-ORACLE bathymetry)\nDepartments (INEI); elevation\n(WorldClim 2.1) to describe\nthe gaps');
+img(DATA.estratos, x1 + 6, y + 6, 86, 102);
+y = entrada(4, 'Land cover', 'MapBiomas Peru collection 3\n(2020, 30 m)\nGHS-SMOD 2020 urban\nsettlements');
+img(DATA.natural, x1 + 6, y + 6, 86, 102);
+[['natural', '#9cc27a'], ['transformed', '#e6dccb']].forEach(([t, c], i) => {
+  el('rect', {x: tx, y: y + 82 + i * 11, width: 8, height: 8, fill: c, stroke: '#cfcec8', 'stroke-width': .4}); T(tx + 11, y + 89 + i * 11, t, 7);
+});
+y = entrada(5, 'Microbasins', `HydroBASINS level 12\n(Lehner and Grill, 2013)\n${n0(N.microcuencas)} microbasins on the\ncontinental grid`);
+img(DATA.microcuencas, x1 + 6, y + 8, 86, 86);
+T(x1 + 8, y + 106, 'detail, central Andes; grey, not candidate', 6.2, MUTED);
+y = entrada(6, 'Species ranges', 'IUCN Red List 2026-1 for\namphibians, mammals, reptiles,\nplants, marine fishes,\nmammals and turtles\nBirdLife and HBW 2025: birds');
+img(DATA.rangos, x1 + 6, y + 6, 86, 102);
+T(tx, y + 104, 'map, species of File S3', 6.2, MUTED);
+y = entrada(7, 'Validation data', 'PISCOp v3.0 gridded\nrainfall, 1981–2010\n22 SENAMHI stations,\n1981–2010 normals');
+img(DATA.estaciones, x1 + 6, y + 6, 86, 102);
+
+// ---------------------------------------------------------------- 2. shared processing
+const x2 = 266, w2 = 246;
+tarjeta(x2, 40, w2, 238);
+titulo(x2 + 12, 58, 'Climate metric (one per domain and layer)');
+[['log', 'Transformation', 'log(1 + x) for precipitation, VPD and PET;\nlog(x) for chlorophyll'],
+ ['z', 'Standardization', 'z = (x − mean)/SD, from a spatially balanced\nnational sample (one pixel per 5-km tile)'],
+ ['r', 'Regularization', 'R_{λ} = (1 − λ)R + λI, smallest λ with κ ≤ 100\n(λ = 0.061 land, 0.024 surface, 0.054 floor)'],
+ ['d', 'Mahalanobis distance', 'd(c, r) = √[(z_{c} − z_{r})^{T} R_{λ}^{−1} (z_{c} − z_{r}) / p]']].forEach(([k, t, s], i) => {
+  const yy = 68 + i * 52;
+  icono(k, x2 + 10, yy);
+  titulo(x2 + 58, yy + 12, t, INK, 8.4);
+  T(x2 + 58, yy + 24, s, 7.1);
+  if (i < 3) flecha([[x2 + 30, yy + 41], [x2 + 30, yy + 51]], {w: 1});
+});
+flecha([[x2 + 30, 265], [x2 + 30, 287]], {w: 1});
+tarjeta(x2, 288, w2, 238);
+titulo(x2 + 12, 306, 'Analogue search and network statistics');
+T(x2 + 12, 322, 'd_{j}(c) = min_{r ∈ Ej} d(c, r), from pixel c to the most\nsimilar of all the pixels E_{j} of protected area j\n(exact nearest neighbour, k-d tree)\nd_{min}(c) = min_{j} d_{j}(c), to the most similar protected\nclimate, for every pixel of land, surface and seafloor');
+txt(x2 + 12, 382, '**Reading scale of d** (continental medians; Fig. S4)', {size: 7.4, fill: INK});
+const bx = escala(0, 1.1, x2 + 16, x2 + w2 - 16), by = 406, cortes = [0, .05, .1, .2, .3, .5, 1, 1.1];
+const cls = DATA.d_classes.concat([['#ffffff', 1, '']]);
+cortes.slice(0, -1).forEach((c, i) => el('rect', {x: bx(c), y: by - 6, width: bx(cortes[i + 1]) - bx(c), height: 12, fill: cls[i][0], 'fill-opacity': cls[i][1]}));
+el('rect', {x: bx(0), y: by - 6, width: bx(1.1) - bx(0), height: 12, fill: 'none', stroke: '#c9c8c2', 'stroke-width': .6});
+[[.05, 'neighbouring pixels (0.05)', by - 12, 'start', -3], [1.02, 'random pairs (1.02)', by - 12, 'end', 3],
+ [.2, 'pixels ≈ 8 km apart (0.2); at sea\n≈ 30 km (surface) and ≈ 53 km (floor)', by + 18, 'start', -3]].forEach(([v, s, yy, a, dx]) => {
+  el('line', {x1: bx(v), y1: by - 9, x2: bx(v), y2: by + 9, stroke: INK, 'stroke-width': 1});
+  T(bx(v) + dx, yy, s, 6.6, SOFT, {anchor: a});
+});
+T(x2 + 12, 452, '**F(x)**, share of the territory with d_{min} ≤ x; a pixel with\nd_{min} ≤ 0.2 has a **protected analogue**, otherwise it is a gap\n**D̄** = Σ_{c} w_{c} d_{min}(c) / Σ_{c} w_{c}, the p-median, with no cut-off,\nfrom ≤ 8 000 pixels per stratum (Horvitz–Thompson)');
+T(x2 + 12, 504, 'Computed for the real network, every null network and\nevery expansion or prioritization solution', 6.6, MUTED);
+// natural land and planning units
+tarjeta(x2, 536, w2, 238, {fill: '#f8f4ea', stroke: '#e5d7b8'});
+titulo(x2 + 12, 554, 'Natural land and planning units', LAND);
+[['filtro', `**Natural land**, ≥ 50% natural cover in\nMapBiomas and not urban (GHS-SMOD ≥ 21);\n${n1(N.natural_pct)}% of the continental domain`],
+ ['cuenca', `**Candidate units**, ${n0(N.candidatas)} microbasins with\nnatural, unprotected land; the cost of\neach unit is that area`],
+ ['huella', '**Natural share** of each footprint; a null\narea needs at least min(0.9, real share);\nused by the null networks of Q2']].forEach(([k, s], i) => {
+  const yy = 568 + i * 64;
+  icono(k, x2 + 10, yy);
+  T(x2 + 58, yy + 10, s, 7.1);
+  if (i < 2) flecha([[x2 + 30, yy + 41], [x2 + 30, yy + 63]], {w: 1});
+});
+// species on the grids
+tarjeta(x2, 784, w2, 114, {fill: '#f6f1f8', stroke: '#e0d2e7'});
+titulo(x2 + 12, 802, 'Species on the grids', SPEC);
+T(x2 + 12, 818, `Ranges rasterized on each grid (pixel centre, or all\npixels touched if smaller than a pixel); share of each\nrange protected and in each d_{min} class\n**${n0(N.sp_tierra)}** continental species (${n0(N.aves)} birds) and **${N.sp_mar}**\nmaritime (${N.aves_mar} seabirds, sea surface only)\nFeatures of Q4, **${N.features_sp}** threatened species, > 90% in Peru`);
+
+// ---------------------------------------------------------------- arrows: inputs → processing → buses → questions
+[97, 221, 345, 469, 593, 717, 841].forEach(yy => flecha([[x1 + w1 + 1, yy], [x2 - 3, yy]], L));
+flecha([[x1 + w1 + 1, 965], [553, 965]], L);                    // validation data → robustness, below column 2
+const BT = 518, BC = 528, BS = 540;                             // land, climate and species buses (no crossings)
+linea([[x2 + w2 + 1, 407], [BC, 407]], SOFT); linea([[BC, 114], [BC, 572]], SOFT);
+[114, 214, 339, 488, 572].forEach(yy => flecha([[BC, yy], [553, yy]], L));
+linea([[x2 + w2 + 1, 655], [BT, 655]], LAND); linea([[BT, 604], [BT, 712]], LAND);
+[604, 712].forEach(yy => flecha([[BT, yy], [553, yy]], LT));
+linea([[x2 + w2 + 1, 855], [BS, 855]], SPEC); linea([[BS, 742], [BS, 855]], SPEC);
+[742, 830].forEach(yy => flecha([[BS, yy], [553, yy]], LS));
+
+// ---------------------------------------------------------------- 3–4. one strip per question, results on the right
+const x3 = 556, w3 = 634, rx = 948, rw = 234, mx = 568, tx3 = 698;
+function franja(top, h, pill, tit, cortes) {
+  tarjeta(x3, top, w3, h);
+  tarjeta(rx, top + 6, rw, h - 12, {fill: PRODF, stroke: PRODB});
+  const pw = pildora(mx, top + 6, pill);
+  titulo(mx + pw + 8, top + 18, tit, INK, 9.2);
+  cortes.forEach(s => {
+    el('line', {x1: mx, y1: s, x2: rx - 14, y2: s, stroke: '#e1e0db'});
+    el('line', {x1: rx + 10, y1: s, x2: rx + rw - 10, y2: s, stroke: PRODB});
+  });
+}
+function bloque(top, bot, tit, metodos, res, cuerpo, prods) {
+  titulo(mx, top + 14, tit, INK, 8.2);
+  T(tx3, top + 14, metodos);
+  flecha([[tx3 + 237, (top + bot) / 2], [rx - 3, (top + bot) / 2]], {w: 1});
+  txt(rx + 10, top + 14, res, {size: 7.5, fill: INK, weight: 'bold', lh: 9.4});
+  T(rx + 10, top + 26 + (res.split('\n').length - 1) * 9.4, cuerpo);
+  T(rx + 10, bot - 12, prods, 6.6, MUTED, {style: 'italic'});
+}
+const kpct = v => Math.round(v) + '%';
+
+// Q1
+franja(40, 224, 'Q1', 'Where are the climatic gaps, on land and at sea?', [164]);
+bloque(64, 164, 'Analogues of each area',
+  `d_{j}(c) of each of the ${N.areas_tierra} continental areas and, for the\nsea surface and the seafloor, of the ${N.areas_mar} maritime ones, read\nin the seven fixed classes of d\nSurface outside each area at d ≤ 0.1 and d ≤ 0.2, by\nmodality and dominant ecoregion; three examples\n(Pacaya-Samiria, Machupicchu and Lachay)`,
+  'Analogue surface of each area at d ≤ 0.2',
+  `from ${n0(N.area_d02[0])} to ${n0(N.area_d02[1])} km² (median ${n0(N.area_d02_mediana)} km²);\n${N.atlas} maps, one per area and layer`,
+  'Figs. S3, S6 · Tables S21–S23 · File S2 (atlas)');
+if (P.atlas.some(Boolean)) { pila(P.atlas, mx + 2, 86, 50, 60, 18, 4); T(mx + 92, 118, 'File S2', 6.2, MUTED); }
+else img(DATA.mapa_area, mx - 4, 84, 72, 74);   // the atlas pages are not in the repository
+bloque(164, 264, 'Gaps of the network',
+  `d_{min}(c) for every pixel of land, sea surface and seafloor;\n**climatic gaps**, unprotected pixels with d_{min} > 0.2, by\necoregion, department, d_{min} class and depth stratum;\nelevation, temperature and rainfall of the gaps; least-\nrepresented 5% of the unprotected land (d_{min} ≥ ${N.menos_rep.toFixed(3)})`,
+  `${n0(N.vacios_km2)} km² of climatic gaps on land`,
+  `${n1(N.vacios_pct)}% of the unprotected land, mostly in the puna,\nsteppe mountains and coastal desert; at sea, ${n1(N.sup_f02)}%\nof the surface and ${n1(N.fondo_f02)}% of the seafloor have a\nprotected analogue`,
+  'Fig. 1 · Fig. S5 · Tables S17–S20');
+img(DATA.mapa_sistema, mx - 4, 184, 72, 74);
+cls.forEach((c, i) => el('rect', {x: mx + 78, y: 190 + i * 7, width: 7, height: 6, fill: c[0], 'fill-opacity': c[1], stroke: '#c9c8c2', 'stroke-width': .3}));
+T(mx + 89, 199, 'd_{min} ≤ 0.2', 5.9); T(mx + 89, 225, '> 0.2, gap', 5.9);
+
+// Q2
+franja(274, 130, 'Q2', 'Does the network represent climate worse than chance?', []);
+bloque(298, 404, 'Null networks',
+  `**999 null networks** relocate every footprint (8 orientations):\n≥ 90% inside the domain, natural share ≥ min(0.9, real),\necoregion or depth mix within 0.2 (total variation) and\nthe real overlap. **D̄** and **F(x)** from ${n0(N.muestra[0])} land, ${n0(N.muestra[1])}\nsurface and ${n0(N.muestra[2])} seafloor pixels; two-sided p, SES and\nHolm by stratum; feasibility test; designs N0 and N1 compared`,
+  'Worse than chance on land and sea surface',
+  `continental D̄ ${N.D_real.toFixed(3)} against a null median of ${N.D_nula.toFixed(3)}\n(p = ${N.p_tierra.toFixed(3)}, SES +${n1(N.ses_tierra)}); sea surface p = ${N.p_sup.toFixed(3)},\nseafloor p = ${N.p_fondo.toFixed(3)}; worse within the Amazonian\nforest, yungas and equatorial dry forest`,
+  'Fig. 2 · Figs. S7–S8 · Tables S2–S5');
+{
+  const hx = mx + 8, hy = 326, hw = 112, hh = 42, lo = .11, hi = .16, nb = 25, bw = (hi - lo) / nb, cnt = new Array(nb).fill(0);
+  DATA.pmediana.azar.forEach(v => { cnt[Math.min(nb - 1, Math.max(0, Math.floor((v - lo) / bw)))] += 1; });
+  const sx = escala(lo, hi, hx, hx + hw), sy = escala(0, Math.max(...cnt), hy + hh, hy);
+  cnt.forEach((v, k) => el('rect', {x: sx(lo + k * bw) + .4, y: sy(v), width: sx(lo + (k + 1) * bw) - sx(lo + k * bw) - .8, height: hy + hh - sy(v), fill: '#d6d6d0'}));
+  el('line', {x1: hx, y1: hy + hh, x2: hx + hw, y2: hy + hh, stroke: MUTED, 'stroke-width': .7});
+  [.12, .14, .16].forEach(v => T(sx(v), hy + hh + 8, v.toFixed(2), 5.8, MUTED, {anchor: 'middle'}));
+  T(hx + hw / 2, hy + hh + 17, 'D̄, continental domain', 6, SOFT, {anchor: 'middle'});
+  el('line', {x1: sx(DATA.pmediana.real), y1: hy - 4, x2: sx(DATA.pmediana.real), y2: hy + hh, stroke: RED, 'stroke-width': 1.5});
+  txt(sx(DATA.pmediana.real) - 3, hy + 4, 'real', {size: 6.4, fill: RED, weight: 'bold', anchor: 'end'});
+  T(hx + 1, hy + 4, '999 nulls', 6.2, SOFT);
+}
+
+// Q3
+franja(414, 224, 'Q3', 'Who holds the representation, and what would close the gaps?', [538]);
+bloque(438, 538, 'Tiers and maritime areas',
+  `d_{min} recomputed with **ANP, ACR or ACP** alone; surface at\nd_{min} ≤ 0.2 provided only by ACR or ACP, by ecoregion\nand department, and the modality that provides each\nprotected analogue. At sea, **D̄** and **F(0.2)** recomputed\nleaving out each maritime area in turn`,
+  `ACR and ACP add ${n0(N.solo_ACR_ACP)} km² of analogues`,
+  `F(0.2) of the territory ${n1(N.F02_ANP)}% with ANP alone and\n${n1(N.F02_red)}% with the whole network; without the Nazca\nRidge, ${n1(N.nazca[0])}% → ${n1(N.nazca[1])}% at the surface and ${n1(N.nazca[2])}% →\n${n1(N.nazca[3])}% on the seafloor`,
+  'Fig. 3c, d · Tables S15–S16');
+{
+  const eco = {BTA: 'Amazonian', SAL: 'Yungas', PUN: 'Puna', SES: 'Steppe', BSE: 'Dry forest', DCP: 'Desert'}, b0 = mx + 46, bw = 54;
+  DATA.modalidades.forEach(([e, v], i) => {
+    const yy = 459 + i * 10;
+    T(b0 - 3, yy + 6.3, eco[e], 5.9, SOFT, {anchor: 'end'});
+    el('rect', {x: b0, y: yy, width: bw * (100 - v) / 100, height: 7.4, fill: '#6baed6'});
+    el('rect', {x: b0 + bw * (100 - v) / 100, y: yy, width: bw * v / 100, height: 7.4, fill: '#fd8d3c'});
+    T(b0 + bw + 3, yy + 6.3, kpct(v), 5.8, SOFT);
+  });
+  el('rect', {x: mx + 2, y: 522, width: 7, height: 6, fill: '#6baed6'}); T(mx + 12, 527.5, 'ANP', 5.8);
+  el('rect', {x: mx + 32, y: 522, width: 7, height: 6, fill: '#fd8d3c'}); T(mx + 42, 527.5, 'only ACR or ACP', 5.8);
+}
+bloque(538, 638, 'Expansion effort',
+  `Lazy greedy p-median that adds, one at a time, the micro-\nbasin of **natural land** that most reduces **D̄** (${n0(N.candidatas)}\ncandidates), read at the null-median D̄ and at 80% and 90%\nof the territory at d_{min} ≤ 0.2; chosen microbasins merged\ninto potential sites; checked on all ${n0(N.pix_tierra)} pixels`,
+  `${n0(N.metas[2][0])} km² bring 90% of Peru to d_{min} ≤ 0.2`,
+  `${n0(N.metas[0][0])} km² (${N.metas[0][1]} microbasins) match the null median\nand ${n0(N.metas[1][0])} km² (${N.metas[1][1]}) reach 80%; ${N.metas[2][1]} microbasins\nform ${N.sitios} potential sites, ${kpct(100 * N.metas[2][0] / N.falta_30)} of the ${n0(N.falta_30)} km²\nstill needed to protect 30%`,
+  'Fig. 3a, b · Tables S14, S24 · potential sites (repository)');
+{
+  const E = DATA.esfuerzo, ex = mx + 22, ey = 557, ew = 98, eh = 52;
+  const sx = escala(0, 44, ex, ex + ew), sy = escala(68, 92, ey + eh, ey);
+  el('path', {d: 'M' + E.map(([a, f]) => [sx(a), sy(f)].join(',')).join(' L'), fill: 'none', stroke: '#08306b', 'stroke-width': 1.4});
+  N.metas.forEach(([a]) => {
+    let k = E.findIndex(p => p[0] >= a / 1e3 - 1e-6); if (k < 0) k = E.length - 1;
+    el('circle', {cx: sx(E[k][0]), cy: sy(E[k][1]), r: 2.3, fill: RED});
+  });
+  el('line', {x1: ex, y1: ey + eh, x2: ex + ew, y2: ey + eh, stroke: MUTED, 'stroke-width': .7});
+  el('line', {x1: ex, y1: ey, x2: ex, y2: ey + eh, stroke: MUTED, 'stroke-width': .7});
+  [0, 20, 40].forEach(v => T(sx(v), ey + eh + 8, String(v), 5.8, MUTED, {anchor: 'middle'}));
+  [70, 90].forEach(v => T(ex - 2.5, sy(v) + 2, String(v), 5.8, MUTED, {anchor: 'end'}));
+  T(ex + ew / 2, ey + eh + 16.5, 'natural land added (10³ km²)', 5.9, SOFT, {anchor: 'middle'});
+  const t = txt(0, 0, 'F(0.2), %', {size: 5.9, fill: SOFT, anchor: 'middle'});
+  t.setAttribute('transform', `translate(${ex - 14},${ey + eh / 2}) rotate(-90)`); t.querySelectorAll('tspan').forEach(s => s.setAttribute('x', 0));
+}
+
+// Q4
+franja(648, 234, 'Q4', 'Would species-led expansion close the climatic gaps?', [777]);
+bloque(672, 777, 'Prioritization plans',
+  `**prioritizr** 9.0 with HiGHS on ${n0(N.candidatas)} microbasins (cost,\nnatural area; network locked in). Features are **${N.features_sp} species**,\nthreatened and with > 90% of their range in Peru (targets\nscaled by range size), and **3 000 climate types** (k-means\nof the 11 variables, 17% each). Scenarios A–D; minimum\nshortfall with 19 000 and ${n0(N.metas[2][0])} km²; minimum set; scored\non D̄ and species targets against 999 random sets`,
+  'Species-only plans fall below random sites',
+  `${kpct(N.clima_41k.B)} of the greedy climate benchmark with ${n0(N.metas[2][0])} km², against\n${kpct(N.clima_41k.azar)} for random microbasins, ${kpct(N.clima_41k.D)} for climate only\nand ${kpct(N.clima_41k.C)} for species and climate; mean species\ntarget reached ${n1(N.sp_41k.B)}% (species only), ${n1(N.sp_41k.C)}%\n(species and climate) and ${n1(N.sp_41k.D)}% (climate only)`,
+  'Fig. 4 · Tables S11–S13');
+{
+  const b0 = mx + 58, bw = 48;
+  [['Species only', 'B', SPEC], ['Random', 'azar', '#9a9993'], ['Climate only', 'D', '#2c7fb8'], ['Species + climate', 'C', '#e66101']].forEach(([lab, k, col], i) => {
+    const yy = 692 + i * 11, v = N.clima_41k[k];
+    T(b0 - 3, yy + 6.5, lab, 5.9, SOFT, {anchor: 'end'});
+    el('rect', {x: b0, y: yy, width: bw * v / 100, height: 8, fill: col});
+    T(b0 + bw * v / 100 + 2, yy + 6.5, kpct(v), 5.8, col);
+  });
+  el('line', {x1: b0, y1: 690, x2: b0, y2: 738, stroke: MUTED, 'stroke-width': .7});
+  T(mx + 60, 748, `% of the greedy benchmark, ${n0(N.metas[2][0])} km²`, 5.8, SOFT, {anchor: 'middle'});
+}
+bloque(777, 882, 'Species in the gaps',
+  `IUCN and BirdLife ranges on each grid; share of every\nrange protected and in each d_{min} class, for ${n0(N.sp_tierra)}\ncontinental species (${n0(N.aves)} birds) and ${N.sp_mar} maritime\n(${N.aves_mar} seabirds, at the sea surface only); a randomly\nplaced range would have ${n1(N.azar_tierra)}% in gaps on land`,
+  `${N.amen_vacios} threatened species (IUCN groups) have\nmost of their range in climatic gaps`,
+  `${N.amen_vacios_end} of them endemic; median share in gaps ${kpct(DATA.grupos[2][1])} in\nthreatened reptiles and ${kpct(DATA.grupos[3][1])} in plants (${kpct(N.azar_tierra)} at\nrandom); File S3 maps ${N.mapas_s3[0]} continental and ${N.mapas_s3[1]} maritime\nspecies`,
+  'Table S10 · Figs. S12–S13 · Files S1, S3');
+{
+  const lx = mx + 44, sx = escala(0, 100, lx, lx + 70);
+  DATA.grupos.forEach(([g, am, todo], i) => {
+    const yy = 801 + i * 10;
+    T(lx - 4, yy + 2.2, g, 5.9, SOFT, {anchor: 'end'});
+    el('line', {x1: sx(0), y1: yy, x2: sx(100), y2: yy, stroke: '#ecebe6', 'stroke-width': .6});
+    el('circle', {cx: sx(todo), cy: yy, r: 2.2, fill: '#fff', stroke: SPEC, 'stroke-width': .9});
+    el('circle', {cx: sx(am), cy: yy, r: 2.4, fill: SPEC});
+  });
+  el('line', {x1: sx(N.azar_tierra), y1: 795, x2: sx(N.azar_tierra), y2: 845, stroke: INK, 'stroke-width': .8, 'stroke-dasharray': '2,2'});
+  el('line', {x1: lx, y1: 847, x2: lx + 70, y2: 847, stroke: MUTED, 'stroke-width': .7});
+  [0, 50, 100].forEach(v => T(sx(v), 855, String(v), 5.8, MUTED, {anchor: 'middle'}));
+  el('circle', {cx: mx + 3, cy: 866, r: 2.4, fill: SPEC}); T(mx + 8, 868, 'threatened', 5.8);
+  el('circle', {cx: mx + 45, cy: 866, r: 2.2, fill: '#fff', stroke: SPEC, 'stroke-width': .9}); T(mx + 50, 868, 'all', 5.8);
+  el('line', {x1: mx + 66, y1: 862, x2: mx + 66, y2: 870, stroke: INK, 'stroke-width': .8, 'stroke-dasharray': '2,2'}); T(mx + 70, 868, 'random', 5.8);
+  T(mx, 877, '% of the range in gaps (median)', 5.8, SOFT);
+}
+
+// R
+franja(892, 130, 'R', 'Do the conclusions hold?', []);
+bloque(916, 1022, 'Stress tests and checks',
+  `Test repeated with **κ ≤ 50** and without the\n**${N.n_pequenas} areas < 1 km²**; CHELSA rainfall rescaled month by\nmonth to **PISCOp** and the analysis repeated; CHELSA\nagainst **22 SENAMHI** stations; a metric with the 7 variables\nthat have future projections, against the 11-variable one`,
+  'Every stratum keeps its direction',
+  `national SES +${n1(N.ses_rob[0])} (κ ≤ 50) and +${n1(N.ses_rob[1])} (no small areas);\nPISCO moves F(0.2) by ${n1(Math.abs(N.pisco[0] - N.pisco[1]))} points (gap Jaccard ${N.pisco[2].toFixed(2)});\n7 variables raise F(0.2) from ${n1(N.c7[0])}% to ${n1(N.c7[1])}%, so only\npresent-day climate was analysed`,
+  'Tables S6–S9 · Figs. S9–S11');
+{
+  const R = DATA.robustez, gx = mx + 40, gy = 976, cw = 10, rh = 9;
+  R.estratos.forEach((s, j) => {
+    const t = txt(0, 0, s, {size: 5.8, fill: SOFT});
+    t.setAttribute('transform', `translate(${gx + j * cw + 6},${gy - 3}) rotate(-60)`); t.querySelectorAll('tspan').forEach(sp => sp.setAttribute('x', 0));
+  });
+  ['Main', 'κ ≤ 50', 'no < 1 km²'].forEach((lab, i) => {
+    T(gx - 3, gy + i * rh + 6.5, lab, 5.8, SOFT, {anchor: 'end'});
+    R.filas[i][1].forEach((v, j) => el('rect', {x: gx + j * cw + .5, y: gy + i * rh + .5, width: cw - 1, height: rh - 1, fill: v ? INK : '#fff', stroke: '#c9c8c2', 'stroke-width': .5}));
+  });
+  el('rect', {x: mx + 2, y: 1008, width: 7, height: 6, fill: INK}); T(mx + 12, 1013.5, 'worse', 5.8);
+  el('rect', {x: mx + 36, y: 1008, width: 7, height: 6, fill: '#fff', stroke: '#c9c8c2', 'stroke-width': .5}); T(mx + 46, 1013.5, 'not distinguishable', 5.8);
+}
+</script>
+</body></html>

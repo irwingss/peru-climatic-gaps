@@ -1,0 +1,15 @@
+﻿Added area (km²),Set,Species target,Added area in climatic gaps (%),D̄,Greedy benchmark recovered (%),p,F(0.2) gain (points),p,"Species, mean share of target (%)"
+19 000,Greedy climate curve (p-median),—,—,—,100,—,13.5,—,—
+19 000,Random natural microbasins (999),—,—,—,61 [53–67],—,6.6 [5.4–7.8],—,19.3 [18.7–20.2]
+19 000,Species only (B),Rodrigues,50,0.137,29,0.002,4.8,0.002,46.9
+19 000,Species only (B),Flat 30%,51,0.132,39,0.002,6.0,0.280,83.0
+19 000,Species only (B),Flat 17%,53,0.129,45,0.002,6.8,0.776,95.1
+19 000,Species + climate (C),Rodrigues,58,0.118,69,0.024,8.4,0.004,29.7
+19 000,Climate only (D),—,56,0.118,69,0.014,7.9,0.022,—
+41 347,Greedy climate curve (p-median),—,—,—,100,—,20.1,—,—
+41 347,Random natural microbasins (999),—,—,—,71 [67–75],—,11.6 [10.6–12.7],—,21.1 [20.2–22.4]
+41 347,Species only (B),Rodrigues,45,0.128,35,0.002,7.4,0.002,59.8
+41 347,Species only (B),Flat 30%,50,0.119,49,0.002,9.4,0.002,94.0
+41 347,Species only (B),Flat 17%,61,0.111,61,0.002,12.5,0.124,98.9
+41 347,Species + climate (C),Rodrigues,53,0.100,78,0.002,14.3,0.002,34.4
+41 347,Climate only (D),—,52,0.101,77,0.002,13.6,0.002,—

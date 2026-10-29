@@ -1,0 +1,16 @@
+# Python 3.13 (versions used for the article)
+numpy==2.5.3
+scipy==1.18.1
+pandas==3.0.6
+rasterio==1.4.3
+shapely==2.1.2
+pyproj==3.8.0
+pyogrio==0.13.0
+matplotlib==3.11.2
+requests==2.34.2
+openpyxl==3.1.5
+python-docx==1.2.0
+xlrd==2.0.2
+earthengine-api==1.7.48
+Pillow==12.3.0
+# R 4.6.1: prioritizr 9.0.1, highs 1.14.0.2

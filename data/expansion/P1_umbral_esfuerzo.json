@@ -1,0 +1,72 @@
+{
+  "protegido_exacto_km2": 231657.70030215362,
+  "continental_km2": 1286457.3504363315,
+  "falta_30_km2": 154279.50482874582,
+  "filas": [
+    {
+      "umbral": 0.15,
+      "F_territorio_inicial_pct": 60.149413867773404,
+      "vacios_km2": 511492.80989377137,
+      "vacios_pct_no_protegido": 48.49193966159412,
+      "pasos_80": 270,
+      "km2_80": 48330.53698608737,
+      "pct_falta30_80": 31.326608832284943,
+      "protegido_pct_80": 21.76428446642841,
+      "sitios_80": 262,
+      "pasos_90": 630,
+      "km2_90": 107555.89577659627,
+      "pct_falta30_90": 69.71496045180211,
+      "protegido_pct_90": 26.368040569996186,
+      "sitios_90": 517
+    },
+    {
+      "umbral": 0.2,
+      "F_territorio_inicial_pct": 69.92067486710235,
+      "vacios_km2": 387232.055667376,
+      "vacios_pct_no_protegido": 36.711431940474895,
+      "pasos_80": 64,
+      "km2_80": 12043.862334307489,
+      "pct_falta30_80": 7.806521253536872,
+      "protegido_pct_80": 18.943617723028606,
+      "sitios_80": 63,
+      "pasos_90": 228,
+      "km2_90": 41347.26939411,
+      "pct_falta30_90": 26.800234703894418,
+      "protegido_pct_90": 21.221455153850822,
+      "sitios_90": 223
+    },
+    {
+      "umbral": 0.25,
+      "F_territorio_inicial_pct": 77.72557345467011,
+      "vacios_km2": 286461.00601763383,
+      "vacios_pct_no_protegido": 27.157859407821576,
+      "pasos_80": 7,
+      "km2_80": 1435.6746365686208,
+      "pct_falta30_80": 0.9305673090941382,
+      "protegido_pct_80": 18.119013029049373,
+      "sitios_80": 7,
+      "pasos_90": 76,
+      "km2_90": 14276.273834557163,
+      "pct_falta30_90": 9.253512869647976,
+      "protegido_pct_90": 19.117149437818256,
+      "sitios_90": 75
+    },
+    {
+      "umbral": 0.3,
+      "F_territorio_inicial_pct": 83.77804405273871,
+      "vacios_km2": 207086.18221448484,
+      "vacios_pct_no_protegido": 19.632750370000792,
+      "pasos_80": 0,
+      "km2_80": 0.0,
+      "pct_falta30_80": null,
+      "protegido_pct_80": null,
+      "sitios_80": null,
+      "pasos_90": 19,
+      "km2_90": 3519.1468795422284,
+      "pct_falta30_90": 2.2810203360767662,
+      "protegido_pct_90": 18.28096727046025,
+      "sitios_90": 19
+    }
+  ],
+  "criterio": "The greedy curve of implicaciones.p1_curva minimizes D-bar and does not use the cut-off, so its sequence of microbasins is\nthe same for any cut-off; only where the targets are read changes. This replays that curve (same sample, candidates and\nlazy greedy; the first 228 units must equal P1_curva_esfuerzo.csv), runs it on until F(0.15) >= 0.9, records F(x) for\nx in UMBRALES and, for each x, reads the 80% and 90% targets, their microbasins and potential sites (8-neighbour\ncomponents, as in p1_sitios) and the share of the land still needed for 30% (exact protected area, M5).\nWrites resultados_v7/06_implicaciones/P1_umbral_esfuerzo.csv and .json. Run: python umbral_esfuerzo.py (~30 min)\n"
+}
