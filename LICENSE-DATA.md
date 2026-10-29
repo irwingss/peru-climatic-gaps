@@ -9,7 +9,7 @@ The IUCN Red List and BirdLife International terms allow non-commercial use of w
 - `supplementary/File_S1_species_IUCN_BirdLife.xlsx`
 - `tables/supplementary/TableS10.csv`
 - `tables/supplementary/TableS11.csv`, `TableS12.csv`, `TableS13.csv` and `tables/main/Fig4_prioritization_table.csv` (species scores)
-- `figures/main/Fig4_species_vs_climate.png` and `figures/main/Graphical_abstract.png`
+- `figures/main/Fig4_where_to_expand.png` and `figures/main/Graphical_abstract.png`
 - `figures/supplementary/FigS2_workflow.png` (thumbnail of the species ranges), `FigS12_species_shares_continental.png` and `FigS13_species_shares_maritime_*.png`
 - `data/prioritization/` (species features, planning-unit amounts of each species, solutions and their species scores)
 

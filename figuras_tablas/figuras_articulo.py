@@ -2,8 +2,8 @@
 
 Fig. 1  Climatic gaps on land and at sea (dmin maps and coverage by ecoregion).
 Fig. 2  The network against 999 N2c null networks (null D̄ histograms and SES by stratum).
-Fig. 3  Where and how much: expandable gaps, potential sites, effort curve, role of ACR/ACP and of the Nazca Ridge.
-Fig. 4  Species and climate priorities at equal area (prioritizr scenarios B, C17 and D17).
+Fig. 3  How much land, and who sustains current representation: effort curve, role of ACR/ACP and of the Nazca Ridge.
+Fig. 4  Where to expand: climate and species outcomes at equal area, and one map per plan (greedy curve, prioritizr D17, C17, B).
 Graphical abstract (1328 × 531 px).
 
 python figuras_articulo.py [fig1 fig2 fig3 fig4 ga] [--dst carpeta]   (default: all of them into figures/main)
@@ -11,7 +11,6 @@ python figuras_articulo.py [fig1 fig2 fig3 fig4 ga] [--dst carpeta]   (default: 
 import sys
 import numpy as np
 import pandas as pd
-import pyogrio
 from matplotlib.colors import to_rgb
 from matplotlib.gridspec import GridSpec
 from figuras_comun import *  # noqa: F401,F403  (shared constants, canvases and map helpers)
@@ -167,41 +166,11 @@ def fig2():
 
 
 # ======================================================================== Fig. 3
-META_COL = {'N2c null median': '#08306b', '80 % at d ≤ 0.2': '#2171b5', '90 % at d ≤ 0.2': '#9ecae1'}
-
-
 def fig3():
-    base = lienzo(TIERRA)
-    fig = plt.figure(figsize=(W2, 6.6))
-    gs = GridSpec(3, 2, figure=fig, width_ratios=[1.35, 1], height_ratios=[1, 1, 1], wspace=.12, hspace=.62)
-    a = fig.add_subplot(gs[:, 0])
-    with rasterio.open(IMP / 'P1_vacios_expandibles.tif') as ds:
-        v = ds.read(1).astype(np.float32)
-    v[(v == 0) | (v == 255)] = np.nan
-    cols = ['#fb6a4a', '#fcae91', '#fde0d2', '#fff5f0', '#c9c8c2']   # stronger than the d_min map, so that the desert gaps stand out on natural land
-    cmap = ListedColormap(cols); cmap.set_bad((0, 0, 0, 0))
-    ground = ListedColormap([SIN_DATO, '#ffffff']); ground.set_bad((0, 0, 0, 0))
-    a.imshow(base.domain, cmap=ground, vmin=0, vmax=1, extent=base.extent, interpolation='nearest', zorder=1)
-    a.imshow(v, cmap=cmap, vmin=.5, vmax=5.5, extent=base.extent, interpolation='nearest', zorder=2)
-    union = shapely.union_all(list(base.shapes.values()))
-    relleno(a, union, facecolor='#bfe6f2', edgecolor='none', zorder=3); contorno(a, union, color=CIAN, lw=.35, zorder=3)
-    _, _, wkb, attrs = pyogrio.raw.read(IMP / 'P1_sitios_potenciales.gpkg', columns=['id', 'meta'])
-    for g, meta in zip(shapely.from_wkb(wkb), attrs[1]):
-        relleno(a, g, facecolor=META_COL[meta], edgecolor='#08306b', lw=.25, zorder=5)
-    contorno(a, base.outline, color='#6b6b66', lw=.4, zorder=4)
-    a.set_aspect(1 / np.cos(np.deg2rad(-9.2))); a.set_axis_off()
-    s = CIFRAS['implicaciones']['P1_sitios']
-    h = [Patch(fc=c, ec='#bdbdb5', lw=.4, label=l) for c, l in zip(cols, ['0.2–0.3', '0.3–0.5', '0.5–1', '> 1'])]
-    h += [Patch(fc=cols[4], ec='#bdbdb5', lw=.4, label='Gap on transformed land'), Patch(fc='#bfe6f2', ec=CIAN, lw=.4, label='Protected-area network')]
-    h += [Patch(fc=c, ec='#08306b', lw=.4, label='Site, first target: ' + t.replace(' %', '%').replace('N2c null median', 'null-median D̄')
-                  .replace('d ≤', '$d_{\\mathrm{min}}$ ≤'))
-          for t, c in META_COL.items()]
-    a.legend(handles=h, title=f'Climatic gaps on natural\nland by $d_{{\\mathrm{{min}}}}$, and\n{s["n_sitios"]} potential sites',
-             title_fontsize=6, fontsize=5.6, loc='lower left', bbox_to_anchor=(-.07, -.06), frameon=False, alignment='left',
-             handlelength=1.3, labelspacing=.28)
-    _titulo(a, '(a) Climatic gaps on natural land and potential sites')
-    # (b) effort curve
-    b = fig.add_subplot(gs[0, 1])
+    fig = plt.figure(figsize=(W2, 4.3))
+    gs = GridSpec(2, 2, figure=fig, width_ratios=[1, 1.15], wspace=.62, hspace=.95)
+    # (a) effort curve
+    b = fig.add_subplot(gs[:, 0])
     cu = pd.read_csv(IMP / 'P1_curva_esfuerzo.csv')
     b.plot(cu.agregado_km2 / 1e3, cu.F02 * 100, color='#08306b', lw=1.4)
     P = CIFRAS['implicaciones']['P1_curva']
@@ -222,13 +191,12 @@ def fig3():
     top = b.secondary_xaxis('top', functions=(lambda x: (prot + x * 1e3) / tot * 100, lambda p: (p * tot / 100 - prot) / 1e3))
     top.set_xlabel('Protected share of the territory (%)', fontsize=6); top.tick_params(labelsize=6, length=2)
     falta = P['meta3_30pct_km2'] - prot
-    # 30% lies far right of the axis; an arrow at its end names it instead of squeezing the curve
-    b.annotate(f'30% protected\n(Target 3) at\n+{en(falta)} km²', xy=(1, 1), xycoords='axes fraction', xytext=(14, 0),
-               textcoords='offset points', ha='left', va='center', fontsize=5.7, color='#55554f',
-               arrowprops=dict(arrowstyle='<-', color='#55554f', lw=.6, shrinkA=1, shrinkB=0))
-    _titulo(b, '(b) Effort curve')
-    # (c) role of ACR and ACP: surface at d <= 0.2 that only regional and private areas provide
-    c = fig.add_subplot(gs[1, 1])
+    # 30% lies far right of the axis; a note under the top axis names it instead of squeezing the curve
+    b.annotate(f'30% protected (Target 3)\nat +{en(falta)} km² →', xy=(1, 1), xycoords='axes fraction', xytext=(-2, -4),
+               textcoords='offset points', ha='right', va='top', fontsize=5.7, color='#55554f')
+    _titulo(b, '(a) Effort curve')
+    # (b) role of ACR and ACP: surface at d <= 0.2 that only regional and private areas provide
+    c = fig.add_subplot(gs[0, 1])
     m = pd.read_csv(IMP / 'P2_modalidades_por_ecorregion.csv').set_index('nombre')
     eco = ECO7
     for i, e in enumerate(eco):
@@ -242,9 +210,9 @@ def fig3():
     c.invert_yaxis(); c.set_xlim(0, 100); _ejes(c)
     c.set_xlabel('Share of the covered surface, $d_{\\mathrm{min}}$ ≤ 0.2 (%)', fontsize=6.4)
     c.legend(fontsize=5.6, frameon=False, ncol=2, loc='upper left', bbox_to_anchor=(-.02, -.32), handlelength=1.2)
-    _titulo(c, '(c) Who provides the protected analogue')
-    # (d) leave one out at sea
-    dd = fig.add_subplot(gs[2, 1])
+    _titulo(c, '(b) Who provides the protected analogue')
+    # (c) leave one out at sea
+    dd = fig.add_subplot(gs[1, 1])
     t = pd.read_csv(IMP / 'P3_dejando_una_fuera.csv')
     quien = [('(ninguna)', 'Full network'), ('NAC_RN16', 'without Nazca Ridge'), ('NAC_RN13', 'without Guano Islands'),
              ('NAC_RN03', 'without Paracas'), ('NAC_RN18', 'without Mar Tropical de Grau')]
@@ -255,19 +223,17 @@ def fig3():
             dd.text(vv + 1, i + (j - .5) * .36, f'{vv:.1f}', va='center', fontsize=5.4)
     dd.set_yticks(range(len(quien))); dd.set_yticklabels([l for _, l in quien], fontsize=6); dd.invert_yaxis()
     dd.set_xlim(0, 92); dd.set_xticks(range(0, 81, 20)); _ejes(dd); dd.set_xlabel('Sea at $d_{\\mathrm{min}}$ ≤ 0.2 (%)', fontsize=6.4)
-    dd.legend(fontsize=5.6, frameon=False, ncol=2, loc='upper left', bbox_to_anchor=(-.02, -.32), handlelength=1.2)   # as in (c)
-    _titulo(dd, '(d) Maritime representation, leaving one area out')
-    for ax in (b, c, dd):   # room for the bar labels, away from the map
-        p = ax.get_position(); ax.set_position([p.x0 + .12, p.y0, p.width - .12, p.height])
-    p = dd.get_position(); dd.set_position([p.x0, p.y0 - .05, p.width, p.height])            # (d) further from the legend of (c)
-    p = a.get_position(); a.set_position([p.x0 - .075, p.y0 - .06, p.width + .09, p.height + .13])   # larger map, same text sizes
-    fig.savefig(DST / 'Fig3_where_to_expand.png', bbox_inches='tight', dpi=600); plt.close(fig)
+    dd.legend(fontsize=5.6, frameon=False, ncol=2, loc='upper left', bbox_to_anchor=(-.02, -.32), handlelength=1.2)   # as in (b)
+    _titulo(dd, '(c) Maritime representation, leaving one area out')
+    fig.savefig(DST / 'Fig3_how_much_and_who.png', bbox_inches='tight', dpi=600); plt.close(fig)
 
 
 # ======================================================================== Fig. 4 and its table
 N_AZAR = 999
 RND = f'Random natural microbasins (median of {N_AZAR})'
 ESC = {'B': ('Species only', '#7b3294'), 'C17': ('Species + climate', '#e66101'), 'D17': ('Climate only', '#2c7fb8')}
+META_COL = {'alcanza_mediana_nula': '#000000', 'alcanza_F02_80': '#3d3d3d', 'alcanza_F02_90': '#7a7a7a'}   # greedy units by first target
+GAP_NAT, GAP_TRANS, PROT = '#f6e3da', '#e6e4de', '#d9eef5'
 
 
 def _logro(via, elegidas):
@@ -320,11 +286,11 @@ def tabla_prioritizacion():
 def fig4():
     t = tabla_prioritizacion(); t.to_csv(DST / 'Fig4_prioritization_table.csv', index=False, float_format='%.6f')
     ini = t.attrs['inicio']
-    fig = plt.figure(figsize=(W2, 5.9))
-    gs = GridSpec(2, 2, figure=fig, width_ratios=[1, 1.05], wspace=.3, hspace=.7)
+    fig = plt.figure(figsize=(W2, 7.4))
+    gs = GridSpec(2, 3, figure=fig, width_ratios=[1.12, 1, 1], wspace=.06, hspace=.3)
     est = {'Greedy climate curve (p-median)': ('Greedy benchmark (p-median)', 'black', '*', 70),
-           'Species only (B)': (*ESC['B'], 'o', 46), 'Species + climate (C)': (*ESC['C17'], 'o', 46),
-           'Climate only (D)': (*ESC['D17'], 'o', 46)}
+           'Climate only (D)': (*ESC['D17'], 'o', 46), 'Species + climate (C)': (*ESC['C17'], 'o', 46),
+           'Species only (B)': (*ESC['B'], 'o', 46)}
     GRIS = '#9a9993'
     for k, (b, tit) in enumerate(((19000, '(a) 19 000 km² added'), (41347, '(b) 41 347 km² added'))):
         ax = fig.add_subplot(gs[k, 0])
@@ -347,43 +313,56 @@ def fig4():
         ax.set_xlabel('Species: mean share of the representation target reached (%)', fontsize=6.2)
         ax.set_ylabel('Climate: share of the greedy\nbenchmark reduction of $\\bar{D}$ achieved (%)', fontsize=6.2)
         _titulo(ax, tit)
-        if k == 0:   # legend between (a) and (b), two columns: the three plans on the left, the two benchmarks on the right
+        if k == 1:   # legend under (b), two columns: the plans in the order of the maps, then the random sets
             pt = lambda lab, col, mk, sz: Line2D([], [], ls='', marker=mk, color=col, markersize=sz ** .5 * .9, label=lab)  # noqa: E731
-            h = [pt(*est['Species only (B)']), pt(*est['Species + climate (C)']), pt(*est['Climate only (D)']),
-                 pt(*est['Greedy climate curve (p-median)']),
-                 Patch(facecolor=to_rgba(GRIS, .45), edgecolor=GRIS, lw=.6, label='Random microbasins (95% interval)')]
-            ax.legend(handles=h, ncol=2, fontsize=5.6, frameon=False, loc='upper center', bbox_to_anchor=(.5, -.25),
-                      handletextpad=.4, columnspacing=2.2, labelspacing=.45, handlelength=1.1, borderaxespad=0)
-    # (c) where the three plans put the 41 347 km²
-    ax = fig.add_subplot(gs[:, 1])
+            h = [pt(*v) for v in est.values()]
+            h.append(Patch(facecolor=to_rgba(GRIS, .45), edgecolor=GRIS, lw=.6, label='Random microbasins (95% interval)'))
+            ax.legend(handles=h, ncol=2, fontsize=5.6, frameon=False, loc='upper center', bbox_to_anchor=(.5, -.17),
+                      handletextpad=.4, columnspacing=1.6, labelspacing=.45, handlelength=1.1, borderaxespad=0)
+    # (c-f) where each plan puts the same 41 347 km², one map each, in the order of their climatic outcome
     base = lienzo(TIERRA)
     cel = np.load(PRI / 'entrada/celdas.npz'); pu = cel['pu']; cand = cel['candidato']
+    with rasterio.open(IMP / 'P1_vacios_expandibles.tif') as ds:   # gap classes 1-4 on natural land, 5 on transformed land
+        v = ds.read(1)
+    fondo = np.where((v >= 1) & (v <= 4), 0., np.where(v == 5, 1., np.nan))
+    tabla = pd.read_csv(PRI / 'entrada/pu_todo.csv'); tabla = tabla[tabla.id > 0]
+    cu = pd.read_csv(IMP / 'P1_curva_esfuerzo.csv').dropna(subset=['unidad'])
+    P = CIFRAS['implicaciones']['P1_curva']
+    greedy = np.full(pu.size, np.nan, np.float32)   # each greedy unit coloured by the first target it serves
+    for j, kk in enumerate(('alcanza_F02_90', 'alcanza_F02_80', 'alcanza_mediana_nula')):
+        hy = cu[cu.agregado_km2 <= P[kk]['agregado_km2'] * 1.0001].unidad.astype('int64')
+        greedy[cand & np.isin(pu, tabla[tabla.hybas_id.isin(hy)].id)] = 2 - j
     sel = {}
-    for esc in ('B', 'C17', 'D17'):
+    for esc in ('D17', 'C17', 'B'):
         s = pd.read_csv(PRI / f'solucion_{esc}_41k.csv'); sel[esc] = cand & np.isin(pu, s.loc[(s.solution_1 == 1) & (s.id > 0), 'id'])
-    clase = np.full(pu.size, np.nan, np.float32)   # D is left out of the map: 68 % of its area is also chosen by C
-    clase[sel['C17']] = 2; clase[sel['B']] = 1; clase[sel['B'] & sel['C17']] = 0
-    gap = np.where(cel['vacio'], 1., np.nan)
-    ground = ListedColormap([SIN_DATO, '#ffffff']); ground.set_bad((0, 0, 0, 0))
-    ax.imshow(base.domain, cmap=ground, vmin=0, vmax=1, extent=base.extent, interpolation='nearest', zorder=1)
-    g = ListedColormap(['#e7e6e1']); g.set_bad((0, 0, 0, 0))
-    ax.imshow(base.raster(gap), cmap=g, vmin=0, vmax=1, extent=base.extent, interpolation='nearest', zorder=2)
     union = shapely.union_all(list(base.shapes.values()))
-    relleno(ax, union, facecolor='#d9eef5', edgecolor='none', zorder=3)
-    cols = ['#1b1b1b', ESC['B'][1], ESC['C17'][1]]
-    cm = ListedColormap(cols); cm.set_bad((0, 0, 0, 0))
-    ax.imshow(base.raster(clase), cmap=cm, vmin=-.5, vmax=2.5, extent=base.extent, interpolation='nearest', zorder=4)
-    contorno(ax, base.outline, color='#6b6b66', lw=.4, zorder=5)
-    ax.set_aspect(1 / np.cos(np.deg2rad(-9.2))); ax.set_axis_off()
     km2 = base.area / 1e6
-    ov = lambda m: en(km2[m].sum())  # noqa: E731
-    h = [Patch(fc=ESC['B'][1], label=f"Species only (B), not C: {ov(sel['B'] & ~sel['C17'])} km²"),
-         Patch(fc=ESC['C17'][1], label=f"Species + climate (C), not B: {ov(sel['C17'] & ~sel['B'])} km²"),
-         Patch(fc=cols[0], label=f"Chosen by both: {ov(sel['B'] & sel['C17'])} km²"),
-         Patch(fc='#e7e6e1', label='Climatic gap'), Patch(fc='#d9eef5', label='Protected-area network')]
-    ax.legend(handles=h, fontsize=5.6, frameon=False, loc='upper left', bbox_to_anchor=(-.25, 1.0), handlelength=1.2, labelspacing=.3)
-    _titulo(ax, '(c) Units chosen with 41 347 km²')
-    fig.savefig(DST / 'Fig4_species_vs_climate.png', bbox_inches='tight', dpi=600); plt.close(fig)
+    ground = ListedColormap([SIN_DATO, '#ffffff']); ground.set_bad((0, 0, 0, 0))
+    gapcm = ListedColormap([GAP_NAT, GAP_TRANS]); gapcm.set_bad((0, 0, 0, 0))
+    paneles = [('(c) Greedy benchmark (p-median)', greedy, ListedColormap(list(META_COL.values()))),
+               *[(f'({l}) {ESC[e][0]} ({n})', np.where(sel[e], 0., np.nan), ListedColormap([ESC[e][1]]))
+                 for l, e, n in (('d', 'D17', 'D'), ('e', 'C17', 'C'), ('f', 'B', 'B'))]]
+    for i, (tit, val, cm) in enumerate(paneles):
+        ax = fig.add_subplot(gs[i // 2, 1 + i % 2])
+        cm.set_bad((0, 0, 0, 0))
+        ax.imshow(base.domain, cmap=ground, vmin=0, vmax=1, extent=base.extent, interpolation='nearest', zorder=1)
+        ax.imshow(fondo, cmap=gapcm, vmin=-.5, vmax=1.5, extent=base.extent, interpolation='nearest', zorder=2)
+        relleno(ax, union, facecolor=PROT, edgecolor='none', zorder=3)
+        ax.imshow(base.raster(val), cmap=cm, vmin=-.5, vmax=cm.N - .5, extent=base.extent, interpolation='nearest', zorder=4)
+        contorno(ax, base.outline, color='#6b6b66', lw=.4, zorder=5)
+        ax.set_aspect(1 / np.cos(np.deg2rad(-9.2))); ax.set_axis_off()
+        enVacio = np.isfinite(val) & cel['vacio']
+        ax.text(.02, .03, f'{km2[enVacio].sum() / km2[np.isfinite(val)].sum() * 100:.0f}% of its area\nin climatic gaps',
+                transform=ax.transAxes, ha='left', va='bottom', fontsize=5.6, color='#55554f')
+        _titulo(ax, tit)
+    h = [Patch(fc=c, label='Greedy unit, first target: ' + l) for c, l in zip(META_COL.values(),
+         ('null-median $\\bar{D}$', '80% at $d_{\\mathrm{min}}$ ≤ 0.2', '90% at $d_{\\mathrm{min}}$ ≤ 0.2'))]
+    h += [Patch(fc=GAP_NAT, ec='#bdbdb5', lw=.4, label='Climatic gap on natural land'),
+          Patch(fc=GAP_TRANS, ec='#bdbdb5', lw=.4, label='Climatic gap on transformed land'),
+          Patch(fc=PROT, label='Protected-area network')]
+    fig.legend(handles=h, ncol=2, fontsize=5.6, frameon=False, loc='upper center', bbox_to_anchor=(.68, .06),
+               handlelength=1.2, columnspacing=1.6, labelspacing=.35)
+    fig.savefig(DST / 'Fig4_where_to_expand.png', bbox_inches='tight', dpi=600); plt.close(fig)
 
 
 # ======================================================================== graphical abstract (1328 × 531 px)

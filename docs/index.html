@@ -75,8 +75,8 @@ const fmt = x => x.toLocaleString('en-US').replace(/,/g, ' ');
 const caja = (c, a = 1) => `<span style="background:${c};opacity:${a}"></span>`;
 let I, rasterAtlas, marca;
 
-const SITIOS = { 'N2c null median': '#08306b', '80 % at d ≤ 0.2': '#2171b5', '90 % at d ≤ 0.2': '#9ecae1' };
-const PLANES = { B: ['Species only (B)', '#7b3294'], C17: ['Species + climate (C)', '#e66101'], D17: ['Climate only (D)', '#2c7fb8'] };
+const SITIOS = { 'N2c null median': '#000000', '80 % at d ≤ 0.2': '#3d3d3d', '90 % at d ≤ 0.2': '#7a7a7a' };   // greys of Fig. 4c
+const PLANES = { D17: ['Climate only (D)', '#2c7fb8', 'd'], C17: ['Species + climate (C)', '#e66101', 'e'], B: ['Species only (B)', '#7b3294', 'f'] };   // order and panels of Fig. 4
 
 fetch('capas/indice.json').then(r => r.json()).then(indice => {
   I = indice;
@@ -163,12 +163,12 @@ function construirCapas(dLeg) {
     ['Fig. 1a · d<sub>min</sub>, land', raster('fig1_land'), dLeg + sinDato],
     ['Fig. 1b · d<sub>min</sub>, sea surface', raster('fig1_sea_surface'), 'Same classes as Fig. 1a'],
     ['Fig. 1c · d<sub>min</sub>, seafloor', raster('fig1_seafloor'), 'Same classes as Fig. 1a'],
-    ['Fig. 3a · Climatic gaps on natural land', raster('fig3_gaps'), gapLeg],
-    ['Fig. 3a · 223 potential sites', geo('capas/fig3_sites.geojson', {
-      style: f => ({ color: '#08306b', weight: .8, fillColor: SITIOS[f.properties.meta] || '#2171b5', fillOpacity: .85 }),
+    ['Fig. 4c–f · Climatic gaps on natural land', raster('fig3_gaps'), gapLeg],
+    ['Fig. 4c · Greedy benchmark, 223 potential sites', geo('capas/fig3_sites.geojson', {
+      style: f => ({ color: '#000000', weight: .8, fillColor: SITIOS[f.properties.meta] || '#2171b5', fillOpacity: .85 }),
       onEachFeature: (f, l) => l.bindPopup(`<b>Potential site ${f.properties.id}</b>` + tabla(f.properties), { maxWidth: 320 }),
     }), Object.entries(SITIOS).map(([t, c]) => `<div>${caja(c)}first target: ${t}</div>`).join('')],
-    ...Object.keys(PLANES).map(e => [`Fig. 4c · ${PLANES[e][0]}, 41 347 km²`, plan(e), `<div>${caja(PLANES[e][1], .55)}microbasins chosen</div>`]),
+    ...Object.keys(PLANES).map(e => [`Fig. 4${PLANES[e][2]} · ${PLANES[e][0]}, 41 347 km²`, plan(e), `<div>${caja(PLANES[e][1], .55)}microbasins chosen</div>`]),
   ];
   for (const [nombre, crear, leyenda] of CAPAS) {   // every layer starts off
     const lab = document.createElement('label'); lab.className = 'capa';

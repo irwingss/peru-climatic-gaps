@@ -18,7 +18,7 @@ VERDE = '#23745B'   # protected, as in the graphical abstract and the species ma
 
 # palette index: 0 transparent, 1 no climate data, 2-7 d classes, 8 d > 1, 9 protected (d = 0)
 PAL_D = [('#000000', 0), (SIN_DATO, .8)] + [(c, a) for c, a, _ in CLASES_D] + [('#ffffff', .55), (VERDE, .9)]
-# Fig. 3a: gap classes 1-4 on natural land, 5 on transformed land (colours of figuras_articulo.fig3)
+# gap classes 1-4 on natural land, 5 on transformed land (background of the maps of Fig. 4)
 PAL_V = [('#000000', 0), ('#fb6a4a', 1), ('#fcae91', 1), ('#fde0d2', 1), ('#fff5f0', 1), ('#c9c8c2', .9)]
 
 
@@ -98,7 +98,7 @@ def figuras():
     with rasterio.open(REPO / 'data/rasters/climatic_gaps_expandable_30s.tif') as ds:
         v = ds.read(1); v[v == 255] = 0
         capas['fig3_gaps'] = {'png': 'fig3_gaps.png', 'bounds': png(v, ds.transform, PAL_V, DST / 'fig3_gaps.png')}
-    # Fig. 3a potential sites
+    # Fig. 4c potential sites of the greedy curve
     meta, _, wkb, attrs = pyogrio.raw.read(REPO / 'data/potential_sites/potential_sites.gpkg')
     geoms = shapely.set_precision(shapely.simplify(shapely.from_wkb(wkb), .002), 1e-5)
     limpio = lambda x: round(float(x), 3) if isinstance(x, (float, np.floating)) else int(x) if isinstance(x, np.integer) else x  # noqa: E731
@@ -106,7 +106,7 @@ def figuras():
               'geometry': shapely.geometry.mapping(g)} for i, g in enumerate(geoms)]
     (DST / 'fig3_sites.geojson').write_text(json.dumps({'type': 'FeatureCollection', 'features': feats}, ensure_ascii=False,
                                                        separators=(',', ':')), encoding='utf-8')
-    # Fig. 4c microbasins chosen with 41 347 km² by the three plans, vectorized from the planning-unit grid
+    # Figs. 4d-f microbasins chosen with 41 347 km² by the three prioritizr plans, vectorized from the planning-unit grid
     base = lienzo(TIERRA)
     cel = np.load(PRI / 'entrada/celdas.npz'); pu = np.where(cel['candidato'], cel['pu'], 0)
     sel = {e: set(pd.read_csv(PRI / f'solucion_{e}_41k.csv').query('solution_1 == 1 and id > 0').id) for e in ('B', 'C17', 'D17')}
