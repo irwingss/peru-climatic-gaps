@@ -360,13 +360,14 @@ function construirCapas() {
     ]],
     ['Fig. 4 · Closing the gaps', [
       ['gaps', 'Climatic gaps on natural land', 'Fig. 4c–f', raster('fig3_gaps'), I.vacio[2], gapLeg],
+    ]],
+    ['Expansion plans · greedy and prioritizr A–D', [
       ['sitios', 'Greedy benchmark', 'Fig. 4c · 223 potential sites', geo(json('capas/fig3_sites.geojson'), {
         style: f => ({ color: '#000', weight: .8, fillColor: SITIOS[f.properties.meta] || '#2171b5', fillOpacity: .85 }),
         onEachFeature: (f, l) => l.bindPopup(`<b>Potential site ${f.properties.id}</b>` + tabla(f.properties), { maxWidth: 320 }),
       }), '#3d3d3d', `<h5>Potential sites · first target</h5>` + Object.entries(SITIOS).map(([t, c]) => item(c, t)).join('')],
-    ]],
-    ['prioritizr plans · 41 347 km² each', Object.keys(PLANES).map(e => ['plan' + e, PLANES[e][0],
-      `${PLANES[e][2]} · <span data-n="${e}">…</span> microbasins`, plan(e), PLANES[e][1], `<h5>${PLANES[e][0]}</h5>${item(PLANES[e][1], 'microbasins chosen', .6)}`])],
+      ...Object.keys(PLANES).map(e => ['plan' + e, PLANES[e][0],
+      `${PLANES[e][2]} · <span data-n="${e}">…</span> microbasins · 41 347 km²`, plan(e), PLANES[e][1], `<h5>${PLANES[e][0]}</h5>${item(PLANES[e][1], 'microbasins chosen', .6)}`])]],
   ];
   cuencas.then(g => document.querySelectorAll('[data-n]').forEach(s => s.textContent = fmt(g.features.filter(f => f.properties[s.dataset.n] === 1).length)));
   for (const [titulo, capas] of GRUPOS_CAPAS) {
