@@ -136,6 +136,11 @@
   #leyenda.plegada .ley-cab { padding: 0; gap: 8px; }
   #leyenda.plegada .ley-cab::after { transform: rotate(180deg); }
   #leyenda.plegada #ley-cuerpo { display: none; }
+  #leyenda .ley-cab svg { display: none; }
+  /* folded legend that would touch the 'Areas & layers' button: icon only */
+  #leyenda.plegada.icono { padding: 9px; }
+  #leyenda.plegada.icono .ley-cab svg { display: block; color: var(--gris); }
+  #leyenda.plegada.icono .ley-cab span, #leyenda.plegada.icono .ley-cab::after { display: none; }
   .sw.ver .tip { display: block; }
   /* drawer buttons, phone only */
   .cerrar { display: none; flex: none; align-items: center; gap: 6px; border: 1px solid rgba(255,255,255,.35); background: rgba(255,255,255,.12); color: #fff; border-radius: 99px; padding: 8px 14px; font-size: 13px; font-weight: 600; cursor: pointer; }
@@ -162,7 +167,8 @@
     .sw { padding: 9px 8px; }
     .ayuda { width: 28px; height: 28px; font-size: 13px; }
     .op input { height: 28px; }
-    #leyenda { width: 210px; bottom: 88px; right: 8px; max-height: calc(100% - 150px); padding: 8px 10px; font-size: 11px; }   /* above the 'Areas & layers' button */
+    #leyenda { width: 210px; bottom: 22px; right: 8px; max-height: calc(100% - 90px); padding: 8px 10px; font-size: 11px; }
+    #leyenda:not(.plegada) { bottom: 88px; max-height: calc(100% - 150px); }   /* open: above the 'Areas & layers' button */
     #etiqueta { top: 8px; max-width: calc(100% - 120px); cursor: pointer; font-size: 11.5px; padding: 6px 12px; }
     .leaflet-control-attribution { max-width: 100vw; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-size: 9px; }
     .leaflet-control-attribution.abierta { white-space: normal; }
@@ -216,7 +222,7 @@
   <main id="mapa">
     <button type="button" class="abrir" id="abrir-panel" aria-controls="panel"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>Areas &amp; layers</button>
     <div id="etiqueta" hidden></div>
-    <div id="leyenda" hidden><button type="button" class="ley-cab" id="ley-cab" aria-expanded="true">Legend</button><div id="ley-cuerpo"></div></div>
+    <div id="leyenda" hidden><button type="button" class="ley-cab" id="ley-cab" aria-expanded="true" aria-label="Legend"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="4" width="5" height="4" rx="1"/><rect x="3" y="10" width="5" height="4" rx="1"/><rect x="3" y="16" width="5" height="4" rx="1"/><path d="M11 6h10M11 12h10M11 18h10"/></svg><span>Legend</span></button><div id="ley-cuerpo"></div></div>
   </main>
 </div>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
@@ -290,8 +296,17 @@ function leyenda(clave, html) {
   html ? leyendas.set(clave, html) : leyendas.delete(clave);
   $('ley-cuerpo').innerHTML = [...leyendas.values()].map(h => `<div class="bloque">${h}</div>`).join('');
   $('leyenda').hidden = !leyendas.size;
+  ajustarLeyenda();
 }
-const plegar = si => { $('leyenda').classList.toggle('plegada', si); $('ley-cab').setAttribute('aria-expanded', !si); };
+function ajustarLeyenda() {   // folded legend as an icon only when its label would touch the 'Areas & layers' button
+  const ley = $('leyenda');
+  ley.classList.remove('icono');
+  if (ley.hidden || !ley.classList.contains('plegada')) return;
+  const a = $('abrir-panel').getBoundingClientRect(), b = ley.getBoundingClientRect();
+  ley.classList.toggle('icono', a.width > 0 && b.left < a.right + 8 && b.top < a.bottom && b.bottom > a.top);
+}
+addEventListener('resize', ajustarLeyenda);
+const plegar = si => { $('leyenda').classList.toggle('plegada', si); $('ley-cab').setAttribute('aria-expanded', !si); ajustarLeyenda(); };
 $('ley-cab').addEventListener('click', () => plegar(!$('leyenda').classList.contains('plegada')));
 L.DomEvent.disableClickPropagation($('leyenda')); L.DomEvent.disableScrollPropagation($('leyenda'));
 if (MOVIL.matches) plegar(true);   // on a phone the legend starts folded so it does not cover the map
