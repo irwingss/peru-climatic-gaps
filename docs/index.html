@@ -4,63 +4,177 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Climatic Gaps Atlas · Peru</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Source+Serif+4:opsz,wght@8..60,600&display=swap">
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
 <style>
-  :root { --tinta: #1f1f1d; --gris: #55554f; --linea: #dddcd6; --fondo: #faf9f6; --acento: #23745B; }
+  :root {
+    --tinta: #18201c; --gris: #5d665f; --tenue: #8b938c; --linea: #e3e6e1; --fondo: #f6f7f4; --carta: #ffffff;
+    --acento: #23745B; --acento-claro: #e5f1ec; --magenta: #A64E82; --sombra: 0 1px 2px rgba(20,30,25,.06), 0 8px 24px rgba(20,30,25,.08);
+    --r: 10px;
+  }
   * { box-sizing: border-box; }
-  html, body { margin: 0; height: 100%; font: 13px/1.4 system-ui, -apple-system, "Segoe UI", Arial, sans-serif; color: var(--tinta); background: var(--fondo); }
-  #app { display: flex; height: 100%; }
-  #panel { width: 340px; flex: none; overflow-y: auto; padding: 14px 16px 24px; border-right: 1px solid var(--linea); background: var(--fondo); }
-  #mapa { flex: 1; }
-  h1 { font-size: 16px; margin: 0 0 2px; }
-  .sub { color: var(--gris); font-size: 11.5px; margin: 0 0 12px; }
-  h2 { font-size: 12px; text-transform: uppercase; letter-spacing: .05em; color: var(--gris); margin: 16px 0 6px; border-top: 1px solid var(--linea); padding-top: 12px; }
-  input[type=search], select { width: 100%; font: inherit; padding: 5px 6px; border: 1px solid #c9c8c2; border-radius: 4px; background: #fff; }
-  .fila { display: flex; gap: 6px; margin-bottom: 6px; }
-  optgroup { font-weight: bold; }
-  optgroup option { font-weight: normal; }
-  #ficha { margin-top: 8px; font-size: 12px; background: #fff; border: 1px solid var(--linea); border-radius: 4px; padding: 8px; display: none; }
-  #ficha b { font-size: 12.5px; }
-  label.capa { display: flex; align-items: center; gap: 6px; padding: 2px 0; cursor: pointer; }
-  .leyenda { margin: 2px 0 6px 22px; font-size: 11px; color: var(--gris); }
-  .leyenda span { display: inline-block; width: 12px; height: 10px; border: 1px solid #bdbdb5; vertical-align: -1px; margin-right: 4px; }
-  .leyenda div { margin: 1px 0; }
-  a { color: #2c6fb0; }
-  .nota { font-size: 11px; color: var(--gris); margin-top: 10px; }
-  #abrir { display: none; }
+  html, body { margin: 0; height: 100%; font: 13px/1.45 Inter, system-ui, -apple-system, "Segoe UI", Arial, sans-serif; color: var(--tinta); background: var(--fondo); }
+  button, input { font: inherit; color: inherit; }
+  #app { display: grid; grid-template-columns: 380px 1fr; height: 100%; }
+  #panel { overflow-y: auto; background: var(--fondo); border-right: 1px solid var(--linea); display: flex; flex-direction: column; }
+  #mapa { position: relative; background: #e9ebe6; }
+
+  header { padding: 20px 20px 16px; background: linear-gradient(160deg, #1d5c49 0%, #23745B 55%, #6a1d52 140%); color: #fff; }
+  header .kicker { font-size: 10.5px; letter-spacing: .12em; text-transform: uppercase; opacity: .75; font-weight: 600; }
+  header h1 { font: 600 21px/1.2 "Source Serif 4", Georgia, serif; margin: 6px 0 8px; }
+  header p { margin: 0; font-size: 12px; opacity: .85; }
+  header i { opacity: 1; }
+
+  section { padding: 16px 20px; border-bottom: 1px solid var(--linea); }
+  .titulo { display: flex; align-items: baseline; justify-content: space-between; margin: 0 0 10px; }
+  .titulo h2 { font-size: 11px; letter-spacing: .09em; text-transform: uppercase; color: var(--gris); margin: 0; font-weight: 600; }
+  .titulo small { color: var(--tenue); font-size: 11px; }
+
+  /* searchable area selector */
+  .combo { position: relative; }
+  .combo input { width: 100%; padding: 11px 36px 11px 38px; border: 1px solid #d3d8d2; border-radius: var(--r); background: var(--carta); outline: none; transition: border-color .15s, box-shadow .15s; }
+  .combo input:focus { border-color: var(--acento); box-shadow: 0 0 0 3px rgba(35,116,91,.15); }
+  .combo .lupa { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--tenue); pointer-events: none; }
+  .combo .x { position: absolute; right: 6px; top: 50%; transform: translateY(-50%); border: 0; background: none; width: 28px; height: 28px; border-radius: 6px; cursor: pointer; color: var(--tenue); display: none; }
+  .combo .x:hover { background: var(--fondo); color: var(--tinta); }
+  .combo.lleno .x { display: block; }
+  #lista { position: absolute; z-index: 1000; left: 0; right: 0; top: calc(100% + 6px); max-height: min(420px, 60vh); overflow-y: auto; margin: 0; padding: 6px; list-style: none; background: var(--carta); border: 1px solid var(--linea); border-radius: var(--r); box-shadow: var(--sombra); display: none; }
+  .combo.abierto #lista { display: block; }
+  #lista .grupo { position: sticky; top: -6px; background: var(--carta); padding: 8px 8px 4px; font-size: 10.5px; letter-spacing: .08em; text-transform: uppercase; color: var(--tenue); font-weight: 600; }
+  #lista li[role=option] { padding: 7px 8px; border-radius: 7px; cursor: pointer; display: flex; gap: 8px; align-items: center; }
+  #lista li[role=option] .n { flex: 1; min-width: 0; }
+  #lista li[role=option] .c { font-size: 11px; color: var(--tenue); font-variant-numeric: tabular-nums; }
+  #lista li[aria-selected=true] { background: var(--acento-claro); }
+  #lista li mark { background: #fbe9a6; color: inherit; border-radius: 2px; }
+  #lista .vacio { padding: 14px 8px; color: var(--tenue); text-align: center; }
+  .dom { font-size: 10px; padding: 1px 6px; border-radius: 99px; background: #eef0ec; color: var(--gris); white-space: nowrap; }
+  .dom.sea { background: #e3eef8; color: #2c5f8f; } .dom.floor { background: #e5e4f3; color: #4b4790; }
+
+  .filtros { margin-top: 12px; }
+  .filtros > span { display: block; font-size: 10.5px; color: var(--tenue); margin: 8px 0 5px; text-transform: uppercase; letter-spacing: .06em; }
+  .chips { display: flex; flex-wrap: wrap; gap: 5px; }
+  .chip { border: 1px solid #d3d8d2; background: var(--carta); border-radius: 99px; padding: 3px 9px; font-size: 12px; cursor: pointer; transition: all .12s; }
+  .chip:hover { border-color: var(--acento); }
+  .chip[aria-pressed=true] { background: var(--acento); border-color: var(--acento); color: #fff; }
+  .chip .k { opacity: .65; margin-left: 3px; font-variant-numeric: tabular-nums; }
+
+  /* selected-area card */
+  #ficha { margin-top: 14px; background: var(--carta); border: 1px solid var(--linea); border-radius: var(--r); box-shadow: var(--sombra); overflow: hidden; }
+  #ficha[hidden] { display: none; }
+  #ficha .cab { padding: 14px 14px 10px; border-left: 4px solid var(--acento); }
+  #ficha .cod { font-size: 11px; color: var(--tenue); font-variant-numeric: tabular-nums; }
+  #ficha h3 { margin: 2px 0 4px; font: 600 16px/1.25 "Source Serif 4", Georgia, serif; }
+  #ficha .meta { font-size: 12px; color: var(--gris); }
+  .cifras { display: grid; grid-template-columns: 1fr 1fr; border-top: 1px solid var(--linea); }
+  .cifras div { padding: 10px 14px; }
+  .cifras div + div { border-left: 1px solid var(--linea); }
+  .cifras b { display: block; font-size: 19px; font-weight: 700; font-variant-numeric: tabular-nums; letter-spacing: -.01em; }
+  .cifras span { font-size: 11px; color: var(--gris); }
+  .acciones { display: flex; gap: 6px; padding: 10px 14px 12px; border-top: 1px solid var(--linea); flex-wrap: wrap; }
+  .btn { border: 1px solid #d3d8d2; background: var(--carta); border-radius: 8px; padding: 6px 10px; font-size: 12px; cursor: pointer; text-decoration: none; color: var(--tinta); display: inline-flex; align-items: center; gap: 5px; }
+  .btn:hover { border-color: var(--acento); color: var(--acento); }
+  .btn.primario { background: var(--acento); border-color: var(--acento); color: #fff; }
+  .btn.primario:hover { background: #1b5e49; color: #fff; }
+  .vacia { margin-top: 14px; padding: 14px; border: 1px dashed #cfd5ce; border-radius: var(--r); color: var(--gris); font-size: 12px; text-align: center; }
+
+  /* layer switches */
+  .capas-grupo { margin-bottom: 12px; }
+  .capas-grupo h4 { margin: 0 0 4px; font-size: 11.5px; font-weight: 600; color: var(--gris); }
+  .sw { display: flex; align-items: center; gap: 10px; padding: 6px 8px; margin: 0 -8px; border-radius: 8px; cursor: pointer; }
+  .sw:hover { background: #eceee9; }
+  .sw input { appearance: none; flex: none; width: 30px; height: 18px; border-radius: 99px; background: #cfd4ce; position: relative; cursor: pointer; transition: background .15s; margin: 0; }
+  .sw input::after { content: ""; position: absolute; top: 2px; left: 2px; width: 14px; height: 14px; border-radius: 50%; background: #fff; box-shadow: 0 1px 2px rgba(0,0,0,.25); transition: transform .15s; }
+  .sw input:checked { background: var(--acento); }
+  .sw input:checked::after { transform: translateX(12px); }
+  .sw input:focus-visible { outline: 2px solid var(--acento); outline-offset: 2px; }
+  .sw .muestra { flex: none; width: 14px; height: 14px; border-radius: 4px; }
+  .sw .t { flex: 1; }
+  .sw .t small { display: block; color: var(--tenue); font-size: 11px; }
+  .op { display: flex; align-items: center; gap: 10px; font-size: 12px; color: var(--gris); margin-top: 4px; }
+  .op input { flex: 1; accent-color: var(--acento); }
+  .op output { width: 34px; text-align: right; font-variant-numeric: tabular-nums; }
+
+  .nota { padding: 16px 20px 24px; font-size: 11.5px; color: var(--gris); }
+  .nota p { margin: 0 0 8px; }
+  a { color: var(--acento); }
+
+  /* floating legend */
+  #leyenda { position: absolute; z-index: 800; right: 12px; bottom: 28px; width: 250px; max-height: calc(100% - 120px); overflow-y: auto; background: rgba(255,255,255,.96); backdrop-filter: blur(6px); border-radius: var(--r); box-shadow: var(--sombra); padding: 10px 12px; font-size: 11.5px; }
+  #leyenda[hidden] { display: none; }
+  #leyenda h5 { margin: 0 0 6px; font-size: 11px; font-weight: 600; color: var(--tinta); }
+  #leyenda .bloque + .bloque { margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--linea); }
+  #leyenda .item { display: flex; align-items: center; gap: 7px; margin: 2px 0; color: var(--gris); }
+  #leyenda .item i { flex: none; width: 16px; height: 11px; border-radius: 2px; border: 1px solid rgba(0,0,0,.08); }
+  .rampa { display: flex; height: 10px; border-radius: 3px; overflow: hidden; margin: 4px 0 2px; }
+  .rampa i { flex: 1; }
+  .rampa-et { display: flex; justify-content: space-between; font-size: 10px; color: var(--tenue); font-variant-numeric: tabular-nums; }
+
+  /* map chips */
+  #etiqueta { position: absolute; z-index: 800; left: 50%; top: 12px; transform: translateX(-50%); background: var(--tinta); color: #fff; padding: 7px 14px; border-radius: 99px; font-size: 12px; box-shadow: var(--sombra); display: flex; align-items: center; gap: 8px; max-width: calc(100% - 140px); }
+  #etiqueta[hidden] { display: none; }
+  #etiqueta span { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .giro { width: 12px; height: 12px; border: 2px solid rgba(255,255,255,.35); border-top-color: #fff; border-radius: 50%; animation: g .8s linear infinite; flex: none; }
+  @keyframes g { to { transform: rotate(360deg); } }
   .leaflet-image-layer { image-rendering: pixelated; }
-  @media (max-width: 760px) {
-    #app { flex-direction: column-reverse; }
-    #panel { width: 100%; height: 45%; border-right: 0; border-top: 1px solid var(--linea); }
+  .leaflet-container { font: inherit; background: #e9ebe6; }
+  .leaflet-popup-content-wrapper { border-radius: var(--r); box-shadow: var(--sombra); }
+  .leaflet-popup-content { margin: 12px 14px; font-size: 12px; line-height: 1.5; }
+  .leaflet-control-layers, .leaflet-bar { border: 0 !important; box-shadow: var(--sombra) !important; border-radius: 8px !important; }
+
+  @media (max-width: 800px) {
+    #app { grid-template-columns: 1fr; grid-template-rows: 55% 45%; }
+    #mapa { grid-row: 1; } #panel { grid-row: 2; border-right: 0; border-top: 1px solid var(--linea); }
+    header { padding: 14px 16px; } header p { display: none; } section { padding: 14px 16px; }
+    #leyenda { width: 200px; bottom: 20px; right: 8px; max-height: calc(100% - 80px); }
   }
 </style>
 </head>
 <body>
 <div id="app">
   <aside id="panel">
-    <h1>Climatic gaps in Peru's protected areas</h1>
-    <p class="sub">Interactive atlas of climate analogues (File S2) and map layers of Figs. 1, 3 and 4 of Saldaña &amp; Ugaz-Cherre, <i>Perspectives in Ecology and Conservation</i> (submitted).</p>
+    <header>
+      <div class="kicker">Interactive atlas · File S2</div>
+      <h1>Climatic gaps in Peru's protected areas</h1>
+      <p>Climate analogues of every protected area and the map layers of Figs. 1 and 4 of Saldaña &amp; Ugaz-Cherre, <i>Perspectives in Ecology and Conservation</i> (submitted).</p>
+    </header>
 
-    <h2>Atlas of climate analogues</h2>
-    <div class="fila">
-      <select id="dominio" aria-label="Domain"><option value="">All domains</option><option>land</option><option>sea surface</option><option>seafloor</option></select>
+    <section>
+      <div class="titulo"><h2>Protected area</h2><small id="cuenta"></small></div>
+      <div class="combo" id="combo">
+        <svg class="lupa" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+        <input id="buscar" type="text" role="combobox" aria-expanded="false" aria-controls="lista" aria-autocomplete="list" autocomplete="off" placeholder="Search by name or code — Manu, Paracas, NAC_PN11…">
+        <button class="x" id="limpiar" aria-label="Clear selection">✕</button>
+        <ul id="lista" role="listbox" aria-label="Protected areas"></ul>
+      </div>
+      <div class="filtros"><span>Administration</span><div class="chips" id="f-grupo" aria-label="Administration"></div>
+      <span>Domain</span><div class="chips" id="f-dominio" aria-label="Domain"></div></div>
+      <div class="vacia" id="vacia">Pick an area to see its climate analogues: where else in Peru the climate is like the one it protects.</div>
+      <div id="ficha" hidden></div>
+    </section>
+
+    <section>
+      <div class="titulo"><h2>Map layers</h2><small>from the paper</small></div>
+      <div id="capas"></div>
+      <label class="op">Raster opacity <input id="opacidad" type="range" min="0.2" max="1" step="0.05" value="0.9"><output id="op-v">90 %</output></label>
+    </section>
+
+    <div class="nota">
+      <p><b>d</b> is the regularized Mahalanobis distance to the most similar protected climate (CHELSA V2.1 on land at 30″; Bio-ORACLE v3.0 at sea at 0.05°). Rasters are shown at their native pixel size.</p>
+      <p>Protected-area outlines: SERNANP, Catastro Oficial de Áreas Naturales Protegidas, shown as a derived map (the original vectors are not redistributed).</p>
+      <p>Download GeoJSON: <a href="capas/fig3_sites.geojson" download>potential sites</a> · <a href="capas/fig4_microbasins.geojson" download>prioritized microbasins</a></p>
     </div>
-    <input id="buscar" type="search" placeholder="Search name or code (e.g. Manu, NAC_PN11)" aria-label="Search protected area">
-    <div class="fila" style="margin-top:6px"><select id="lista" aria-label="Protected areas"></select></div>
-    <div id="ficha"></div>
-    <div class="leyenda" id="leyenda-d" style="margin-left:0" hidden></div>
-
-    <h2>Figure layers</h2>
-    <div id="capas"></div>
-    <label class="capa" style="margin-top:8px">Raster opacity <input id="opacidad" type="range" min="0.2" max="1" step="0.05" value="0.9" style="flex:1"></label>
-
-    <p class="nota">d is the regularized Mahalanobis distance to the most similar protected climate (CHELSA V2.1 on land at 30″; Bio-ORACLE v3.0 at sea at 0.05°). Rasters are shown at their native pixel size. Protected-area outlines: SERNANP, Catastro Oficial de Áreas Naturales Protegidas, shown as a derived map (the original vectors are not redistributed). Vector layers can be downloaded as GeoJSON: <a href="capas/fig3_sites.geojson" download>potential sites</a> · <a href="capas/fig4_microbasins.geojson" download>prioritized microbasins</a>.</p>
   </aside>
-  <main id="mapa"></main>
+  <main id="mapa">
+    <div id="etiqueta" hidden></div>
+    <div id="leyenda" hidden></div>
+  </main>
 </div>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
-const mapa = L.map('mapa', { preferCanvas: true, zoomSnap: 0.5 }).fitBounds([[-18.4, -81.4], [-0.03, -68.6]]);
+const PERU = [[-18.4, -81.4], [-0.03, -68.6]];
+const mapa = L.map('mapa', { preferCanvas: true, zoomSnap: 0.5, zoomControl: false }).fitBounds(PERU);
+L.control.zoom({ position: 'topleft' }).addTo(mapa);
 const bases = {
   'Light': L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}', { maxZoom: 16, attribution: 'Esri, HERE, Garmin, © OpenStreetMap' }),
   'Satellite': L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', { maxZoom: 18, attribution: 'Esri, Maxar, Earthstar Geographics' }),
@@ -68,77 +182,153 @@ const bases = {
 };
 bases.Light.addTo(mapa);
 L.control.layers(bases, null, { position: 'topright' }).addTo(mapa);
-L.control.scale({ imperial: false }).addTo(mapa);
+L.control.scale({ imperial: false, position: 'bottomleft' }).addTo(mapa);
 
 const $ = id => document.getElementById(id);
 const fmt = x => x.toLocaleString('en-US').replace(/,/g, ' ');
-const caja = (c, a = 1) => `<span style="background:${c};opacity:${a}"></span>`;
-let I, rasterAtlas, marca;
+const sinAcento = s => s.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase();
+const esc = s => s.replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+const codigo = id => id.replace(/_(superficie|fondo)$/, '');
+const item = (c, t, a = 1) => `<div class="item"><i style="background:${c};opacity:${a}"></i>${t}</div>`;
+const opac = () => +$('opacidad').value;
 
+let I, sel = null, rasterAtlas, marca;
+const GRUPOS = { ANP: 'National (ANP)', ACR: 'Regional (ACR)', ACP: 'Private (ACP)' };
+const DOMINIOS = { land: 'Land', 'sea surface': 'Sea surface', seafloor: 'Seafloor' };
+const DOMCLASE = { land: '', 'sea surface': 'sea', seafloor: 'floor' };
+const filtro = { grupo: '', dominio: '' };
 const SITIOS = { 'N2c null median': '#000000', '80 % at d ≤ 0.2': '#3d3d3d', '90 % at d ≤ 0.2': '#7a7a7a' };   // first target of each site (Fig. 4c draws all sites in one colour)
 const PLANES = { D17: ['Climate only (D)', '#2c7fb8', 'd'], C17: ['Species + climate (C)', '#e66101', 'e'], B: ['Species only (B)', '#8c510a', 'f'] };   // order and panels of Fig. 4
 
 fetch('capas/indice.json').then(r => r.json()).then(indice => {
   I = indice;
-  const dLeg = I.clases_d.map(c => `<div>${caja(c.color, c.alfa)}${c.label}</div>`).join('');
-  $('leyenda-d').innerHTML = `<div style="margin-top:6px">Mahalanobis distance d</div>${dLeg}<div>${caja(I.mas_1)}> 1 · not analogous</div><div>${caja(I.verde)}the protected area itself (d = 0)</div>`;
-  I.areas.forEach(a => a.clave = (a.nombre + ' ' + a.id).normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase());
+  I.areas.forEach(a => a.clave = sinAcento(a.nombre + ' ' + a.id));
   I.areas.sort((a, b) => a.nombre.localeCompare(b.nombre, 'es', { sensitivity: 'base' }));
-  filtrar();
-  construirCapas(dLeg);
-  if (location.hash) history.replaceState(null, '', location.pathname);   // always open on the whole of Peru, nothing selected
+  chips();
+  pintarLista();
+  construirCapas();
+  mapa.invalidateSize(); mapa.fitBounds(PERU);   // the grid may size the map after Leaflet starts
+  const h = decodeURIComponent(location.hash.slice(1));   // #NAC_PN11 opens that area directly
+  if (I.areas.some(a => a.id === h)) elegir(h);
 });
+addEventListener('hashchange', () => { const h = decodeURIComponent(location.hash.slice(1)); h !== sel?.id && elegir(h); });
 
-// ---------- atlas: dropdown grouped by ANP / ACR / ACP (alphabetical inside each group), one analogue map at a time
-const GRUPOS = { ANP: 'ANP · National administration', ACR: 'ACR · Regional administration', ACP: 'ACP · Private' };
-function filtrar() {
-  const q = $('buscar').value.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().trim();
-  const dom = $('dominio').value, actual = $('lista').value;
-  const vis = I.areas.filter(a => (!dom || a.dominio === dom) && (!q || a.clave.includes(q)));
-  const frag = document.createDocumentFragment();
-  frag.append(new Option(`Choose a protected area (${vis.length})`, ''));
-  for (const [g, titulo] of Object.entries(GRUPOS)) {
-    const og = Object.assign(document.createElement('optgroup'), { label: titulo });
-    vis.filter(a => a.grupo === g).forEach(a => og.append(new Option(a.nombre, a.id)));
-    og.children.length && frag.append(og);
-  }
-  $('lista').replaceChildren(frag);
-  $('lista').value = vis.some(a => a.id === actual) ? actual : '';
+// ---------- legends: one floating box that lists only what is on the map
+const D_LEY = () => `<div class="rampa">${I.clases_d.map(c => `<i style="background:${c.color}"></i>`).join('')}<i style="background:${I.mas_1}"></i></div>
+  <div class="rampa-et"><span>0</span><span>0.1</span><span>0.2</span><span>0.5</span><span>1</span><span>&gt;1</span></div>
+  <div style="margin-top:6px">${I.clases_d.map(c => item(c.color, c.label, c.alfa)).join('')}${item(I.mas_1, '&gt; 1 · not analogous')}</div>`;
+const leyendas = new Map();   // key -> html, insertion order = display order
+function leyenda(clave, html) {
+  html ? leyendas.set(clave, html) : leyendas.delete(clave);
+  $('leyenda').innerHTML = [...leyendas.values()].map(h => `<div class="bloque">${h}</div>`).join('');
+  $('leyenda').hidden = !leyendas.size;
 }
-['buscar', 'dominio'].forEach(id => $(id).addEventListener('input', filtrar));
-$('lista').addEventListener('change', e => elegir(e.target.value));
 
-// choosing an area locates it and shows its data; its analogue map is a separate switch, and the figure layers are untouched
-function elegir(id, analogos = false) {
+// ---------- filters as chips with live counts
+function chips() {
+  const pinta = (cont, opciones, campo) => {
+    const n = v => I.areas.filter(a => (!v || a[campo] === v) && Object.entries(filtro).every(([k, f]) => k === campo || !f || a[k] === f)).length;
+    $(cont).innerHTML = [['', 'All'], ...Object.entries(opciones)].map(([v, t]) =>
+      `<button class="chip" data-v="${v}" aria-pressed="${filtro[campo] === v}">${t}<span class="k">${n(v)}</span></button>`).join('');
+    $(cont).onclick = e => { const b = e.target.closest('.chip'); if (!b) return; filtro[campo] = b.dataset.v; chips(); pintarLista(); };
+  };
+  pinta('f-grupo', GRUPOS, 'grupo');
+  pinta('f-dominio', DOMINIOS, 'dominio');
+}
+
+// ---------- combobox
+let visibles = [], activo = -1;
+function pintarLista() {
+  const q = sinAcento($('buscar').value.trim());
+  const enSel = sel && $('buscar').value === sel.nombre;   // input shows the chosen name: list everything
+  visibles = I.areas.filter(a => (!filtro.grupo || a.grupo === filtro.grupo) && (!filtro.dominio || a.dominio === filtro.dominio) && (enSel || !q || a.clave.includes(q)));
+  $('cuenta').textContent = `${visibles.length} of ${I.areas.length}`;
+  const resaltar = s => {
+    if (!q || enSel) return esc(s);
+    const i = sinAcento(s).indexOf(q);
+    return i < 0 ? esc(s) : esc(s.slice(0, i)) + '<mark>' + esc(s.slice(i, i + q.length)) + '</mark>' + esc(s.slice(i + q.length));
+  };
+  let html = '', k = 0;
+  for (const [g, titulo] of Object.entries(GRUPOS)) {
+    const vs = visibles.filter(a => a.grupo === g);
+    if (!vs.length) continue;
+    html += `<li class="grupo" role="presentation">${titulo} · ${vs.length}</li>`;
+    for (const a of vs) html += `<li role="option" id="op-${k}" data-i="${k++}" data-id="${a.id}" aria-selected="false"><span class="n">${resaltar(a.nombre.replace(/ · (sea surface|seafloor)$/, ''))}</span>` +
+      (a.dominio !== 'land' ? `<span class="dom ${DOMCLASE[a.dominio]}">${DOMINIOS[a.dominio]}</span>` : '') + `<span class="c">${codigo(a.id)}</span></li>`;
+  }
+  visibles = Object.keys(GRUPOS).flatMap(g => visibles.filter(a => a.grupo === g));   // same order as drawn
+  $('lista').innerHTML = html || '<li class="vacio">No protected area matches. Try another name or clear the filters.</li>';
+  marcar(enSel ? visibles.indexOf(sel) : (q ? 0 : -1));
+}
+function marcar(i) {
+  const prev = $('lista').querySelector('[aria-selected=true]');
+  prev && prev.setAttribute('aria-selected', 'false');
+  activo = i;
+  const li = $('op-' + i);
+  if (li) { li.setAttribute('aria-selected', 'true'); li.scrollIntoView({ block: 'nearest' }); $('buscar').setAttribute('aria-activedescendant', li.id); }
+  else $('buscar').removeAttribute('aria-activedescendant');
+}
+const abrir = si => { $('combo').classList.toggle('abierto', si); $('buscar').setAttribute('aria-expanded', si); };
+$('buscar').addEventListener('focus', () => { $('buscar').select(); pintarLista(); abrir(true); });
+$('buscar').addEventListener('input', () => { $('combo').classList.toggle('lleno', !!$('buscar').value); pintarLista(); abrir(true); });
+$('buscar').addEventListener('keydown', e => {
+  if (e.key === 'ArrowDown') { e.preventDefault(); abrir(true); marcar(Math.min(activo + 1, visibles.length - 1)); }
+  else if (e.key === 'ArrowUp') { e.preventDefault(); marcar(Math.max(activo - 1, 0)); }
+  else if (e.key === 'Enter' && visibles[activo]) { e.preventDefault(); elegir(visibles[activo].id); }
+  else if (e.key === 'Escape') { abrir(false); sel && ($('buscar').value = sel.nombre); }
+});
+$('lista').addEventListener('mousedown', e => { const li = e.target.closest('[role=option]'); if (li) { e.preventDefault(); elegir(li.dataset.id); } });
+document.addEventListener('mousedown', e => { if (!$('combo').contains(e.target)) { abrir(false); if (sel) $('buscar').value = sel.nombre; } });
+$('limpiar').addEventListener('click', () => quitar());
+
+// ---------- choosing an area: its analogue map from the atlas goes straight onto the map
+function elegir(id) {
   const a = I && I.areas.find(x => x.id === id);
   if (!a) return;
-  rasterAtlas && rasterAtlas.remove(); marca && marca.remove(); rasterAtlas = null;
-  marca = L.circleMarker(a.centro, { radius: 9, color: I.verde, weight: 2, fill: false }).addTo(mapa).bindTooltip(a.nombre);
-  $('lista').value = id;
+  sel = a;
+  $('buscar').value = a.nombre; $('combo').classList.add('lleno'); abrir(false); $('buscar').blur();
+  history.replaceState(null, '', '#' + a.id);
+  rasterAtlas && rasterAtlas.remove(); marca && marca.remove();
   mapa.closePopup();
-  mapa.flyToBounds(a.caja, { padding: [40, 40], maxZoom: 13, duration: .6 });   // the area itself, not its analogues
-  $('ficha').style.display = 'block';
-  $('ficha').innerHTML = `<b>${a.nombre}</b> (${a.id.replace(/_(superficie|fondo)$/, '')})<br>${a.modalidad}` +
-    (a.km2 !== undefined ? ` · ${fmt(a.km2)} km² with data<br>Dominant ecoregion: ${a.eco}` : '') +
-    `<br>Area outside the protected area with d ≤ 0.1: <b>${fmt(a.km2_01)} km²</b>; d ≤ 0.2: <b>${fmt(a.km2_02)} km²</b>` +
-    `<label class="capa" style="margin-top:6px"><input type="checkbox" id="ver-analogos"> Show its climate analogues (File S2)</label>` +
-    `<a href="#" id="quitar">Remove from map</a>`;
-  $('ver-analogos').onchange = e => {
-    rasterAtlas && rasterAtlas.remove(); rasterAtlas = null;
-    $('leyenda-d').hidden = !e.target.checked;
-    if (e.target.checked) rasterAtlas = L.imageOverlay('capas/' + a.png, a.bounds, { opacity: +$('opacidad').value, zIndex: 20 }).addTo(mapa);
-  };
-  $('ver-analogos').checked = analogos; $('ver-analogos').onchange({ target: $('ver-analogos') });
-  $('quitar').onclick = e => {
-    e.preventDefault(); rasterAtlas && rasterAtlas.remove(); rasterAtlas = null; marca.remove();
-    $('ficha').style.display = 'none'; $('leyenda-d').hidden = true; $('lista').value = '';
-  };
+  ['f1a', 'f1b', 'f1c'].forEach(k => { const c = interruptores[k]; if (c?.checked) { c.checked = false; c.dispatchEvent(new Event('change')); } });   // Fig. 1 hides the analogue map
+  $('etiqueta').hidden = false;
+  $('etiqueta').innerHTML = `<div class="giro"></div><span>Loading climate analogues of ${esc(a.nombre)}…</span>`;
+  rasterAtlas = L.imageOverlay('capas/' + a.png, a.bounds, { opacity: opac(), zIndex: 20 })
+    .on('load', () => $('etiqueta').innerHTML = `<span>Climate analogues of <b>${esc(a.nombre)}</b></span>`)
+    .on('error', () => $('etiqueta').innerHTML = `<span>Analogue map not available for ${esc(a.nombre)}</span>`)
+    .addTo(mapa);
+  marca = L.circleMarker(a.centro, { radius: 10, color: '#fff', weight: 3, fillColor: I.verde, fillOpacity: 1 }).addTo(mapa).bindTooltip(a.nombre, { direction: 'top', offset: [0, -8] });
+  mapa.flyToBounds(a.bounds, { padding: [30, 30], duration: .7 });
+  leyenda('atlas', `<h5>Analogues of ${esc(a.nombre)} · distance d</h5>${D_LEY()}${item(I.verde, 'the protected area itself (d = 0)')}`);
+
+  $('vacia').hidden = true; $('ficha').hidden = false;
+  $('ficha').innerHTML = `<div class="cab"><div class="cod">${codigo(a.id)} · ${GRUPOS[a.grupo]}${a.dominio !== 'land' ? ' · ' + DOMINIOS[a.dominio] : ''}</div>
+      <h3>${esc(a.nombre)}</h3>
+      <div class="meta">${a.modalidad}${a.km2 !== undefined ? ` · ${fmt(a.km2)} km² with data<br>Dominant ecoregion: ${a.eco}` : ''}</div></div>
+    <div class="cifras"><div><b>${fmt(a.km2_01)}</b><span>km² outside with d ≤ 0.1</span></div><div><b>${fmt(a.km2_02)}</b><span>km² outside with d ≤ 0.2</span></div></div>
+    <div class="acciones">
+      <button class="btn primario" id="ir-area">◎ Zoom to area</button>
+      <button class="btn" id="ir-atlas">⤢ Full analogue map</button>
+      <a class="btn" href="capas/${a.png}" download="${a.id}.png">↓ PNG</a>
+    </div>`;
+  $('ir-area').onclick = () => mapa.flyToBounds(a.caja, { padding: [60, 60], maxZoom: 13, duration: .6 });
+  $('ir-atlas').onclick = () => elegir(a.id);   // also brings the analogue map back after Fig. 1 hid it
+}
+function quitar() {
+  sel = null; rasterAtlas && rasterAtlas.remove(); marca && marca.remove(); rasterAtlas = marca = null;
+  $('buscar').value = ''; $('combo').classList.remove('lleno');
+  $('ficha').hidden = true; $('vacia').hidden = false; $('etiqueta').hidden = true;
+  leyenda('atlas'); history.replaceState(null, '', location.pathname); pintarLista();
+  mapa.flyToBounds(PERU, { duration: .6 });
 }
 
-// ---------- figure layers: created on first use
-function construirCapas(dLeg) {
-  const raster = k => () => L.imageOverlay('capas/' + I.capas[k].png, I.capas[k].bounds, { opacity: +$('opacidad').value, zIndex: 10 });
-  const tabla = p => '<table>' + Object.entries(p).filter(([, v]) => v !== null && v !== '').map(([k, v]) => `<tr><td style="color:#77766f;padding-right:6px">${k}</td><td>${v}</td></tr>`).join('') + '</table>';
+// ---------- figure layers as switches, created on first use
+const AP = { ANP: 'NACIONAL', ACR: 'REGIONAL', ACP: 'PRIVADA' };
+const apActivas = new Set();
+const interruptores = {};   // clave -> checkbox of each figure layer
+function construirCapas() {
+  const raster = k => () => L.imageOverlay('capas/' + I.capas[k].png, I.capas[k].bounds, { opacity: opac(), zIndex: 10 });
+  const tabla = p => '<table>' + Object.entries(p).filter(([, v]) => v !== null && v !== '').map(([k, v]) => `<tr><td style="color:#8b938c;padding-right:8px">${k}</td><td>${v}</td></tr>`).join('') + '</table>';
   const geo = (url, opts) => () => fetch(url).then(r => r.json()).then(g => L.geoJSON(g, { bubblingMouseEvents: false, ...opts }));
   const plan = e => geo('capas/fig4_microbasins.geojson', {
     filter: f => f.properties[e] === 1,
@@ -146,50 +336,54 @@ function construirCapas(dLeg) {
     onEachFeature: (f, l) => l.bindPopup(`<b>Microbasin ${f.properties.pu}</b><br>${fmt(f.properties.km2)} km²<br>Chosen by: ` +
       Object.keys(PLANES).filter(k => f.properties[k]).map(k => PLANES[k][0]).join(', ')),
   });
-  const gapLeg = [[I.vacio[0], '0.2–0.3'], [I.vacio[1], '0.3–0.5'], [I.vacio[2], '0.5–1'], [I.vacio[3], '> 1'], ['#d3d1ca', 'gap on transformed land']]
-    .map(([c, t]) => `<div>${caja(c)}${t}</div>`).join('');
-  const sinDato = `<div>${caja(I.mas_1)}> 1 · not analogous</div><div>${caja(I.verde)}protected-area network</div><div>${caja('#d6d6d2')}no climate data</div>`;
   mapa.createPane('ap').style.zIndex = 450;   // above rasters and vectors, below markers and popups
-  const ap = g => () => {   // tiles of one group; on/off is tracked for the click lookup
-    const t = L.tileLayer(`capas/ap/${AP[g]}/{z}/{x}/{y}.png`, {
-      pane: 'ap', minZoom: 4, minNativeZoom: 4, maxNativeZoom: 11, bounds: [[-20.5, -85], [0.1, -68.5]],
-      attribution: 'Protected areas: SERNANP, Catastro Oficial de Áreas Naturales Protegidas',
-    });
-    return t.on('add', () => apActivas.add(g)).on('remove', () => apActivas.delete(g));
-  };
-  const CAPAS = [
-    ...Object.keys(AP).map(g => [`Protected areas · ${GRUPOS[g]}`, ap(g),
-      `<div>${caja(I.verde)}SERNANP official cadastre (9 Oct 2026), drawn as a map; click an area for its data</div>`]),
-    ['Fig. 1a · d<sub>min</sub>, land', raster('fig1_land'), dLeg + sinDato],
-    ['Fig. 1b · d<sub>min</sub>, sea surface', raster('fig1_sea_surface'), 'Same classes as Fig. 1a'],
-    ['Fig. 1c · d<sub>min</sub>, seafloor', raster('fig1_seafloor'), 'Same classes as Fig. 1a'],
-    ['Fig. 4c–f · Climatic gaps on natural land', raster('fig3_gaps'), gapLeg],
-    ['Fig. 4c · Greedy benchmark, 223 potential sites', geo('capas/fig3_sites.geojson', {
-      style: f => ({ color: '#000000', weight: .8, fillColor: SITIOS[f.properties.meta] || '#2171b5', fillOpacity: .85 }),
-      onEachFeature: (f, l) => l.bindPopup(`<b>Potential site ${f.properties.id}</b>` + tabla(f.properties), { maxWidth: 320 }),
-    }), Object.entries(SITIOS).map(([t, c]) => `<div>${caja(c)}first target: ${t}</div>`).join('')],
-    ...Object.keys(PLANES).map(e => [`Fig. 4${PLANES[e][2]} · ${PLANES[e][0]}, 41 347 km²`, plan(e), `<div>${caja(PLANES[e][1], .55)}microbasins chosen</div>`]),
+  const ap = g => () => L.tileLayer(`capas/ap/${AP[g]}/{z}/{x}/{y}.png`, {
+    pane: 'ap', minZoom: 4, minNativeZoom: 4, maxNativeZoom: 11, bounds: [[-20.5, -85], [0.1, -68.5]],
+    attribution: 'Protected areas: SERNANP, Catastro Oficial de Áreas Naturales Protegidas',
+  }).on('add', () => apActivas.add(g)).on('remove', () => apActivas.delete(g));
+  const dmin = (t) => `<h5>${t} · d<sub>min</sub></h5>${D_LEY()}${item(I.verde, 'protected-area network')}${item('#d6d6d2', 'no climate data')}`;
+  const gapLeg = `<h5>Climatic gaps on natural land · d</h5>` + [[I.vacio[0], '0.2–0.3'], [I.vacio[1], '0.3–0.5'], [I.vacio[2], '0.5–1'], [I.vacio[3], '&gt; 1'], ['#d3d1ca', 'gap on transformed land']].map(([c, t]) => item(c, t)).join('');
+  const GRUPOS_CAPAS = [
+    ['Protected areas', Object.keys(AP).map(g => ['ap' + g, GRUPOS[g], 'click an area to select it', ap(g), I.verde, `<h5>Protected areas</h5>${item(I.verde, 'SERNANP cadastre (9 Oct 2026)')}`])],
+    ['Fig. 1 · Distance to the nearest protected climate', [
+      ['f1a', 'Land', 'Fig. 1a', raster('fig1_land'), I.clases_d[1].color, dmin('Fig. 1a · land')],
+      ['f1b', 'Sea surface', 'Fig. 1b', raster('fig1_sea_surface'), I.clases_d[2].color, dmin('Fig. 1b · sea surface')],
+      ['f1c', 'Seafloor', 'Fig. 1c', raster('fig1_seafloor'), I.clases_d[0].color, dmin('Fig. 1c · seafloor')],
+    ]],
+    ['Fig. 4 · Closing the gaps', [
+      ['gaps', 'Climatic gaps on natural land', 'Fig. 4c–f', raster('fig3_gaps'), I.vacio[2], gapLeg],
+      ['sitios', 'Greedy benchmark, 223 sites', 'Fig. 4c', geo('capas/fig3_sites.geojson', {
+        style: f => ({ color: '#000', weight: .8, fillColor: SITIOS[f.properties.meta] || '#2171b5', fillOpacity: .85 }),
+        onEachFeature: (f, l) => l.bindPopup(`<b>Potential site ${f.properties.id}</b>` + tabla(f.properties), { maxWidth: 320 }),
+      }), '#3d3d3d', `<h5>Potential sites · first target</h5>` + Object.entries(SITIOS).map(([t, c]) => item(c, t)).join('')],
+      ...Object.keys(PLANES).map(e => ['plan' + e, PLANES[e][0], `Fig. 4${PLANES[e][2]} · 41 347 km²`, plan(e), PLANES[e][1], `<h5>${PLANES[e][0]}</h5>${item(PLANES[e][1], 'microbasins chosen', .55)}`]),
+    ]],
   ];
-  for (const [nombre, crear, leyenda] of CAPAS) {   // every layer starts off
-    const lab = document.createElement('label'); lab.className = 'capa';
-    const chk = document.createElement('input'); chk.type = 'checkbox';
-    lab.append(chk, Object.assign(document.createElement('span'), { innerHTML: nombre }));
-    const ley = Object.assign(document.createElement('div'), { className: 'leyenda', innerHTML: leyenda, hidden: true });
-    $('capas').append(lab, ley);
-    let capa;
-    chk.addEventListener('change', async () => {
-      ley.hidden = !chk.checked;
-      if (!chk.checked) return capa && capa.remove();
-      capa = capa || await crear();
-      if (chk.checked) capa.addTo(mapa);
-    });
+  for (const [titulo, capas] of GRUPOS_CAPAS) {
+    const div = Object.assign(document.createElement('div'), { className: 'capas-grupo', innerHTML: `<h4>${titulo}</h4>` });
+    for (const [clave, nombre, sub, crear, color, ley] of capas) {
+      const lab = Object.assign(document.createElement('label'), { className: 'sw',
+        innerHTML: `<input type="checkbox"><span class="muestra" style="background:${color}"></span><span class="t">${nombre}<small>${sub}</small></span>` });
+      const chk = lab.querySelector('input');
+      interruptores[clave] = chk;
+      let capa;
+      chk.addEventListener('change', async () => {
+        leyenda(clave, chk.checked && ley);
+        if (chk.checked && clave.startsWith('f1') && rasterAtlas) {   // and Fig. 1 hides the analogue map
+          rasterAtlas.remove(); rasterAtlas = null; leyenda('atlas'); $('etiqueta').hidden = true;
+        }
+        if (!chk.checked) return capa && capa.remove();
+        capa = capa || await crear();
+        if (chk.checked) capa.addTo(mapa);
+      });
+      div.append(lab);
+    }
+    $('capas').append(div);
   }
 }
 
 // ---------- click on a protected area: the tiles are images, so read the tile pixel under the cursor and, if it is
 // painted, name the smallest area of that group whose extent holds the point (outlines are never sent as vectors)
-const AP = { ANP: 'NACIONAL', ACR: 'REGIONAL', ACP: 'PRIVADA' };
-const apActivas = new Set();
 async function pintado(g, latlng) {
   const z = Math.min(11, Math.max(4, Math.round(mapa.getZoom())));
   const p = mapa.project(latlng, z).floor();
@@ -208,14 +402,17 @@ mapa.on('click', async e => {
     const a = I.areas.filter(a => a.grupo === g && a.dominio !== 'seafloor' && L.latLngBounds(a.caja).contains(e.latlng))
       .sort((p, q) => sup(p.caja) - sup(q.caja))[0];
     if (!a) continue;
-    L.popup().setLatLng(e.latlng).setContent(`<b>${a.nombre.replace(/ · sea surface$/, '')}</b><br>${a.id.replace(/_(superficie|fondo)$/, '')} · ${GRUPOS[g]}` +
+    L.popup().setLatLng(e.latlng).setContent(`<b>${esc(a.nombre.replace(/ · sea surface$/, ''))}</b><br>${codigo(a.id)} · ${GRUPOS[g]}` +
       (a.km2 !== undefined ? `<br>${fmt(a.km2)} km² with climate data<br>Dominant ecoregion: ${a.eco}` : '<br>Marine protected area') +
-      `<br>Outside the area with d ≤ 0.2: ${fmt(a.km2_02)} km²<br><a href="javascript:void elegir('${a.id}', true)">Show its climate analogues</a>`).openOn(mapa);
+      `<br>Outside the area with d ≤ 0.2: ${fmt(a.km2_02)} km²<br><a href="javascript:void elegir('${a.id}')">Show its climate analogues →</a>`).openOn(mapa);
     return;
   }
 });
 
-$('opacidad').addEventListener('input', e => mapa.eachLayer(l => l instanceof L.ImageOverlay && l.setOpacity(+e.target.value)));
+$('opacidad').addEventListener('input', e => {
+  $('op-v').textContent = Math.round(e.target.value * 100) + ' %';
+  mapa.eachLayer(l => l instanceof L.ImageOverlay && l.setOpacity(+e.target.value));
+});
 </script>
 </body>
 </html>
