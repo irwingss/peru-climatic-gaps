@@ -299,7 +299,7 @@ function elegir(id) {
   history.replaceState(null, '', '#' + a.id);
   rasterAtlas && rasterAtlas.remove(); marca && marca.remove();
   mapa.closePopup();
-  ['f1a', 'f1b', 'f1c'].forEach(k => { const c = interruptores[k]; if (c?.checked) { c.checked = false; c.dispatchEvent(new Event('change')); } });   // Fig. 1 hides the analogue map
+  ['f1a', 'f1b', 'f1c', 'gaps'].forEach(apagar);   // the analogue map replaces the Fig. 1 and Fig. 4 rasters
   $('etiqueta').hidden = false;
   $('etiqueta').innerHTML = `<div class="giro"></div><span>Loading climate analogues of ${esc(a.nombre)}…</span>`;
   rasterAtlas = L.imageOverlay('capas/' + a.png, a.bounds, { opacity: opac(), zIndex: 20 })
@@ -408,7 +408,7 @@ function construirCapas() {
         if (clave.startsWith('ap')) leyenda('ap', Object.keys(AP).some(g => interruptores['ap' + g].checked) && ley);   // one entry for the three groups
         else leyenda(clave, chk.checked && ley);
         if (chk.checked) (EXCLUYE[clave] || []).forEach(apagar);
-        if (chk.checked && clave.startsWith('f1') && rasterAtlas) {   // and Fig. 1 hides the analogue map
+        if (chk.checked && (clave.startsWith('f1') || clave === 'gaps') && rasterAtlas) {   // and those rasters hide the analogue map
           rasterAtlas.remove(); rasterAtlas = null; leyenda('atlas'); $('etiqueta').hidden = true;
         }
         if (!chk.checked) { capasFig.delete(capa); return capa && capa.remove(); }
