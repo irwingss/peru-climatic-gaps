@@ -9,9 +9,6 @@ authors:
   - family-names: "Ugaz-Cherre"
     given-names: "Armando"
     affiliation: "Universidad Nacional de Piura, Peru"
-  - family-names: "Sevillano-Ríos"
-    given-names: "Cristian Steven"
-    affiliation: "Climate Corridors, USA"
 version: "1.0.0"
 date-released: "2026-10-29"
 doi: "10.5281/zenodo.23753928"
@@ -41,7 +38,5 @@ preferred-citation:
       orcid: "https://orcid.org/0000-0001-5761-2882"
     - family-names: "Ugaz-Cherre"
       given-names: "Armando"
-    - family-names: "Sevillano-Ríos"
-      given-names: "Cristian Steven"
   journal: "Perspectives in Ecology and Conservation"
   year: 2026

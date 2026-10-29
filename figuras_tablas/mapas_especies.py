@@ -129,7 +129,7 @@ def docx():
     parrafo('File S3. Range Maps of Species in Climatic Gaps', 15, bold=True, align=WD_ALIGN_PARAGRAPH.LEFT, after=4)
     parrafo('Supplementary material for: Protected-area networks can represent climate worse than chance, and threatened-species '
             'plans toward 30×30 need climatic targets to close the gaps: evidence from Peru. '
-            'Irwing S. Saldaña, Armando Ugaz-Cherre and Cristian Steven Sevillano-Ríos.', 10, italic=True,
+            'Irwing S. Saldaña and Armando Ugaz-Cherre.', 10, italic=True,
             align=WD_ALIGN_PARAGRAPH.LEFT, after=14)
     parrafo(f'This file maps the {len(Q)} continental and {len(QM)} maritime species that are threatened (CR, EN or VU) or have '
             'more than 90% of their global range in Peru, or within the 200 nautical miles at sea, and that have more than half '

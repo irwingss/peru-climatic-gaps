@@ -4,8 +4,7 @@
   "description": "Code, derived data, figures and supplementary tables for the article 'Protected-area networks can represent climate worse than chance, and threatened-species plans toward 30×30 need climatic targets to close the gaps: evidence from Peru' (Perspectives in Ecology and Conservation, submitted). Regularized Mahalanobis distance from every pixel of continental and maritime Peru to the most similar protected climate (CHELSA V2.1, Bio-ORACLE v3.0), tests against 999 null networks that keep each area's size, shape, natural setting and ecoregion mix, the expansion effort curve and 223 potential sites, and species-led versus climate-led prioritization with prioritizr.",
   "creators": [
     {"name": "Saldaña, Irwing S.", "affiliation": "Skyfall Bioscience, Peru", "orcid": "0000-0001-5761-2882"},
-    {"name": "Ugaz-Cherre, Armando", "affiliation": "Universidad Nacional de Piura, Peru"},
-    {"name": "Sevillano-Ríos, Cristian Steven", "affiliation": "Climate Corridors, USA"}
+    {"name": "Ugaz-Cherre, Armando", "affiliation": "Universidad Nacional de Piura, Peru"}
   ],
   "license": "MIT",
   "access_right": "open",

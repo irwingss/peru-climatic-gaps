@@ -39,7 +39,7 @@
 <div id="app">
   <aside id="panel">
     <h1>Climatic gaps in Peru's protected areas</h1>
-    <p class="sub">Interactive atlas of climate analogues (File S2) and map layers of Figs. 1, 3 and 4 of Saldaña, Ugaz-Cherre &amp; Sevillano-Ríos, <i>Perspectives in Ecology and Conservation</i> (submitted).</p>
+    <p class="sub">Interactive atlas of climate analogues (File S2) and map layers of Figs. 1, 3 and 4 of Saldaña &amp; Ugaz-Cherre, <i>Perspectives in Ecology and Conservation</i> (submitted).</p>
 
     <h2>Atlas of climate analogues</h2>
     <div class="fila">
@@ -48,7 +48,7 @@
     <input id="buscar" type="search" placeholder="Search name or code (e.g. Manu, NAC_PN11)" aria-label="Search protected area">
     <div class="fila" style="margin-top:6px"><select id="lista" aria-label="Protected areas"></select></div>
     <div id="ficha"></div>
-    <div class="leyenda" id="leyenda-d" style="margin-left:0"></div>
+    <div class="leyenda" id="leyenda-d" style="margin-left:0" hidden></div>
 
     <h2>Figure layers</h2>
     <div id="capas"></div>
@@ -89,7 +89,7 @@ fetch('capas/indice.json').then(r => r.json()).then(indice => {
   if (location.hash) history.replaceState(null, '', location.pathname);   // always open on the whole of Peru, nothing selected
 });
 
-// ---------- atlas: dropdown grouped by ANP / ACR / ACP (alphabetical inside each group), one overlay at a time
+// ---------- atlas: dropdown grouped by ANP / ACR / ACP (alphabetical inside each group), one analogue map at a time
 const GRUPOS = { ANP: 'ANP · National administration', ACR: 'ACR · Regional administration', ACP: 'ACP · Private' };
 function filtrar() {
   const q = $('buscar').value.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().trim();
@@ -108,20 +108,31 @@ function filtrar() {
 ['buscar', 'dominio'].forEach(id => $(id).addEventListener('input', filtrar));
 $('lista').addEventListener('change', e => elegir(e.target.value));
 
-function elegir(id) {
+// choosing an area locates it and shows its data; its analogue map is a separate switch, and the figure layers are untouched
+function elegir(id, analogos = false) {
   const a = I && I.areas.find(x => x.id === id);
   if (!a) return;
-  rasterAtlas && rasterAtlas.remove(); marca && marca.remove();
-  rasterAtlas = L.imageOverlay('capas/' + a.png, a.bounds, { opacity: +$('opacidad').value, zIndex: 20 }).addTo(mapa);
+  rasterAtlas && rasterAtlas.remove(); marca && marca.remove(); rasterAtlas = null;
   marca = L.circleMarker(a.centro, { radius: 9, color: I.verde, weight: 2, fill: false }).addTo(mapa).bindTooltip(a.nombre);
   $('lista').value = id;
+  mapa.closePopup();
   mapa.flyToBounds(a.caja, { padding: [40, 40], maxZoom: 13, duration: .6 });   // the area itself, not its analogues
   $('ficha').style.display = 'block';
   $('ficha').innerHTML = `<b>${a.nombre}</b> (${a.id.replace(/_(superficie|fondo)$/, '')})<br>${a.modalidad}` +
     (a.km2 !== undefined ? ` · ${fmt(a.km2)} km² with data<br>Dominant ecoregion: ${a.eco}` : '') +
     `<br>Area outside the protected area with d ≤ 0.1: <b>${fmt(a.km2_01)} km²</b>; d ≤ 0.2: <b>${fmt(a.km2_02)} km²</b>` +
-    `<br><a href="#" id="quitar">Remove from map</a>`;
-  $('quitar').onclick = e => { e.preventDefault(); rasterAtlas.remove(); marca.remove(); $('ficha').style.display = 'none'; $('lista').value = ''; };
+    `<label class="capa" style="margin-top:6px"><input type="checkbox" id="ver-analogos"> Show its climate analogues (File S2)</label>` +
+    `<a href="#" id="quitar">Remove from map</a>`;
+  $('ver-analogos').onchange = e => {
+    rasterAtlas && rasterAtlas.remove(); rasterAtlas = null;
+    $('leyenda-d').hidden = !e.target.checked;
+    if (e.target.checked) rasterAtlas = L.imageOverlay('capas/' + a.png, a.bounds, { opacity: +$('opacidad').value, zIndex: 20 }).addTo(mapa);
+  };
+  $('ver-analogos').checked = analogos; $('ver-analogos').onchange({ target: $('ver-analogos') });
+  $('quitar').onclick = e => {
+    e.preventDefault(); rasterAtlas && rasterAtlas.remove(); rasterAtlas = null; marca.remove();
+    $('ficha').style.display = 'none'; $('leyenda-d').hidden = true; $('lista').value = '';
+  };
 }
 
 // ---------- figure layers: created on first use
@@ -152,14 +163,14 @@ function construirCapas(dLeg) {
     ['Fig. 1a · d<sub>min</sub>, land', raster('fig1_land'), dLeg + sinDato],
     ['Fig. 1b · d<sub>min</sub>, sea surface', raster('fig1_sea_surface'), 'Same classes as Fig. 1a'],
     ['Fig. 1c · d<sub>min</sub>, seafloor', raster('fig1_seafloor'), 'Same classes as Fig. 1a'],
-    ['Fig. 3a · Climatic gaps on natural land', raster('fig3_gaps'), gapLeg, true],
+    ['Fig. 3a · Climatic gaps on natural land', raster('fig3_gaps'), gapLeg],
     ['Fig. 3a · 223 potential sites', geo('capas/fig3_sites.geojson', {
       style: f => ({ color: '#08306b', weight: .8, fillColor: SITIOS[f.properties.meta] || '#2171b5', fillOpacity: .85 }),
       onEachFeature: (f, l) => l.bindPopup(`<b>Potential site ${f.properties.id}</b>` + tabla(f.properties), { maxWidth: 320 }),
-    }), Object.entries(SITIOS).map(([t, c]) => `<div>${caja(c)}first target: ${t}</div>`).join(''), true],
-    ...Object.keys(PLANES).map(e => [`Fig. 4c · ${PLANES[e][0]}, 41 347 km²`, plan(e), `<div>${caja(PLANES[e][1], .55)}microbasins chosen</div>`, true]),
+    }), Object.entries(SITIOS).map(([t, c]) => `<div>${caja(c)}first target: ${t}</div>`).join('')],
+    ...Object.keys(PLANES).map(e => [`Fig. 4c · ${PLANES[e][0]}, 41 347 km²`, plan(e), `<div>${caja(PLANES[e][1], .55)}microbasins chosen</div>`]),
   ];
-  for (const [nombre, crear, leyenda, activa] of CAPAS) {
+  for (const [nombre, crear, leyenda] of CAPAS) {   // every layer starts off
     const lab = document.createElement('label'); lab.className = 'capa';
     const chk = document.createElement('input'); chk.type = 'checkbox';
     lab.append(chk, Object.assign(document.createElement('span'), { innerHTML: nombre }));
@@ -172,7 +183,6 @@ function construirCapas(dLeg) {
       capa = capa || await crear();
       if (chk.checked) capa.addTo(mapa);
     });
-    if (activa) { chk.checked = true; chk.dispatchEvent(new Event('change')); }
   }
 }
 
@@ -200,7 +210,7 @@ mapa.on('click', async e => {
     if (!a) continue;
     L.popup().setLatLng(e.latlng).setContent(`<b>${a.nombre.replace(/ · sea surface$/, '')}</b><br>${a.id.replace(/_(superficie|fondo)$/, '')} · ${GRUPOS[g]}` +
       (a.km2 !== undefined ? `<br>${fmt(a.km2)} km² with climate data<br>Dominant ecoregion: ${a.eco}` : '<br>Marine protected area') +
-      `<br>Outside the area with d ≤ 0.2: ${fmt(a.km2_02)} km²<br><a href="javascript:void elegir('${a.id}')">Show its climate analogues</a>`).openOn(mapa);
+      `<br>Outside the area with d ≤ 0.2: ${fmt(a.km2_02)} km²<br><a href="javascript:void elegir('${a.id}', true)">Show its climate analogues</a>`).openOn(mapa);
     return;
   }
 });

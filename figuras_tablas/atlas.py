@@ -124,7 +124,7 @@ def docx():
     parrafo('File S2. Atlas of Climate Analogues of the Protected Areas of Peru', 15, bold=True,
             align=WD_ALIGN_PARAGRAPH.LEFT, after=4)
     parrafo('Supplementary material for: Protected-area networks can represent climate worse than chance, and threatened-species plans toward 30×30 need climatic targets to close the gaps: evidence from Peru. '
-            'Irwing S. Saldaña, Armando Ugaz-Cherre and Cristian Steven Sevillano-Ríos.', 10, italic=True, align=WD_ALIGN_PARAGRAPH.LEFT, after=14)
+            'Irwing S. Saldaña and Armando Ugaz-Cherre.', 10, italic=True, align=WD_ALIGN_PARAGRAPH.LEFT, after=14)
     parrafo('This file gathers the climate analogy maps of the 258 protected areas with continental surface (maps S2.1 to '
             'S2.258), ordered by management modality (ANP, ACR and ACP), category and name, and the maps of the six protected '
             'areas with a maritime component for the sea surface and for the seafloor (maps S2.259 to S2.270).')
