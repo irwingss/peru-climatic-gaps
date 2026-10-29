@@ -105,10 +105,10 @@ def figuras():
               'geometry': shapely.geometry.mapping(g)} for i, g in enumerate(geoms)]
     (DST / 'fig3_sites.geojson').write_text(json.dumps({'type': 'FeatureCollection', 'features': feats}, ensure_ascii=False,
                                                        separators=(',', ':')), encoding='utf-8')
-    # Figs. 4d-f microbasins chosen with 41 347 km² by the three prioritizr plans, vectorized from the planning-unit grid
+    # Figs. 4d-f microbasins chosen with 41 347 km² by the prioritizr plans (A, shown only in the viewer, plus the three of Fig. 4), vectorized from the planning-unit grid
     base = lienzo(TIERRA)
     cel = np.load(PRI / 'entrada/celdas.npz'); pu = np.where(cel['candidato'], cel['pu'], 0)
-    sel = {e: set(pd.read_csv(PRI / f'solucion_{e}_41k.csv').query('solution_1 == 1 and id > 0').id) for e in ('B', 'C17', 'D17')}
+    sel = {e: set(pd.read_csv(PRI / f'solucion_{e}_41k.csv').query('solution_1 == 1 and id > 0').id) for e in ('A', 'B', 'C17', 'D17')}
     todos = np.array(sorted(set().union(*sel.values())))
     grid = base.raster(np.where(np.isin(pu, todos), pu, 0).astype(np.float32), fill=0).astype(np.int32)
     partes = {}

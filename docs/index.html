@@ -156,7 +156,7 @@
     <section>
       <div class="titulo"><h2>Map layers</h2><small>from the paper</small></div>
       <div id="capas"></div>
-      <label class="op">Raster opacity <input id="opacidad" type="range" min="0.2" max="1" step="0.05" value="0.9"><output id="op-v">90 %</output></label>
+      <label class="op">Layer opacity <input id="opacidad" type="range" min="0.2" max="1" step="0.05" value="0.9"><output id="op-v">90 %</output></label>
     </section>
 
     <div class="nota">
@@ -198,7 +198,9 @@ const DOMINIOS = { land: 'Land', 'sea surface': 'Sea surface', seafloor: 'Seaflo
 const DOMCLASE = { land: '', 'sea surface': 'sea', seafloor: 'floor' };
 const filtro = { grupo: '', dominio: '' };
 const SITIOS = { 'N2c null median': '#000000', '80 % at d ≤ 0.2': '#3d3d3d', '90 % at d ≤ 0.2': '#7a7a7a' };   // first target of each site (Fig. 4c draws all sites in one colour)
-const PLANES = { D17: ['Climate only (D)', '#2c7fb8', 'd'], C17: ['Species + climate (C)', '#e66101', 'e'], B: ['Species only (B)', '#8c510a', 'f'] };   // order and panels of Fig. 4
+const PLANES = {   // prioritizr plans at 41 347 km², A to D; A is not in Fig. 4 (its targets count only gap cells)
+  A: ['Species, gaps only (A)', '#7b3294', 'viewer only'], B: ['Species only (B)', '#8c510a', 'Fig. 4f'],
+  C17: ['Species + climate (C)', '#e66101', 'Fig. 4e'], D17: ['Climate only (D)', '#2c7fb8', 'Fig. 4d'] };
 
 fetch('capas/indice.json').then(r => r.json()).then(indice => {
   I = indice;
@@ -326,19 +328,25 @@ function quitar() {
 const AP = { ANP: 'NACIONAL', ACR: 'REGIONAL', ACP: 'PRIVADA' };
 const apActivas = new Set();
 const interruptores = {};   // clave -> checkbox of each figure layer
+const capasFig = new Set();   // figure layers on the map, for the opacity slider
+const EXCLUYE = { f1a: ['gaps'], f1b: ['gaps'], f1c: ['gaps'], gaps: ['f1a', 'f1b', 'f1c'] };   // layers that hide each other
+const apagar = k => { const c = interruptores[k]; if (c?.checked) { c.checked = false; c.dispatchEvent(new Event('change')); } };
 function construirCapas() {
   const raster = k => () => L.imageOverlay('capas/' + I.capas[k].png, I.capas[k].bounds, { opacity: opac(), zIndex: 10 });
   const tabla = p => '<table>' + Object.entries(p).filter(([, v]) => v !== null && v !== '').map(([k, v]) => `<tr><td style="color:#8b938c;padding-right:8px">${k}</td><td>${v}</td></tr>`).join('') + '</table>';
-  const geo = (url, opts) => () => fetch(url).then(r => r.json()).then(g => L.geoJSON(g, { bubblingMouseEvents: false, ...opts }));
-  const plan = e => geo('capas/fig4_microbasins.geojson', {
+  const geo = (datos, opts) => () => datos.then(g => L.geoJSON(g, { bubblingMouseEvents: false, ...opts,
+    style: f => { const s = typeof opts.style === 'function' ? opts.style(f) : opts.style; return { ...s, opacity: opac(), fillOpacity: s.fillOpacity * opac() }; } }));
+  const json = url => { let p; return { then: f => (p = p || fetch(url).then(r => r.json())).then(f) }; };   // fetched once, on first use
+  const cuencas = json('capas/fig4_microbasins.geojson');
+  const plan = e => geo(cuencas, {
     filter: f => f.properties[e] === 1,
-    style: { color: PLANES[e][1], weight: .6, fillColor: PLANES[e][1], fillOpacity: .55 },
-    onEachFeature: (f, l) => l.bindPopup(`<b>Microbasin ${f.properties.pu}</b><br>${fmt(f.properties.km2)} km²<br>Chosen by: ` +
+    style: { color: PLANES[e][1], weight: .6, fillColor: PLANES[e][1], fillOpacity: .6 },
+    onEachFeature: (f, l) => l.bindPopup(`<b>Microbasin ${f.properties.pu}</b><br>${fmt(f.properties.km2)} km² (whole microbasin)<br>Chosen by: ` +
       Object.keys(PLANES).filter(k => f.properties[k]).map(k => PLANES[k][0]).join(', ')),
   });
   mapa.createPane('ap').style.zIndex = 450;   // above rasters and vectors, below markers and popups
   const ap = g => () => L.tileLayer(`capas/ap/${AP[g]}/{z}/{x}/{y}.png`, {
-    pane: 'ap', minZoom: 4, minNativeZoom: 4, maxNativeZoom: 11, bounds: [[-20.5, -85], [0.1, -68.5]],
+    pane: 'ap', minZoom: 4, minNativeZoom: 4, maxNativeZoom: 11, bounds: [[-20.5, -85], [0.1, -68.5]], opacity: opac(),
     attribution: 'Protected areas: SERNANP, Catastro Oficial de Áreas Naturales Protegidas',
   }).on('add', () => apActivas.add(g)).on('remove', () => apActivas.delete(g));
   const dmin = (t) => `<h5>${t} · d<sub>min</sub></h5>${D_LEY()}${item(I.verde, 'protected-area network')}${item('#d6d6d2', 'no climate data')}`;
@@ -352,13 +360,15 @@ function construirCapas() {
     ]],
     ['Fig. 4 · Closing the gaps', [
       ['gaps', 'Climatic gaps on natural land', 'Fig. 4c–f', raster('fig3_gaps'), I.vacio[2], gapLeg],
-      ['sitios', 'Greedy benchmark, 223 sites', 'Fig. 4c', geo('capas/fig3_sites.geojson', {
+      ['sitios', 'Greedy benchmark', 'Fig. 4c · 223 potential sites', geo(json('capas/fig3_sites.geojson'), {
         style: f => ({ color: '#000', weight: .8, fillColor: SITIOS[f.properties.meta] || '#2171b5', fillOpacity: .85 }),
         onEachFeature: (f, l) => l.bindPopup(`<b>Potential site ${f.properties.id}</b>` + tabla(f.properties), { maxWidth: 320 }),
       }), '#3d3d3d', `<h5>Potential sites · first target</h5>` + Object.entries(SITIOS).map(([t, c]) => item(c, t)).join('')],
-      ...Object.keys(PLANES).map(e => ['plan' + e, PLANES[e][0], `Fig. 4${PLANES[e][2]} · 41 347 km²`, plan(e), PLANES[e][1], `<h5>${PLANES[e][0]}</h5>${item(PLANES[e][1], 'microbasins chosen', .55)}`]),
     ]],
+    ['prioritizr plans · 41 347 km² each', Object.keys(PLANES).map(e => ['plan' + e, PLANES[e][0],
+      `${PLANES[e][2]} · <span data-n="${e}">…</span> microbasins`, plan(e), PLANES[e][1], `<h5>${PLANES[e][0]}</h5>${item(PLANES[e][1], 'microbasins chosen', .6)}`])],
   ];
+  cuencas.then(g => document.querySelectorAll('[data-n]').forEach(s => s.textContent = fmt(g.features.filter(f => f.properties[s.dataset.n] === 1).length)));
   for (const [titulo, capas] of GRUPOS_CAPAS) {
     const div = Object.assign(document.createElement('div'), { className: 'capas-grupo', innerHTML: `<h4>${titulo}</h4>` });
     for (const [clave, nombre, sub, crear, color, ley] of capas) {
@@ -368,18 +378,21 @@ function construirCapas() {
       interruptores[clave] = chk;
       let capa;
       chk.addEventListener('change', async () => {
-        leyenda(clave, chk.checked && ley);
+        if (clave.startsWith('ap')) leyenda('ap', Object.keys(AP).some(g => interruptores['ap' + g].checked) && ley);   // one entry for the three groups
+        else leyenda(clave, chk.checked && ley);
+        if (chk.checked) (EXCLUYE[clave] || []).forEach(apagar);
         if (chk.checked && clave.startsWith('f1') && rasterAtlas) {   // and Fig. 1 hides the analogue map
           rasterAtlas.remove(); rasterAtlas = null; leyenda('atlas'); $('etiqueta').hidden = true;
         }
-        if (!chk.checked) return capa && capa.remove();
+        if (!chk.checked) { capasFig.delete(capa); return capa && capa.remove(); }
         capa = capa || await crear();
-        if (chk.checked) capa.addTo(mapa);
+        if (chk.checked) { capasFig.add(capa); capa.addTo(mapa); }
       });
       div.append(lab);
     }
     $('capas').append(div);
   }
+  Object.keys(AP).forEach(g => { interruptores['ap' + g].checked = true; interruptores['ap' + g].dispatchEvent(new Event('change')); });   // outlines always on at load
 }
 
 // ---------- click on a protected area: the tiles are images, so read the tile pixel under the cursor and, if it is
@@ -411,7 +424,7 @@ mapa.on('click', async e => {
 
 $('opacidad').addEventListener('input', e => {
   $('op-v').textContent = Math.round(e.target.value * 100) + ' %';
-  mapa.eachLayer(l => l instanceof L.ImageOverlay && l.setOpacity(+e.target.value));
+  [...capasFig, rasterAtlas].forEach(l => l && (l instanceof L.GeoJSON ? l.setStyle(l.options.style) : l.setOpacity(+e.target.value)));
 });
 </script>
 </body>
