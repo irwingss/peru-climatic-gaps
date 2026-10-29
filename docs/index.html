@@ -392,7 +392,7 @@ function construirCapas() {
     }
     $('capas').append(div);
   }
-  Object.keys(AP).forEach(g => { interruptores['ap' + g].checked = true; interruptores['ap' + g].dispatchEvent(new Event('change')); });   // outlines always on at load
+  ['gaps', ...Object.keys(AP).map(g => 'ap' + g)].forEach(k => { interruptores[k].checked = true; interruptores[k].dispatchEvent(new Event('change')); });   // gaps and outlines always on at load
 }
 
 // ---------- click on a protected area: the tiles are images, so read the tile pixel under the cursor and, if it is
