@@ -137,15 +137,21 @@
   #leyenda.plegada .ley-cab::after { transform: rotate(180deg); }
   #leyenda.plegada #ley-cuerpo { display: none; }
   .sw.ver .tip { display: block; }
+  /* drawer buttons, phone only */
+  .cerrar { display: none; flex: none; align-items: center; gap: 6px; border: 1px solid rgba(255,255,255,.35); background: rgba(255,255,255,.12); color: #fff; border-radius: 99px; padding: 8px 14px; font-size: 13px; font-weight: 600; cursor: pointer; }
+  .abrir { display: none; position: absolute; z-index: 900; left: 50%; bottom: 30px; transform: translateX(-50%); align-items: center; gap: 8px; border: 0; background: var(--acento); color: #fff; border-radius: 99px; padding: 12px 20px; font-size: 14px; font-weight: 600; box-shadow: 0 2px 6px rgba(0,0,0,.25), 0 8px 24px rgba(0,0,0,.25); cursor: pointer; white-space: nowrap; }
 
   @media (max-width: 800px) {
-    html, body { height: 100dvh; }
-    #app { grid-template-columns: 1fr; grid-template-rows: 52% 48%; height: 100dvh; }
-    #mapa { grid-row: 1; } #panel { grid-row: 2; border-right: 0; border-top: 1px solid var(--linea); overscroll-behavior: contain; }
-    /* while typing a search the panel takes the whole screen, so the list stays above the keyboard */
-    #app.buscando { grid-template-rows: 0 1fr; }
-    #app.buscando header { display: none; }
-    header { padding: 10px 16px; } header .kicker, header p { display: none; } header h1 { font-size: 16px; margin: 0; }
+    /* the map fills the screen; the panel is a full-screen drawer opened from the button on the map */
+    html, body { height: 100dvh; overflow: hidden; }
+    #app { display: block; height: 100dvh; }
+    #mapa { position: absolute; inset: 0; }
+    #panel { position: fixed; inset: 0; z-index: 1500; border-right: 0; overscroll-behavior: contain; transform: translateY(100%); visibility: hidden; transition: transform .25s ease, visibility 0s .25s; }
+    #app.panel-abierto #panel { transform: none; visibility: visible; transition: transform .25s ease; }
+    header { position: sticky; top: 0; z-index: 5; display: flex; align-items: center; gap: 12px; padding: 10px 10px 10px 16px; }
+    header .kicker, header p { display: none; } header h1 { flex: 1; font-size: 16px; margin: 0; }
+    .cerrar { display: inline-flex; }
+    .abrir { display: flex; }
     section { padding: 12px 16px; }
     .combo input { font-size: 16px; padding-top: 10px; padding-bottom: 10px; }   /* 16px: iOS does not zoom on focus */
     .combo .x { width: 36px; height: 36px; right: 2px; }
@@ -157,7 +163,7 @@
     .ayuda { width: 28px; height: 28px; font-size: 13px; }
     .op input { height: 28px; }
     #leyenda { width: 210px; bottom: 22px; right: 8px; max-height: calc(100% - 90px); padding: 8px 10px; font-size: 11px; }
-    #etiqueta { top: 8px; max-width: calc(100% - 120px); font-size: 11.5px; padding: 6px 12px; }
+    #etiqueta { top: 8px; max-width: calc(100% - 120px); cursor: pointer; font-size: 11.5px; padding: 6px 12px; }
     .leaflet-control-attribution { max-width: 100vw; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-size: 9px; }
     .leaflet-control-attribution.abierta { white-space: normal; }
     .leaflet-bottom.leaflet-left { bottom: 14px; }   /* scale above the one-line attribution */
@@ -173,9 +179,12 @@
 <div id="app">
   <aside id="panel">
     <header>
+      <div style="flex:1;min-width:0">
       <div class="kicker">Interactive atlas · File S2</div>
       <h1>Climatic gaps in Peru's protected areas</h1>
       <p>Climate analogues of every protected area and the map layers of Figs. 1 and 4 of Saldaña &amp; Ugaz-Cherre, <i>Perspectives in Ecology and Conservation</i> (submitted).</p>
+      </div>
+      <button type="button" class="cerrar" id="cerrar-panel" aria-label="Close panel and show the map">Map ✕</button>
     </header>
 
     <section>
@@ -205,6 +214,7 @@
     </div>
   </aside>
   <main id="mapa">
+    <button type="button" class="abrir" id="abrir-panel" aria-controls="panel"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>Areas &amp; layers</button>
     <div id="etiqueta" hidden></div>
     <div id="leyenda" hidden><button type="button" class="ley-cab" id="ley-cab" aria-expanded="true">Legend</button><div id="ley-cuerpo"></div></div>
   </main>
@@ -232,6 +242,19 @@ const codigo = id => id.replace(/_(superficie|fondo)$/, '');
 const item = (c, t, a = 1) => `<div class="item"><i style="background:${c};opacity:${a}"></i>${t}</div>`;
 const opac = () => +$('opacidad').value;
 const MOVIL = matchMedia('(max-width: 800px)');   // same breakpoint as the CSS
+
+// ---------- phone: the panel is a full-screen drawer over the map
+function panel(si) {
+  if (!MOVIL.matches || $('app').classList.contains('panel-abierto') === si) return;
+  $('app').classList.toggle('panel-abierto', si);
+  $('abrir-panel').setAttribute('aria-expanded', si);
+  if (!si) { abrir(false); document.activeElement?.blur(); }
+}
+$('abrir-panel').addEventListener('click', () => panel(true));
+$('cerrar-panel').addEventListener('click', () => panel(false));
+$('etiqueta').addEventListener('click', () => panel(true));   // the area name on the map opens its card
+addEventListener('keydown', e => e.key === 'Escape' && e.target !== $('buscar') && panel(false));
+L.DomEvent.disableClickPropagation($('abrir-panel')); L.DomEvent.disableClickPropagation($('etiqueta'));
 
 let I, sel = null, rasterAtlas, marca;
 const GRUPOS = { ANP: 'National (ANP)', ACR: 'Regional (ACR)', ACP: 'Private (ACP)' };
@@ -318,12 +341,7 @@ function marcar(i) {
   if (li) { li.setAttribute('aria-selected', 'true'); li.scrollIntoView({ block: 'nearest' }); $('buscar').setAttribute('aria-activedescendant', li.id); }
   else $('buscar').removeAttribute('aria-activedescendant');
 }
-const abrir = si => {
-  $('combo').classList.toggle('abierto', si); $('buscar').setAttribute('aria-expanded', si);
-  if ($('app').classList.contains('buscando') === (si && MOVIL.matches)) return;
-  $('app').classList.toggle('buscando', si && MOVIL.matches);   // phone: the panel covers the map while the list is open
-  if (si) $('panel').scrollTop = 0; else mapa.invalidateSize();
-};
+const abrir = si => { $('combo').classList.toggle('abierto', si); $('buscar').setAttribute('aria-expanded', si); };
 $('buscar').addEventListener('focus', () => { $('buscar').select(); pintarLista(); abrir(true); });
 $('buscar').addEventListener('input', () => { $('combo').classList.toggle('lleno', !!$('buscar').value); pintarLista(); abrir(true); });
 $('buscar').addEventListener('keydown', e => {
@@ -369,9 +387,9 @@ function elegir(id) {
       <button class="btn" id="ir-atlas">⤢ Full analogue map</button>
       <a class="btn" href="capas/${a.png}" download="${a.id}.png">↓ PNG</a>
     </div>`;
-  $('ir-area').onclick = () => mapa.flyToBounds(a.caja, { padding: [60, 60], maxZoom: 13, duration: .6 });
+  $('ir-area').onclick = () => panel(false) || mapa.flyToBounds(a.caja, { padding: [60, 60], maxZoom: 13, duration: .6 });
   $('ir-atlas').onclick = () => elegir(a.id);   // also brings the analogue map back after Fig. 1 hid it
-  if (MOVIL.matches) $('ficha').scrollIntoView({ block: 'nearest' });
+  panel(false);   // phone: back to the map to see the analogues
 }
 function quitar() {
   sel = null; rasterAtlas && rasterAtlas.remove(); marca && marca.remove(); rasterAtlas = marca = null;
