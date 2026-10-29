@@ -86,7 +86,7 @@ fetch('capas/indice.json').then(r => r.json()).then(indice => {
   I.areas.sort((a, b) => a.nombre.localeCompare(b.nombre, 'es', { sensitivity: 'base' }));
   filtrar();
   construirCapas(dLeg);
-  if (location.hash) elegir(location.hash.slice(1));
+  if (location.hash) history.replaceState(null, '', location.pathname);   // always open on the whole of Peru, nothing selected
 });
 
 // ---------- atlas: dropdown grouped by ANP / ACR / ACP (alphabetical inside each group), one overlay at a time
@@ -107,12 +107,10 @@ function filtrar() {
 }
 ['buscar', 'dominio'].forEach(id => $(id).addEventListener('input', filtrar));
 $('lista').addEventListener('change', e => elegir(e.target.value));
-window.addEventListener('hashchange', () => elegir(location.hash.slice(1)));
 
 function elegir(id) {
   const a = I && I.areas.find(x => x.id === id);
   if (!a) return;
-  if (location.hash.slice(1) !== id) history.replaceState(null, '', '#' + id);
   rasterAtlas && rasterAtlas.remove(); marca && marca.remove();
   rasterAtlas = L.imageOverlay('capas/' + a.png, a.bounds, { opacity: +$('opacidad').value, zIndex: 20 }).addTo(mapa);
   marca = L.circleMarker(a.centro, { radius: 9, color: I.verde, weight: 2, fill: false }).addTo(mapa).bindTooltip(a.nombre);
@@ -123,7 +121,7 @@ function elegir(id) {
     (a.km2 !== undefined ? ` · ${fmt(a.km2)} km² with data<br>Dominant ecoregion: ${a.eco}` : '') +
     `<br>Area outside the protected area with d ≤ 0.1: <b>${fmt(a.km2_01)} km²</b>; d ≤ 0.2: <b>${fmt(a.km2_02)} km²</b>` +
     `<br><a href="#" id="quitar">Remove from map</a>`;
-  $('quitar').onclick = e => { e.preventDefault(); rasterAtlas.remove(); marca.remove(); $('ficha').style.display = 'none'; history.replaceState(null, '', location.pathname); };
+  $('quitar').onclick = e => { e.preventDefault(); rasterAtlas.remove(); marca.remove(); $('ficha').style.display = 'none'; $('lista').value = ''; };
 }
 
 // ---------- figure layers: created on first use
@@ -185,8 +183,10 @@ const apActivas = new Set();
 async function pintado(g, latlng) {
   const z = Math.min(11, Math.max(4, Math.round(mapa.getZoom())));
   const p = mapa.project(latlng, z).floor();
-  const img = new Image(); img.src = `capas/ap/${AP[g]}/${z}/${Math.floor(p.x / 256)}/${Math.floor(p.y / 256)}.png`;
-  try { await img.decode(); } catch { return false; }   // no tile there
+  const img = new Image();
+  const ok = await new Promise(r => { img.onload = () => r(true); img.onerror = () => r(false);   // no tile there
+    img.src = `capas/ap/${AP[g]}/${z}/${Math.floor(p.x / 256)}/${Math.floor(p.y / 256)}.png`; });
+  if (!ok) return false;
   const ctx = Object.assign(document.createElement('canvas'), { width: 1, height: 1 }).getContext('2d', { willReadFrequently: true });
   ctx.drawImage(img, -(p.x % 256), -(p.y % 256));
   return ctx.getImageData(0, 0, 1, 1).data[3] > 0;
@@ -200,7 +200,7 @@ mapa.on('click', async e => {
     if (!a) continue;
     L.popup().setLatLng(e.latlng).setContent(`<b>${a.nombre.replace(/ · sea surface$/, '')}</b><br>${a.id.replace(/_(superficie|fondo)$/, '')} · ${GRUPOS[g]}` +
       (a.km2 !== undefined ? `<br>${fmt(a.km2)} km² with climate data<br>Dominant ecoregion: ${a.eco}` : '<br>Marine protected area') +
-      `<br>Outside the area with d ≤ 0.2: ${fmt(a.km2_02)} km²<br><a href="#${a.id}">Show its climate analogues</a>`).openOn(mapa);
+      `<br>Outside the area with d ≤ 0.2: ${fmt(a.km2_02)} km²<br><a href="javascript:void elegir('${a.id}')">Show its climate analogues</a>`).openOn(mapa);
     return;
   }
 });
