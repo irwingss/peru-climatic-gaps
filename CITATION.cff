@@ -13,7 +13,17 @@ authors:
     given-names: "Cristian Steven"
     affiliation: "Climate Corridors, USA"
 version: "1.0.0"
-date-released: "2026-10-22"
+date-released: "2026-10-29"
+doi: "10.5281/zenodo.23753928"
+repository-code: "https://github.com/irwingss/peru-climatic-gaps"
+url: "https://irwingss.github.io/peru-climatic-gaps/"
+identifiers:
+  - type: doi
+    value: "10.5281/zenodo.23753927"
+    description: "Concept DOI, all versions"
+  - type: doi
+    value: "10.5281/zenodo.23753928"
+    description: "Version 1.0.0"
 license: MIT
 keywords:
   - protected areas

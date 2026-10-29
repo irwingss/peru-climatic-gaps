@@ -1,5 +1,7 @@
 # Climatic gaps in Peru's protected-area network
 
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.23753927.svg)](https://doi.org/10.5281/zenodo.23753927)
+
 Code, derived data, figures and supplementary tables for:
 
 > Saldaña, I.S., Ugaz-Cherre, A., Sevillano-Ríos, C.S. Protected-area networks can represent climate worse than chance, and threatened-species plans toward 30×30 need climatic targets to close the gaps: evidence from Peru. *Perspectives in Ecology and Conservation* (submitted).
@@ -145,4 +147,4 @@ Code: MIT (`LICENSE`). Figures, tables and derived data: CC BY 4.0, except the f
 
 ## Citation
 
-See `CITATION.cff`. Please cite the article and the archived version of this repository (Zenodo DOI).
+See `CITATION.cff`. Please cite the article and the archived version of this repository: Saldaña, I.S., Ugaz-Cherre, A., Sevillano-Ríos, C.S. (2026). Climatic gaps in Peru's protected-area network: code, derived data and supplementary material (v1.0.0). Zenodo. https://doi.org/10.5281/zenodo.23753928. The DOI https://doi.org/10.5281/zenodo.23753927 always resolves to the latest version.
