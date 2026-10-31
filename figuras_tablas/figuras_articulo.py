@@ -221,8 +221,17 @@ def fig3():
         x = P[k]['agregado_km2']; yv = np.interp(x, cu.agregado_km2, cu.F02) * 100
         b.plot(x / 1e3, yv, 'o', ms=3.6, color='#1f1f1d', zorder=4)
         # labels in the empty lower right, joined to their points, so no text crosses the curves of the other cut-offs
-        b.annotate(f'{lab}\n+{en(x)} km²', (x / 1e3, yv), xytext=(58, 77 if k == 'alcanza_F02_80' else 72), textcoords='data',
-                   fontsize=5.6, ha='left', va='top', arrowprops=dict(arrowstyle='-', color='#8a8986', lw=.4, shrinkA=0, shrinkB=3))
+        b.annotate(f'{lab}\n+{en(x)} km²', (x / 1e3, yv), xytext=(60, 75 if k == 'alcanza_F02_80' else 71.6), textcoords='data',
+                   fontsize=5.6, ha='left', va='top', arrowprops=dict(arrowstyle='-', color='#8a8986', lw=.4, shrinkA=0, shrinkB=3, relpos=(0, .5)))
+    # the 90% point at 0.2 is the larger budget of the prioritization; the smaller budget is marked on the same curve (Fig. 4a, b)
+    x90 = um[.2]
+    b.annotate(f'90% with a protected\nanalogue, +{en(x90)} km²\n(larger budget, Fig. 4b)', (x90 / 1e3, 90), xytext=(60, 81),
+               textcoords='data', fontsize=5.6, ha='left', va='top',
+               arrowprops=dict(arrowstyle='-', color='#8a8986', lw=.4, shrinkA=0, shrinkB=3, relpos=(0, .5)))
+    x19 = 19000; y19 = np.interp(x19, cu.agregado_km2, cu.F02) * 100
+    b.plot(x19 / 1e3, y19, 's', ms=3.4, color='#1f1f1d', zorder=4)
+    b.annotate(f'+{en(x19)} km² (smaller\nbudget, Fig. 4a)', (x19 / 1e3, y19), xytext=(60, 77.8), textcoords='data', fontsize=5.6,
+               ha='left', va='top', arrowprops=dict(arrowstyle='-', color='#8a8986', lw=.4, shrinkA=0, shrinkB=3, relpos=(0, .5)))
     b.legend(title='Cut-off x of a protected analogue', title_fontsize=5.6, fontsize=5.5, frameon=False, loc='lower right',
              handlelength=2.6, labelspacing=.35, alignment='left')
     b.set_xlim(0, 112); b.set_ylim(58, 93); _ejes(b)
@@ -236,21 +245,24 @@ def fig3():
     b.annotate(f'30% protected (Target 3)\nat +{en(falta)} km² →', xy=(1, 1), xycoords='axes fraction', xytext=(-2, -4),
                textcoords='offset points', ha='right', va='top', fontsize=5.7, color='#55554f')
     _titulo(b, '(a) Effort curve')
-    # (b) role of ACR and ACP: surface at d <= 0.2 that only regional and private areas provide
+    # (b) role of each tier: surface at d <= 0.2 covered by ANP, and the rest, which only ACR or ACP cover, by the tier of its
+    # most similar protected climate; [ANP, ACR, ACP] shares at the end of each bar
     c = fig.add_subplot(gs[0, 1])
     m = pd.read_csv(IMP / 'P2_modalidades_por_ecorregion.csv').set_index('nombre')
     eco = ECO7
+    TIERS = (('cubierta_solo_ANP_km2', VERDE, 'National (ANP)'), ('solo_ACR_ACP_proveedora_ACR_km2', '#5fae86', 'Regional (ACR)'),
+             ('solo_ACR_ACP_proveedora_ACP_km2', VERDE_CLARO, 'Private (ACP)'))
     for i, e in enumerate(eco):
         r = m.loc[ECO_ES[e]]
-        anp = r.cubierta_solo_ANP_km2 / r.cubierta_red_km2 * 100
-        c.barh(i, anp, color=VERDE, ec='#8a8986', lw=.3, height=.62, label='National (ANP)' if i == 0 else None)
-        c.barh(i, 100 - anp, left=anp, color=VERDE_CLARO, ec='#8a8986', lw=.3, height=.62,
-               label='Only regional or private (ACR, ACP)' if i == 0 else None)
-        c.text(101, i, f'{100 - anp:.0f}%', va='center', fontsize=5.8)
+        sh = [r[k] / r.cubierta_red_km2 * 100 for k, _, _ in TIERS]
+        assert abs(sum(sh) - 100) < 1e-6, e
+        for j, (_, col, lab) in enumerate(TIERS):
+            c.barh(i, sh[j], left=sum(sh[:j]), color=col, ec='#8a8986', lw=.3, height=.62, label=lab if i == 0 else None)
+        c.text(101.5, i, '[' + ', '.join(f'{v:.0f}%' for v in sh) + ']', va='center', fontsize=5.4)
     c.set_yticks(range(len(eco))); c.set_yticklabels([ECO_EN[e].replace('High jungle (Yungas)', 'Yungas') for e in eco], fontsize=6)
     c.invert_yaxis(); c.set_xlim(0, 100); _ejes(c)
     c.set_xlabel('Share of the covered surface, $d_{\\mathrm{min}}$ ≤ 0.2 (%)', fontsize=6.4)
-    c.legend(fontsize=5.6, frameon=False, ncol=2, loc='upper left', bbox_to_anchor=(-.02, -.32), handlelength=1.2)
+    c.legend(fontsize=5.6, frameon=False, ncol=3, loc='upper left', bbox_to_anchor=(-.02, -.32), handlelength=1.2, columnspacing=1)
     _titulo(c, '(b) Who provides the protected analogue')
     # (c) leave one out at sea
     dd = fig.add_subplot(gs[1, 1])
