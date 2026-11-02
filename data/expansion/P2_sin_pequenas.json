@@ -1,0 +1,18 @@
+{
+  "n_excluidas": 63,
+  "excluidas_km2": 19.3648201346594,
+  "excluidas_por_modalidad": {
+    "ANP": 2,
+    "ACR": 0,
+    "ACP": 61
+  },
+  "superficie_exacta_km2": {
+    "ANP": 186516.73533227202,
+    "ACR": 40926.91352604886,
+    "ACP": 4218.978735436379
+  },
+  "F02_red": 0.6979595346170635,
+  "solo_ACR_ACP_km2": 78516.885710228,
+  "solo_ACR_ACP_proveedora_ACR_km2": 53698.91510995946,
+  "solo_ACR_ACP_proveedora_ACP_km2": 24817.970600268545
+}

@@ -78,6 +78,15 @@ def fig1():
     gs = GridSpec(2, 3, figure=fig, width_ratios=[1.45, .66, .66], height_ratios=[1, .78], wspace=.06, hspace=.16)
     a = fig.add_subplot(gs[:, 0])
     _mapa_d(a, base, d)
+    # location in South America and scale bar (review of the figures of v12, m6); the map is drawn at the aspect of 9.2° S
+    loc = a.inset_axes([0, .83, .2, .16])
+    relleno(loc, shape(json.loads((INSUMOS / 'sudamerica.geojson').read_text(encoding='utf-8'))['geometry']),
+            facecolor='#dcdbd6', edgecolor='none')
+    relleno(loc, base.outline, facecolor='#1f1f1d', edgecolor='none')
+    loc.set_xlim(-82, -34); loc.set_ylim(-56, 13); loc.set_aspect('equal'); loc.set_axis_off()
+    from mpl_toolkits.axes_grid1.anchored_artists import AnchoredSizeBar
+    a.add_artist(AnchoredSizeBar(a.transData, 200 / (111.32 * np.cos(np.deg2rad(9.2))), '200 km', 'upper left', pad=0, borderpad=0,
+                                 bbox_to_anchor=(.04, -.025), bbox_transform=a.transAxes, frameon=False, size_vertical=.06, color='#1f1f1d', fontproperties={'size': 5.9}))
     h = [Patch(facecolor=VERDE, label='Protected area')]
     h += [Patch(facecolor=c, edgecolor='#bdbdb5', lw=.4, label=f'{corto(lo)}–{corto(hi)} · {t}') for (c, t), lo, hi
           in zip(CLASES_ART, CORTES_D[:-1], CORTES_D[1:])]
@@ -182,7 +191,7 @@ def fig2():
         ax.text(-3.3, yi, lab, ha='right', va='center', fontsize=6.4, weight='bold' if nac else 'normal')
         if prot is not None:
             ax.text(x1, yi, f'{prot:.1f}%', transform=col_t, ha='right', va='center', fontsize=6, color='#55554f')
-        ax.text(r.ses + (.35 if r.ses >= 0 else -.35), yi + .02, ("p" if nac else "p$_{\\mathrm{Holm}}$") + f" = {r.p_holm:.3f}", fontsize=5.3,
+        ax.text(r.ses + (.35 if r.ses >= 0 else -.35), yi + .02, ("p" if nac else "p$_{\\mathrm{Holm}}$") + (" = 1" if r.p_holm > .9995 else f" = {r.p_holm:.3f}"), fontsize=5.3,
                 ha='left' if r.ses >= 0 else 'right', va='center', color='#55554f')
     ax.text(x1, y[0] + 1.0, 'Protected', transform=col_t, ha='right', fontsize=6, color='#55554f')
     ax.text(x2, y[0] + 1.0, 'Extra km² without a\nprotected analogue', transform=col_t, ha='right', fontsize=6,
@@ -258,7 +267,8 @@ def fig3():
         assert abs(sum(sh) - 100) < 1e-6, e
         for j, (_, col, lab) in enumerate(TIERS):
             c.barh(i, sh[j], left=sum(sh[:j]), color=col, ec='#8a8986', lw=.3, height=.62, label=lab if i == 0 else None)
-        c.text(101.5, i, '[' + ', '.join(f'{v:.0f}%' for v in sh) + ']', va='center', fontsize=5.4)
+        # km² that only ACR or ACP cover (review of the figures of v12, m5)
+        c.text(101.5, i, '[' + ', '.join(f'{v:.0f}%' for v in sh) + f'] · {en(r.solo_ACR_ACP_km2)} km²', va='center', fontsize=5.4)
     c.set_yticks(range(len(eco))); c.set_yticklabels([ECO_EN[e].replace('High jungle (Yungas)', 'Yungas') for e in eco], fontsize=6)
     c.invert_yaxis(); c.set_xlim(0, 100); _ejes(c)
     c.set_xlabel('Share of the covered surface, $d_{\\mathrm{min}}$ ≤ 0.2 (%)', fontsize=6.4)
